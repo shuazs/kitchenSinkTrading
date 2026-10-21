@@ -1,8 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in ten project docs on claude.ai (private
-
-The research behind this repo lives in eleven project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option

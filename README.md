@@ -23,7 +23,6 @@ backtester/
   intraday.py      day-trading simulators on minute bars (SPY/QQQ intraday momentum)
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   jump_trades.py   trade an asset after a sudden prediction-market move (hourly bars)
-
   ml/              signal combination: weekly feature panel from the strategies,
                    purged walk-forward folds, equal weight / ridge / LightGBM /
                    MLP / LSTM models, Deflated Sharpe
