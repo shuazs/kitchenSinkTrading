@@ -1,8 +1,8 @@
 # Research write-ups
 
-The research behind this repo lives in nine project docs on claude.ai (private
+The research behind this repo lives in ten project docs on claude.ai (private
 
-The research behind this repo lives in nine project docs on claude.ai (private
+The research behind this repo lives in ten project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -19,6 +19,7 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
+| [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 
 ## Summaries
 
@@ -124,3 +125,12 @@ Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
 edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
+
+**Intraday strategies on 1-minute data.** Free 1-minute S&P, Nasdaq, BTC and
+ETH bars (2021-2026) let the intraday rules run without Alpaca. 3,448 rule
+variants (noise area, opening range, VWAP trend and reversion, end-of-day
+momentum, gaps, crypto hour of day, overnight split) at four cost levels:
+trend rules are profitable before costs in 80-100% of variants, but earn only
+about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
+spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
+15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
