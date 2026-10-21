@@ -17,6 +17,7 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
+| [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
 | [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
 | [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
 | [Machine learning on the repo's research signals](https://claude.ai/artifact/73kpBbdn17TCsHkBjvNuNv) | `ml/labels.py`, `metalabel.py`, `regime.py`, `vol_forecast.py`, `rank.py` | `run_ml_research.py` |
@@ -125,6 +126,16 @@ Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
 edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
+
+**Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
+to Oct 2026) of intraday momentum, cross-asset, overnight BTC/Treasury,
+VIX and Kalshi/Polymarket inputs, combined by equal weight, ridge and
+LightGBM with monthly walk-forward refits and a May-Oct 2026 holdout. Rest-of-
+day direction hit rates were 46-53% (51-57% on the most confident fifth),
+never significantly above 50%, and the Kalshi/Polymarket inputs made models
+worse. Buying ATM 0DTE options held to the close needs about 52% accuracy at
+fair prices and 57% with a 10% volatility premium, so there is no trade.
+Option prices are modelled (no free 0DTE history).
 
 **Prediction markets as leading signals.** Hourly tests from 2024 to 2026
 found Polymarket and Kalshi prices moving in the same hour as related assets,
