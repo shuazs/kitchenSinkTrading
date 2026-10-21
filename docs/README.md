@@ -1,8 +1,8 @@
 # Research write-ups
 
-The research behind this repo lives in nine project docs on claude.ai (private
+The research behind this repo lives in ten project docs on claude.ai (private
 
-The research behind this repo lives in nine project docs on claude.ai (private
+The research behind this repo lives in ten project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -19,6 +19,7 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
+| [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
 
 ## Summaries
 
@@ -124,3 +125,15 @@ Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
 edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
+
+**Neural nets for combining signals.** A literature review (Gu, Kelly and Xiu;
+Deep Momentum Networks; the Momentum Transformer; Nagel's critique of
+"virtue of complexity") and a fair contest: 20 weekly features taken from
+the strategies here, purged expanding walk-forward folds, and equal weight,
+ridge, LightGBM, an MLP and an LSTM traded with the same sizing and costs.
+Neither net beat ridge and equal weight by the 0.2 Sharpe bar on ETFs
+(2012 to mid-2024), crypto (2021 to mid-2024) or the S&P 100. On crypto and
+stocks, staying long with the same sizing beat every model, and the existing
+strategies (MultiAssetTrend, EnsembleTrend, top-10 momentum) matched or beat
+them all. The locked holdout from July 2024 agreed. Weekly rank correlation
+of the forecasts with next week's return was at most about 0.05.
