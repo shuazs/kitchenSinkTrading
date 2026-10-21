@@ -29,6 +29,26 @@ def load_bars(symbol: str, start="2000-01-01", end=None, interval="1d", refresh=
     return df.loc[start:end, ["open", "high", "low", "close", "volume"]].dropna(subset=["close"])
 
 
+def load_hourly(symbol: str, refresh=False) -> pd.DataFrame:
+    """The last ~730 days of 1h bars, indexed by the bar's start in UTC (tz-naive).
+
+    Futures (CL=F, ES=F) trade nearly 24 hours; ETF bars cover market hours only.
+    """
+    import yfinance as yf
+
+    path = cache_dir("yahoo") / f"{symbol.replace('/', '_')}_1h_utc.csv"
+    if path.exists() and not refresh:
+        return pd.read_csv(path, index_col=0, parse_dates=True)
+    df = yf.download(symbol, period="730d", interval="1h", auto_adjust=True, progress=False)
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+    df.columns = [c.lower() for c in df.columns]
+    df.index = pd.to_datetime(df.index).tz_convert("UTC").tz_localize(None).floor("h")
+    df = df[~df.index.duplicated(keep="last")][["open", "high", "low", "close", "volume"]].dropna(subset=["close"])
+    df.to_csv(path)
+    return df
+
+
 def load_market(symbols, start="2000-01-01", end=None, interval="1d", **extra) -> MarketData:
     return MarketData({s: load_bars(s, start, end, interval) for s in symbols}, extra)
 
