@@ -17,12 +17,18 @@ timestamps are a minute off.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
 
 from .cache import cache_dir
+
+# A folder of ready-made <SYMBOL>.parquet files (UTC bar-start index), used
+# before downloading. The project's shared folder also holds QQQ, ETH and NDX.
+LOCAL_DIR = os.environ.get("KS_MINUTE_DIR", "/mnt/project-files/minute-data")
 
 HF = "https://huggingface.co/datasets"
 SOURCES = {
@@ -55,7 +61,13 @@ def _central_csv(path: Path, start: str) -> pd.DataFrame:
 
 
 def load_minute(symbol: str, start: str = "2021-06-01") -> pd.DataFrame:
-    """OHLC(V) 1-minute bars for SPX, MES, NQ or BTC, UTC bar-start index."""
+    """OHLC(V) 1-minute bars for SPX, MES, NQ or BTC (also QQQ, ETH when
+    LOCAL_DIR has them), UTC bar-start index."""
+    local = Path(LOCAL_DIR) / f"{symbol}.parquet"
+    if local.exists():
+        d = pd.read_parquet(local)
+        d.index = pd.DatetimeIndex(d.index).as_unit("ns")
+        return d[d.index >= pd.Timestamp(start, tz="UTC")]
     files = [_download(p) for p in SOURCES[symbol]]
     if symbol in ("SPX", "MES"):
         d = pd.concat([_central_csv(f, start) for f in files])
@@ -71,3 +83,56 @@ def load_minute(symbol: str, start: str = "2021-06-01") -> pd.DataFrame:
         t = d.index.tz_convert("America/New_York").time
         d = d[(t >= pd.Timestamp("09:30").time()) & (t <= pd.Timestamp("16:00").time())]
     return d
+
+
+def _new_york(d: pd.DataFrame) -> pd.DataFrame:
+    d = d.copy()
+    d.index = d.index.tz_convert("America/New_York").tz_localize(None)
+    return d
+
+
+def _rth(d: pd.DataFrame) -> pd.DataFrame:
+    m = d.index.hour * 60 + d.index.minute
+    return d[(m >= 570) & (m < 960)]
+
+
+def rth_bars(symbol: str, start: str = "2021-06-01") -> pd.DataFrame:
+    """Regular-session bars (09:30-15:59 bar starts, New York, tz-naive), the
+    format `intraday.minute_grid` and `alpaca.load_minute_bars` use.
+
+    - "SPY": a SPY stand-in from the cash S&P 500 index. The index's 09:30
+      print is a stale copy of the previous close, so the first bar's open is
+      replaced by the previous close times the MES overnight move, and MES
+      volume stands in for volume (for VWAP).
+    - "QQQ": NQ futures in regular hours to 2025-03-27, then QQQ itself. The
+      level jump on the day the source switches is not a return:
+      `intraday_lab.Grid` drops overnight moves over 20%.
+    - anything else: that symbol's bars cut to regular hours.
+    """
+    if symbol == "SPY":
+        spx = _rth(_new_york(load_minute("SPX", start)))
+        mes = _new_york(load_minute("MES", start))
+        spx["volume"] = _rth(mes)["volume"].reindex(spx.index).fillna(0.0)
+        day = spx.index.normalize()
+        first = ~day.duplicated()
+        mes_close = _rth(mes)["close"].groupby(_rth(mes).index.normalize()).last()
+        mes_open = _rth(mes)["open"].groupby(_rth(mes).index.normalize()).first()
+        overnight = (mes_open / mes_close.shift(1)).reindex(day[first])
+        spx_close = spx["close"].groupby(day).last().shift(1).reindex(day[first])
+        implied = (spx_close * overnight).to_numpy()
+        opens = spx["open"].to_numpy().copy()
+        ok = np.isfinite(implied)
+        idx = np.flatnonzero(first)
+        opens[idx[ok]] = implied[ok]
+        spx["open"] = opens
+        spx["high"] = np.maximum(spx["high"], spx["open"])
+        spx["low"] = np.minimum(spx["low"], spx["open"])
+        return spx
+    if symbol == "QQQ":
+        nq = _rth(_new_york(load_minute("NQ", start)))
+        qqq = _rth(_new_york(load_minute("QQQ", start)))
+        switch = qqq.index.normalize().min()
+        nq = nq[nq.index < switch]
+        out = pd.concat([nq, qqq])
+        return out[~out.index.duplicated()]
+    return _rth(_new_york(load_minute(symbol, start)))

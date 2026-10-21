@@ -21,6 +21,8 @@ backtester/
   metrics.py       CAGR, Sharpe, Sortino, drawdown, turnover, cost drag, beta
   research.py      parameter sweeps, walk-forward tests, event studies
   intraday.py      day-trading simulators on minute bars (SPY/QQQ intraday momentum)
+  intraday_lab.py  intraday rule families (ORB, VWAP, gaps, noise area, crypto hours)
+                   on one minute-grid engine, with walk-forward selection
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   jump_trades.py   trade an asset after a sudden prediction-market move (hourly bars)
   ml/              signal combination: weekly feature panel from the strategies,
@@ -33,6 +35,7 @@ backtester/
     edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades,
                    earnings dates (8-K Item 2.02)
     alpaca.py      minute bars from Alpaca (free account) for intraday tests
+    minute_mirrors.py  free 1-minute S&P, MES, NQ/QQQ and BTC bars 2021-2026 (Hugging Face)
     thirteenf.py   hedge fund 13F holdings (SEC bulk data sets), CUSIP to ticker
     activists.py   Schedule 13D filings by known activists (EDGAR form index)
     sp500.py       S&P 500 membership history and dated adds and deletions
@@ -85,18 +88,26 @@ price so dollar costs stay realistic. `examples/run_spreads.py` compares costs,
 management rules, sizing and skew assumptions on a $5,000 account. The skew is
 the assumption that decides the answer, so real chain data is the next check.
 
-## Intraday strategies and Alpaca
+## Intraday strategies
 
 `backtester/intraday.py` simulates two intraday momentum rules on SPY or QQQ:
 the first-half-hour rule (Gao, Han, Li and Zhou 2018) and the noise-area
-breakout (Zarattini, Aziz and Barbon 2024). They need years of minute bars,
-and yfinance keeps only about 60 days, so:
+breakout (Zarattini, Aziz and Barbon 2024). `backtester/intraday_lab.py`
+adds rule families with parameter grids on one engine (fills one minute
+after the signal, costs per unit traded, flat at the close): end-of-day
+momentum, noise area, opening range breakout, VWAP trend, VWAP reversion,
+gap fade/follow, crypto hour-of-day, and the overnight/session split.
 
-> **To do: sign up for a free Alpaca account** at https://alpaca.markets
-> (paper trading is enough, no deposit), create a paper-trading API key, and
-> set `APCA_API_KEY_ID` and `APCA_API_SECRET_KEY`. Then
-> `python examples/run_intraday_momentum.py` loads 1-minute bars from 2016.
-> Without keys it runs on Yahoo's last 60 days, which only checks the plumbing.
+Minute bars come free from Hugging Face mirrors (`data/minute_mirrors.py`):
+a SPY stand-in from the cash S&P 500 index (Jun 2021 on), NQ futures
+(2024 to Jul 2025) and Binance BTC (Jun 2021 on). The QQQ stand-in splices in
+QQQ itself from Mar 2025, and ETH covers Dec 2024 to Nov 2025; those two are
+read from `KS_MINUTE_DIR` (the project's shared minute-data folder). With Alpaca keys
+(`APCA_API_KEY_ID`, `APCA_API_SECRET_KEY`, free paper account)
+`run_intraday_momentum.py` uses real SPY and QQQ bars from 2016 instead.
+
+    python examples/run_intraday_momentum.py      # the two paper rules
+    python examples/run_intraday_strategies.py    # all families, walk-forward, 2021-2025
 
 Day trading a margin account under $25,000 still runs into the pattern-day-trader
 rule at most brokers: the SEC approved removing it (effective June 4, 2026), but
@@ -124,6 +135,6 @@ and monthly learning-to-rank on the S&P 100 (`ml/rank.py`). Only the ETF
 meta-label filter beat its controls; see docs/README.md.
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
-intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
+yfinance intraday history is short (free 1-minute mirrors cover 2021-2026),
 there is no free options price history, and Yahoo returns only recent headlines, so
 sentiment needs to be collected going forward. Taxes are not modelled.
