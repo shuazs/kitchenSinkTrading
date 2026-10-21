@@ -12,6 +12,7 @@ prices, short crypto history), not forecasts.
 | [Strategy backtests on real data](https://claude.ai/artifact/DGHDmCB4QAUhNubmXSa4eq) | the above | `run_robustness.py` |
 | [Defined-risk options spreads](https://claude.ai/artifact/JCmkpwmNzN9XkAGzzbtdpo) | `strategies/spreads.py` | `run_spreads.py`, `fit_spy_skew.py` |
 | [More strategy ideas: research and forums](https://claude.ai/artifact/8y1EZth95owGPrFMepp5n2) | `strategies/vol_target.py`, `vix_term_structure.py`, `sector_rotation.py`, `turn_of_month.py` | `run_vol_target.py`, `run_vix_term_structure.py`, `run_sector_rotation.py`, `run_turn_of_month.py` |
+| [Academic strategy shortlist](https://claude.ai/artifact/Cr3Wy5dch15aHhypKRvSgo) | `strategies/crypto.py` (`EnsembleTrend`), `insider.py` (`classify_insiders`), `earnings.py`, `seasonality.py`, `intraday.py`, `data/alpaca.py` | `run_ensemble_trend.py`, `run_opportunistic_insider.py`, `run_earnings_premium.py`, `run_seasonality.py`, `run_intraday_momentum.py` |
 | [Crypto strategies and meme coin sentiment](https://claude.ai/artifact/G2XAGWzHpp7rkDpTdA8FzM) | `strategies/crypto.py`, `memecoin_calls.py`, `data/memecoins.py` | `run_crypto_strategies.py`, `run_memecoin_calls.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
@@ -52,6 +53,27 @@ did not raise its Sharpe. A 10% DOGE/SHIB breakout sleeve added about 2 points
 of CAGR. Following public pump.fun calls lost money in every realistic
 variant, and sentiment trading on new meme coin launches is not realistic to
 backtest or trade from a small account.
+
+**Academic strategy shortlist.** A literature search (replication studies:
+Jensen-Kelly-Pedersen, McLean-Pontiff, Chen-Velikov) found most stock
+anomalies net close to zero after costs and publication. Four picks were
+tested on real data with $5,000 and realistic costs:
+- *Ensemble crypto trend* (8 Donchian lookbacks, top 20 liquid coins,
+  volatility-sized): Sharpe 1.2 and -20% max drawdown since late 2018 at a
+  50% vol target, but only about 20% invested (20% CAGR); a 100% target gave
+  36% CAGR with -41% drawdown. BTC held: 38%, -77%. Walk-forward 12%, -9%.
+  Survivorship bias remains for coins Yahoo has dropped.
+- *Opportunistic insider buys*: opportunistic purchases had higher mean
+  excess returns than routine ones (+2.0% vs +1.4% over 60 days vs IWM),
+  but medians were negative, and no variant beat IWM after small-cap costs.
+  Dropping routine insiders did lift the cluster strategy from 3.5% to 6.9% CAGR.
+- *Earnings announcement premium* (8-K Item 2.02 dates, predicted a year
+  ahead): +0.34% per trade vs SPY in 2006-12, +0.20% in 2013-19, +0.15%
+  since 2020, gross. Costs take all of it: 11.4% CAGR vs SPY's 11.1%.
+- *Same-month seasonality* on sector and country ETFs: picks lagged the
+  equal-weight universe in every 5-year block; no edge with ETF-length history.
+- *Intraday SPY/QQQ momentum*: simulators built; real test waits on Alpaca
+  minute data (free account, see the README).
 
 **Large-account strategies scaled to $5k.** Which big-account strategies fit
 a $5,000 account, and how. Diversified trend following and leveraged risk
