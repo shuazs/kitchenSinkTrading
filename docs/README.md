@@ -1,6 +1,7 @@
 # Research write-ups
 
 The research behind this repo lives in project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -17,6 +18,7 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
+| [Kalshi minute signals for 0DTE](https://claude.ai/artifact/UEKZrhbdbKtC5f59sVmHig) | `kalshi_minute.py`, `data/minute_mirrors.py` | `run_kalshi_minute_leadlag.py` |
 | [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
 | [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
 | [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
@@ -126,6 +128,14 @@ Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
 edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
+
+**Kalshi minute signals for 0DTE.** Kalshi's hourly S&P, Nasdaq and BTC
+ladders lag the underlying at 1-10 minutes too: taker flow correlates 0.15
+with the previous minute and about 0 with the next. Extreme signals are right
+49-52% of the time, while a bought ATM 0DTE option needs 60-72% to break even;
+the out-of-sample option proxy loses in every variant. `minute_mirrors.py`
+loads free 1-minute SPX, MES, NQ and BTC bars from Hugging Face, which also
+unblocks intraday tests without Alpaca keys.
 
 **Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
 to Oct 2026) of intraday momentum, cross-asset, overnight BTC/Treasury,
