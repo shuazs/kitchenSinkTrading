@@ -8,6 +8,7 @@ from .mean_reversion import RSIMeanReversion
 from .sector_rotation import SectorRotation
 from .spreads import CreditSpreads
 from .trend_filter import TrendFilter
+from .trump import EventDip, GovStakeEvents, PostRiskOverlay
 from .turn_of_month import TurnOfMonth
 from .vix_term_structure import VixTermStructure
 from .vol_target import VolTarget
@@ -19,7 +20,10 @@ __all__ = [
     "CreditSpreads",
     "CrossSectionalMomentum",
     "DualMomentum",
+    "EventDip",
+    "GovStakeEvents",
     "InsiderCluster",
+    "PostRiskOverlay",
     "RSIMeanReversion",
     "SectorRotation",
     "Sleeves",

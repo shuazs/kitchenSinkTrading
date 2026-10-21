@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in five project docs on claude.ai (private
+The research behind this repo lives in six project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -13,6 +13,7 @@ prices, short crypto history), not forecasts.
 | [Defined-risk options spreads](https://claude.ai/artifact/JCmkpwmNzN9XkAGzzbtdpo) | `strategies/spreads.py` | `run_spreads.py`, `fit_spy_skew.py` |
 | [More strategy ideas: research and forums](https://claude.ai/artifact/8y1EZth95owGPrFMepp5n2) | `strategies/vol_target.py`, `vix_term_structure.py`, `sector_rotation.py`, `turn_of_month.py` | `run_vol_target.py`, `run_vix_term_structure.py`, `run_sector_rotation.py`, `run_turn_of_month.py` |
 | [Crypto strategies and meme coin sentiment](https://claude.ai/artifact/G2XAGWzHpp7rkDpTdA8FzM) | `strategies/crypto.py`, `memecoin_calls.py`, `data/memecoins.py` | `run_crypto_strategies.py`, `run_memecoin_calls.py` |
+| [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
 
 ## Summaries
 
@@ -50,3 +51,16 @@ did not raise its Sharpe. A 10% DOGE/SHIB breakout sleeve added about 2 points
 of CAGR. Following public pump.fun calls lost money in every realistic
 variant, and sentiment trading on new meme coin launches is not realistic to
 backtest or trade from a small account.
+
+**Trump-driven strategies.** Real-time trading of his posts is out of reach
+(institutions get them in milliseconds and prices often move first) and his
+disclosed holdings are mostly bonds reported weeks late, so three slow ideas
+were tested on daily bars with 52,534 posts (2017-2021 tweets, 2022-May 2026
+Truth Social). A tariff-post burst does not predict next-week SPY volatility
+(13.9% vs 14.5% annualised), and cutting UPRO's leverage after bursts barely
+moved Sharpe while doubling turnover. SPY drops of 1.5%+ on tariff-post days
+bounced +0.9% over 5 days vs +0.4% for other drops, but on 23 events with a
+Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
+edge. After 13 government equity stake reports the median stock gapped 13%
+before anyone could buy; holding 5 days from the first open made money in
+this small sample, but 20- and 60-day holds lost (median -4% and -17%).
