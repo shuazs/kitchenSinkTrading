@@ -6,12 +6,19 @@ from ..core import MarketData, Strategy
 def month_position(index: pd.DatetimeIndex) -> tuple[pd.Series, pd.Series]:
     """Trading day number from the start of the month (1 = first) and from
     the end (1 = last). Exchange holidays are published in advance, so
-    knowing which day is the month's last is not lookahead."""
-    s = pd.Series(1, index=index)
-    g = s.groupby(index.to_period("M"))
+    knowing which day is the month's last is not lookahead.
+
+    The data's final month is usually incomplete, so its remaining weekdays
+    are filled in; otherwise the last bar would always look like month end.
+    """
+    last = index[-1]
+    rest = pd.bdate_range(last + pd.Timedelta(days=1), last + pd.offsets.MonthEnd(0))
+    full = index.append(rest)
+    s = pd.Series(1, index=full)
+    g = s.groupby(full.to_period("M"))
     from_start = g.cumsum()
     from_end = g.transform("sum") - from_start + 1
-    return from_start, from_end
+    return from_start.iloc[: len(index)], from_end.iloc[: len(index)]
 
 
 class TurnOfMonth(Strategy):

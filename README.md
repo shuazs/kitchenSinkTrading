@@ -1,8 +1,8 @@
 # kitchenSinkTrading
 
 Research and backtesting of trading strategies for small, risk-tolerant retail
-accounts across stocks, options and crypto. The research shortlist that drives
-which strategies get built is in the project doc "Trading strategy research shortlist".
+accounts across stocks, options and crypto. The research write-ups behind each
+strategy, with links and short summaries, are in [docs/README.md](docs/README.md).
 
 ## Quick start
 

@@ -17,6 +17,13 @@ def test_month_position_counts_trading_days():
     assert end.loc["2024-01-30"] == 2 and start.loc["2024-02-06"] == 4
 
 
+
+def test_month_position_does_not_treat_last_bar_as_month_end():
+    idx = pd.bdate_range("2024-01-01", "2024-01-17")
+    start, end = month_position(idx)
+    assert end.iloc[-1] == 11  # Jan 17 to Jan 31 is 11 weekdays
+    assert start.iloc[-1] == 13
+
 def test_turn_of_month_holds_last_day_through_day_three():
     data = synthetic_market(["SPY"], n=120)
     res = Backtester(costs=FREE).run(TurnOfMonth(), data)
