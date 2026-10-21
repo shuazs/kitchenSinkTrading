@@ -4,5 +4,6 @@ from .breakout import Breakout
 from .dual_momentum import DualMomentum
 from .mean_reversion import RSIMeanReversion
 from .trend_filter import TrendFilter
+from .wheel import Wheel
 
-__all__ = ["BuyAndHold", "Breakout", "DualMomentum", "RSIMeanReversion", "TrendFilter"]
+__all__ = ["BuyAndHold", "Breakout", "DualMomentum", "RSIMeanReversion", "TrendFilter", "Wheel"]
