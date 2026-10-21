@@ -7,7 +7,7 @@ prices often move before the post (see docs/README.md for the research).
 PostRiskOverlay: cut a base strategy's exposure after a burst of posts on a
     topic (tariffs by default). Daily post counts go in
     `MarketData.extra[counts_key]` (see `backtester.data.trump_posts.daily_counts`).
-EventDip: buy an index ETF at the close of a sharp down day, optionally only
+EventDip: buy an index ETF at the open after a sharp down day, optionally only
     when he posted about tariffs that session (the "TACO" trade, from the FT's
     "Trump Always Chickens Out"), and hold a few days.
 GovStakeEvents: buy companies after the first report that the government is
@@ -61,7 +61,7 @@ class PostRiskOverlay(Strategy):
 
 
 class EventDip(Strategy):
-    """Buy `symbols` at the close of a session that fell at least `dip`, hold `hold` sessions.
+    """Buy `symbols` at the next open after a session that fell at least `dip`, hold `hold` sessions.
 
     event_key: name of a boolean date Series in `MarketData.extra` (e.g. "he
     posted about tariffs this session"). mode "require" buys only dips on

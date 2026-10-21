@@ -92,8 +92,10 @@ and yfinance keeps only about 60 days, so:
 > `python examples/run_intraday_momentum.py` loads 1-minute bars from 2016.
 > Without keys it runs on Yahoo's last 60 days, which only checks the plumbing.
 
-Day trading a margin account under $25,000 runs into the pattern-day-trader
-rule, so the realistic $5,000 setup is long-only in a cash account.
+Day trading a margin account under $25,000 still runs into the pattern-day-trader
+rule at most brokers: the SEC approved removing it (effective June 4, 2026), but
+brokers have until October 2027 to drop it. Until yours does, the realistic
+$5,000 setup is long-only in a cash account.
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
