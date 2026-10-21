@@ -24,6 +24,7 @@ backtester/
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
+    fx.py          currency total-return series (spot + interbank rates) for carry
     edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades
     thirteenf.py   hedge fund 13F holdings (SEC bulk data sets), CUSIP to ticker
     activists.py   Schedule 13D filings by known activists (EDGAR form index)

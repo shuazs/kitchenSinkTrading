@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in six project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -13,6 +13,7 @@ prices, short crypto history), not forecasts.
 | [Defined-risk options spreads](https://claude.ai/artifact/JCmkpwmNzN9XkAGzzbtdpo) | `strategies/spreads.py` | `run_spreads.py`, `fit_spy_skew.py` |
 | [More strategy ideas: research and forums](https://claude.ai/artifact/8y1EZth95owGPrFMepp5n2) | `strategies/vol_target.py`, `vix_term_structure.py`, `sector_rotation.py`, `turn_of_month.py` | `run_vol_target.py`, `run_vix_term_structure.py`, `run_sector_rotation.py`, `run_turn_of_month.py` |
 | [Crypto strategies and meme coin sentiment](https://claude.ai/artifact/G2XAGWzHpp7rkDpTdA8FzM) | `strategies/crypto.py`, `memecoin_calls.py`, `data/memecoins.py` | `run_crypto_strategies.py`, `run_memecoin_calls.py` |
+| [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 
 ## Summaries
@@ -51,6 +52,22 @@ did not raise its Sharpe. A 10% DOGE/SHIB breakout sleeve added about 2 points
 of CAGR. Following public pump.fun calls lost money in every realistic
 variant, and sentiment trading on new meme coin launches is not realistic to
 backtest or trade from a small account.
+
+**Large-account strategies scaled to $5k.** Which big-account strategies fit
+a $5,000 account, and how. Diversified trend following and leveraged risk
+parity rank highest (built from the fund-strategies research). The $25,000
+pattern-day-trader minimum was removed (SEC approval April 2026, effective
+June 4, 2026; brokers have until October 2027). Portfolio-margin option
+selling, futures books, covered-call portfolios and box spreads do not scale
+down. Three were tested here. G10 + MXN currency carry (2 long, 2 short, 10%
+volatility target) made 5.7% CAGR since 2005 with a -23% drawdown, but needs
+about 2.3x gross exposure, more than one micro FX contract per leg allows on
+$5k; adding a 3-month trend filter made it worse. Crypto cash-and-carry on
+the CME basis made about 3% a year since 2021, below T-bills, because a
+quarter of the account sits as margin and Yahoo's futures and spot closes are
+too far apart in time to measure the basis cleanly. Top-10 S&P 100 momentum
+made 22% CAGR since 2007 against 15.7% for an equal-weight basket of the same
+(survivor-biased) names; fully hedging it with SH left 4.3%.
 
 **Fund strategies for a $5k account.** What CTAs, hedge funds, risk-parity
 and event-driven desks run, rebuilt with ETFs and public SEC data. Multi-asset
