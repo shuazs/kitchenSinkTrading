@@ -19,13 +19,16 @@ python examples/run_trend_filter.py   # real data, needs Yahoo + FRED access
 backtester/
   core.py          MarketData, Strategy base class, CostModel, Backtester
   metrics.py       CAGR, Sharpe, Sortino, drawdown, turnover, cost drag, beta
-  research.py      parameter sweeps and walk-forward tests
+  research.py      parameter sweeps, walk-forward tests, event studies
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
     fx.py          currency total-return series (spot + interbank rates) for carry
     edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades
+    thirteenf.py   hedge fund 13F holdings (SEC bulk data sets), CUSIP to ticker
+    activists.py   Schedule 13D filings by known activists (EDGAR form index)
+    sp500.py       S&P 500 membership history and dated adds and deletions
     sentiment.py   FinBERT headline scores, aligned to when news was public
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
     synthetic.py   random-walk prices for tests

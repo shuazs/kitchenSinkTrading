@@ -1,7 +1,9 @@
-"""Parameter sweeps and walk-forward tests, with the overfitting caveats built in."""
+"""Parameter sweeps, walk-forward tests and event studies, with the overfitting caveats built in."""
 from __future__ import annotations
 
 import itertools
+
+import numpy as np
 
 import pandas as pd
 
@@ -61,3 +63,47 @@ def walk_forward(
     equity = pd.concat(curves)
     equity = equity[~equity.index.duplicated(keep="last")]
     return equity, pd.DataFrame(picks)
+
+
+def event_study(data: MarketData, events: pd.DataFrame, horizons=(5, 21, 63, 126), benchmark: str | None = None, shift: int = 1) -> pd.DataFrame:
+    """Return of each event's stock from the open `shift` trading days after
+    the event's signal day (1 = the next open, as the engine would trade;
+    negative values start before the event, which only a forecaster could
+    do) to the close `h` trading days later, for each horizon `h`.
+
+    `events` needs columns date and symbol. With `benchmark`, adds the same
+    window's benchmark return and the excess ("abnormal") return. Events
+    whose window runs past the data are left as NaN for that horizon.
+    """
+    idx = data.index
+    opens = data.field("open")
+    closes = data.field("close").ffill()
+    rows = []
+    for e in events.itertuples():
+        if e.symbol not in data.bars:
+            continue
+        i = idx.searchsorted(pd.Timestamp(e.date)) + shift
+        if i < 0 or i >= len(idx) or pd.isna(opens.at[idx[i], e.symbol]):
+            continue
+        row = {"date": e.date, "symbol": e.symbol}
+        for h in horizons:
+            j = i + h - 1
+            if j >= len(idx):
+                continue
+            row[f"r{h}"] = closes.iat[j, closes.columns.get_loc(e.symbol)] / opens.at[idx[i], e.symbol] - 1
+            if benchmark:
+                b = closes[benchmark].iat[j] / opens[benchmark].iat[i] - 1
+                row[f"x{h}"] = row[f"r{h}"] - b
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def summarize_events(study: pd.DataFrame) -> pd.DataFrame:
+    """Mean, median, hit rate and t-stat for each return column of `event_study`."""
+    cols = [c for c in study.columns if c[0] in "rx" and c[1:].isdigit()]
+    out = {}
+    for c in cols:
+        s = study[c].dropna()
+        out[c] = {"n": len(s), "mean": s.mean(), "median": s.median(), "hit_rate": (s > 0).mean(),
+                  "t": s.mean() / (s.std() / np.sqrt(len(s))) if len(s) > 1 else np.nan}
+    return pd.DataFrame(out).T
