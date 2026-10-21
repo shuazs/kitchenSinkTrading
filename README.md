@@ -2,7 +2,9 @@
 
 Research and backtesting of trading strategies for small, risk-tolerant retail
 accounts across stocks, options and crypto. The research write-ups behind each
-strategy, with links and short summaries, are in [docs/README.md](docs/README.md).
+strategy, with links and short summaries, are in [docs/README.md](docs/README.md). A short reference guide to the code
+(engine, strategy catalog, data, scripts, tests) is in [docs/guide/](docs/guide/);
+start there before reading source.
 
 ## Quick start
 
