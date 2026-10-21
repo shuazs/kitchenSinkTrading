@@ -1,7 +1,8 @@
-from statistics import NormalDist
-
 import numpy as np
 import pandas as pd
+import pytest
+
+norm = pytest.importorskip("scipy.stats").norm
 
 from backtester import kalshi_minute as km
 
@@ -22,7 +23,7 @@ def test_trade_implied_recovers_spot_from_consistent_prices():
         if tau > 60:
             continue
         K = round(close[t] / 5) * 5 + 5
-        p = NormalDist().cdf(np.log(close[t] / K) / (sig[t] * np.sqrt(tau)))
+        p = norm.cdf(np.log(close[t] / K) / (sig[t] * np.sqrt(tau)))
         tick = f"KXINXU-25MAR04H1700-T{K}"
         mk.append({"ticker": tick, "yes_sub_title": f"{K} or above", "close_time": close_time})
         rows.append({"ticker": tick, "count": 10, "yes_price": p * 100, "taker_side": "yes",
