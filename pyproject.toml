@@ -1,0 +1,20 @@
+[project]
+name = "kitchensink-backtester"
+version = "0.1.0"
+description = "Pluggable backtesting engine for retail trading strategy research"
+requires-python = ">=3.10"
+dependencies = ["numpy", "pandas", "requests", "yfinance"]
+
+[project.optional-dependencies]
+sentiment = ["transformers", "torch"]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["backtester*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
