@@ -134,4 +134,7 @@ Neither net beat ridge and equal weight by the 0.2 Sharpe bar on ETFs
 stocks, staying long with the same sizing beat every model, and the existing
 strategies (MultiAssetTrend, EnsembleTrend, top-10 momentum) matched or beat
 them all. The locked holdout from July 2024 agreed. Weekly rank correlation
-of the forecasts with next week's return was at most about 0.05.
+of the forecasts with next week's return was at most about 0.05. Adding nine
+weekly Kalshi features (CPI, payrolls, Fed and recession contracts) did not
+reliably help: forecast accuracy did not improve, and the LSTM's Sharpe gains
+were about as large as with the Kalshi data shuffled in time.
