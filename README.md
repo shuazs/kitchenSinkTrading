@@ -24,6 +24,7 @@ backtester/
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
+    fx.py          currency total-return series (spot + interbank rates) for carry
     edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades
     sentiment.py   FinBERT headline scores, aligned to when news was public
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
