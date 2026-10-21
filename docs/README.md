@@ -19,6 +19,7 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
+| [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
 
 ## Summaries
 
@@ -124,3 +125,13 @@ Welch t of 0.47 and the same 61% hit rate; the TACO filter is not a reliable
 edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
+
+**Trading Kalshi off stock moves.** Kalshi's hourly S&P, Nasdaq, BTC and ETH
+ladders lag the underlying at the hourly scale, but at 1-minute resolution
+their prints already price in the last minute's move. Buying the contract
+whose last ask had not caught up after a sharp move (Oct 2024 to Jan 2026,
+fees, bid/ask from trade prints, fills capped at printed size) lost on BTC
+(t about -3 over ~1,800 fills: bots take it), was noise on ETH and the
+Nasdaq-100, and made about $3,000 on the S&P 500 after 2-minute moves
+(t 2.0, positive in both halves) on small fills, median 80 contracts. Fed
+contracts traded off 2-year Treasury futures moves had no edge after costs.
