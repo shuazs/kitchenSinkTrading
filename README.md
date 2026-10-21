@@ -22,6 +22,7 @@ backtester/
   research.py      parameter sweeps, walk-forward tests, event studies
   intraday.py      day-trading simulators on minute bars (SPY/QQQ intraday momentum)
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
+  jump_trades.py   trade an asset after a sudden prediction-market move (hourly bars)
   ml/              signal combination: weekly feature panel from the strategies,
                    purged walk-forward folds, equal weight / ridge / LightGBM /
                    MLP / LSTM models, Deflated Sharpe
@@ -40,6 +41,7 @@ backtester/
     trump_posts.py Trump's tweets (2017-2021) and Truth Social posts, daily topic counts
     gov_stakes.py  US government equity stakes in listed companies, by first report
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
+    polymarket.py  Polymarket fill history (Hugging Face) and live odds, Iran escalation index
     synthetic.py   random-walk prices for tests
   strategies/      one file per plug-in strategy
 ```
