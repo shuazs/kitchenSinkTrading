@@ -136,5 +136,6 @@ strategies (MultiAssetTrend, EnsembleTrend, top-10 momentum) matched or beat
 them all. The locked holdout from July 2024 agreed. Weekly rank correlation
 of the forecasts with next week's return was at most about 0.05. Adding nine
 weekly Kalshi features (CPI, payrolls, Fed and recession contracts) did not
-reliably help: forecast accuracy did not improve, and the LSTM's Sharpe gains
-were about as large as with the Kalshi data shuffled in time.
+reliably help: forecast accuracy did not improve, other models moved either
+way by up to 0.5 Sharpe, and the LSTM's gains (better than time-shuffled
+Kalshi data in 4 of 6 checks) are a weak lead to recheck with more data.
