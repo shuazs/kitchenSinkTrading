@@ -36,6 +36,7 @@ backtester/
     activists.py   Schedule 13D filings by known activists (EDGAR form index)
     sp500.py       S&P 500 membership history and dated adds and deletions
     sentiment.py   FinBERT headline scores, aligned to when news was public
+    kalshi.py      weekly Kalshi prediction-market features (CPI, payrolls, Fed, recession)
     trump_posts.py Trump's tweets (2017-2021) and Truth Social posts, daily topic counts
     gov_stakes.py  US government equity stakes in listed companies, by first report
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
@@ -109,6 +110,9 @@ small MLP and an LSTM Deep Momentum Network, all on the same purged
 walk-forward folds, sizing (`SignalBlend`) and costs, with a locked holdout
 from July 2024. `python examples/run_signal_blend.py` prints the comparison
 and the pass criteria from the design doc (needs `pip install -e ".[ml]"`).
+`examples/run_signal_blend_kalshi.py` reruns it with nine weekly Kalshi
+prediction-market features added (`data/kalshi.py`; the daily file comes from
+the Kalshi research and is read from disk).
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),

@@ -31,8 +31,15 @@ class Scaler:
 
 
 class Model:
+    """features: columns to learn from (default FEATURES; pass FEATURES plus
+    extra columns to test new inputs on the same panel)."""
+
     name = "model"
     features = FEATURES
+
+    def __init__(self, features=None):
+        if features is not None:
+            self.features = list(features)
 
     def _rows(self, panel: pd.DataFrame, dates, labelled: bool = True) -> pd.DataFrame:
         rows = panel[panel.index.get_level_values("date").isin(dates)]
@@ -144,7 +151,8 @@ class MLP(Model):
     name = "mlp"
 
     def __init__(self, hidden=(32, 16), seeds: int = 10, epochs: int = 100, patience: int = 10,
-                 lr: float = 1e-3, weight_decay: float = 1e-3, dropout: float = 0.1, batch: int = 1024):
+                 lr: float = 1e-3, weight_decay: float = 1e-3, dropout: float = 0.1, batch: int = 1024, features=None):
+        super().__init__(features)
         self.hidden, self.seeds, self.epochs, self.patience = hidden, seeds, epochs, patience
         self.lr, self.wd, self.dropout, self.batch = lr, weight_decay, dropout, batch
 
@@ -224,7 +232,8 @@ class LSTMMomentum(Model):
     name = "lstm"
 
     def __init__(self, hidden: int = 16, window: int = 26, seeds: int = 5, epochs: int = 100, patience: int = 10,
-                 lr: float = 1e-3, dropout: float = 0.1, batch: int = 64, turnover_penalty: float = 0.1):
+                 lr: float = 1e-3, dropout: float = 0.1, batch: int = 64, turnover_penalty: float = 0.1, features=None):
+        super().__init__(features)
         self.hidden, self.window, self.seeds, self.epochs, self.patience = hidden, window, seeds, epochs, patience
         self.lr, self.dropout, self.batch, self.turnover_penalty = lr, dropout, batch, turnover_penalty
 

@@ -139,9 +139,12 @@ def market_features(data: MarketData, index: pd.DatetimeIndex) -> pd.DataFrame:
     return out
 
 
-def build_panel(data: MarketData, symbols, clip_target: float = 3.0) -> pd.DataFrame:
+def build_panel(data: MarketData, symbols, clip_target: float = 3.0, extra: pd.DataFrame | None = None) -> pd.DataFrame:
     """Weekly (date, symbol) panel of FEATURES plus `ret` (raw next-week
     return) and `target` (ret over trailing weekly vol, clipped).
+
+    extra: optional market-wide features indexed by week-end date (for
+    example data.kalshi.weekly_features); joined on date, missing weeks = 0.
 
     Rows exist once a symbol has every per-asset feature; the final week's
     `ret` and `target` are NaN because that week has not happened yet.
@@ -170,4 +173,7 @@ def build_panel(data: MarketData, symbols, clip_target: float = 3.0) -> pd.DataF
     mkt = market_features(data, weeks)
     panel = panel.join(mkt, on="date")
     panel[list(MARKET_FEATURES)] = panel[list(MARKET_FEATURES)].fillna(0.0)
+    if extra is not None:
+        panel = panel.join(extra.reindex(weeks), on="date")
+        panel[list(extra.columns)] = panel[list(extra.columns)].fillna(0.0)
     return panel.replace([np.inf, -np.inf], np.nan).dropna(subset=FEATURES)

@@ -148,3 +148,30 @@ def test_deflated_sharpe_falls_with_more_trials():
     one, many = deflated_sharpe(r, 1), deflated_sharpe(r, 100)
     assert 0 <= many < one <= 1
     assert one > 0.9
+
+
+def test_kalshi_weekly_features_sum_changes_and_lag():
+    from backtester.data.kalshi import KALSHI_FEATURES, weekly_features
+
+    days = pd.date_range("2023-01-02", "2023-01-20", freq="D")
+    daily = pd.DataFrame({"cpi_chg": 0.0, "recession_p": 0.3}, index=days)
+    daily.loc["2023-01-05", "cpi_chg"] = 2.0
+    daily.loc["2023-01-13", "cpi_chg"] = 50.0  # clipped to 10
+    daily.loc["2023-01-13":, "recession_p"] = 0.5  # from a Friday on: lagged into the next week
+    weeks = pd.DatetimeIndex(["2022-12-30", "2023-01-06", "2023-01-13", "2023-01-20", "2023-03-31"])
+    w = weekly_features(daily, weeks)
+    assert list(w.columns) == KALSHI_FEATURES
+    assert w.loc["2023-01-06", "k_cpi"] == 2.0
+    assert w.loc["2023-01-13", "k_cpi"] == 0.0 and w.loc["2023-01-20", "k_cpi"] == 10.0
+    assert w.loc["2023-01-13", "k_recession_p"] == 0.3 and w.loc["2023-01-20", "k_recession_chg"] == pytest.approx(0.2)
+    assert w.loc[["2022-12-30", "2023-03-31"]].isna().all().all()  # outside the file's history
+
+
+def test_extra_features_join_the_panel_and_models_can_use_them(market, panel):
+    weeks = panel.index.get_level_values("date").unique()
+    extra = pd.DataFrame({"x_new": np.arange(len(weeks), dtype=float)}, index=weeks)
+    p = build_panel(market, SYMS, extra=extra.iloc[::2])  # every other week missing -> 0
+    assert "x_new" in p and (p["x_new"] == 0).any() and p["x_new"].notna().all()
+    folds = walk_forward_folds(p.index.get_level_values("date"), "2019-01-01", "2019-12-31")
+    m = RidgeModel(features=FEATURES + ["x_new"]).fit(p, folds[0])
+    assert m.model.coef_.shape == (len(FEATURES) + 1,)
