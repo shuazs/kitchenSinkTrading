@@ -7,7 +7,7 @@ strategy, with links and short summaries, are in [docs/README.md](docs/README.md
 ## Quick start
 
 ```bash
-pip install -e ".[dev]"          # add ,sentiment for FinBERT
+pip install -e ".[dev]"          # add ,sentiment for FinBERT, ,ml for the model contest
 pytest                            # engine tests on synthetic data
 python examples/synthetic_demo.py # offline demo; random walks, no real edge
 python examples/run_trend_filter.py   # real data, needs Yahoo + FRED access
@@ -22,6 +22,9 @@ backtester/
   research.py      parameter sweeps, walk-forward tests, event studies
   intraday.py      day-trading simulators on minute bars (SPY/QQQ intraday momentum)
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
+  ml/              signal combination: weekly feature panel from the strategies,
+                   purged walk-forward folds, equal weight / ridge / LightGBM /
+                   MLP / LSTM models, Deflated Sharpe
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
@@ -33,6 +36,7 @@ backtester/
     activists.py   Schedule 13D filings by known activists (EDGAR form index)
     sp500.py       S&P 500 membership history and dated adds and deletions
     sentiment.py   FinBERT headline scores, aligned to when news was public
+    kalshi.py      weekly Kalshi prediction-market features (CPI, payrolls, Fed, recession)
     trump_posts.py Trump's tweets (2017-2021) and Truth Social posts, daily topic counts
     gov_stakes.py  US government equity stakes in listed companies, by first report
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
@@ -96,6 +100,19 @@ Day trading a margin account under $25,000 still runs into the pattern-day-trade
 rule at most brokers: the SEC approved removing it (effective June 4, 2026), but
 brokers have until October 2027 to drop it. Until yours does, the realistic
 $5,000 setup is long-only in a cash account.
+
+## Combining signals with machine learning
+
+`backtester/ml/` turns the strategies' signals into one weekly feature panel
+(trend, breakout, cross-sectional momentum, volatility, calendar, VIX term
+structure, yield curve) and runs a contest: equal weight, ridge, LightGBM, a
+small MLP and an LSTM Deep Momentum Network, all on the same purged
+walk-forward folds, sizing (`SignalBlend`) and costs, with a locked holdout
+from July 2024. `python examples/run_signal_blend.py` prints the comparison
+and the pass criteria from the design doc (needs `pip install -e ".[ml]"`).
+`examples/run_signal_blend_kalshi.py` reruns it with nine weekly Kalshi
+prediction-market features added (`data/kalshi.py`; the daily file comes from
+the Kalshi research and is read from disk).
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),

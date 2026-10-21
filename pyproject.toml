@@ -7,6 +7,7 @@ dependencies = ["numpy", "pandas", "requests", "yfinance"]
 
 [project.optional-dependencies]
 sentiment = ["transformers", "torch"]
+ml = ["scikit-learn", "lightgbm", "torch", "scipy"]
 dev = ["pytest"]
 
 [build-system]
