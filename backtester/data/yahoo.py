@@ -48,8 +48,10 @@ def headlines(symbol: str) -> pd.DataFrame:
     so collect these on a schedule to build a history for backtesting."""
     import yfinance as yf
 
+    # Ticker.news has come back empty in recent yfinance releases; Search still works.
+    items = yf.Ticker(symbol).news or yf.Search(symbol, news_count=50).news or []
     rows = []
-    for item in yf.Ticker(symbol).news or []:
+    for item in items:
         c = item.get("content", item)
         rows.append(
             {

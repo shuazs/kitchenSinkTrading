@@ -130,6 +130,9 @@ class Backtester:
     max_leverage: gross exposure cap as a multiple of equity.
     cash_rate: annual rate earned on idle cash, a float or a daily Series
         (e.g. FRED DTB3 / 100). Negative cash is charged the same rate.
+    rebalance: "on_change" trades only when the target weights change, so
+        positions drift with prices in between; "daily" trades back to the
+        targets every bar, which pays costs on drift.
     """
 
     def __init__(
@@ -141,6 +144,7 @@ class Backtester:
         allow_short: bool = False,
         max_leverage: float = 1.0,
         cash_rate: float | pd.Series = 0.0,
+        rebalance: str = "on_change",
     ) -> None:
         self.initial_capital = initial_capital
         self.costs = costs if costs is not None else COSTS["etf"]
@@ -149,6 +153,9 @@ class Backtester:
         self.allow_short = allow_short
         self.max_leverage = max_leverage
         self.cash_rate = cash_rate
+        if rebalance not in ("on_change", "daily"):
+            raise ValueError("rebalance must be 'on_change' or 'daily'")
+        self.rebalance = rebalance
 
     def _cost_model(self, symbol: str) -> CostModel:
         if isinstance(self.costs, dict):
@@ -172,6 +179,11 @@ class Backtester:
         targets = targets.reindex(columns=symbols).reindex(data.index).ffill().reindex(idx)
         if not self.allow_short:
             targets = targets.clip(lower=0)
+        if self.rebalance == "on_change":
+            filled = targets.fillna(0.0)
+            changed = filled.ne(filled.shift()).any(axis=1)
+            changed.iloc[0] = targets.iloc[0].notna().any()
+            targets = targets.where(changed, np.nan)
         # Signal formed at close t executes at open t+1.
         orders = targets.shift(1)
 

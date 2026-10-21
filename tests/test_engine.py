@@ -108,3 +108,12 @@ def test_sweep_and_walk_forward():
     assert table.attrs["n_variants"] == 4
     equity, picks = walk_forward(Breakout, {"entry": [10, 20]}, data, bt, train_years=3, test_years=1, exit=10)
     assert len(picks) >= 3 and equity.index.is_monotonic_increasing
+
+
+def test_on_change_skips_drift_trades():
+    data = synthetic_market(["A", "B"], n=300)
+    hold = BuyAndHold()
+    on_change = Backtester(costs=FREE).run(hold, data)
+    daily = Backtester(costs=FREE, rebalance="daily").run(hold, data)
+    assert len(on_change.trades) == 2
+    assert len(daily.trades) > 100

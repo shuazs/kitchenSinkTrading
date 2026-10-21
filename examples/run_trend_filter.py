@@ -21,4 +21,5 @@ runs = {
 }
 table = pd.DataFrame({name: bt.run(s, data).stats(benchmark=spy) for name, s in runs.items()})
 pd.set_option("display.float_format", "{:.3f}".format)
+pd.set_option("display.max_columns", None)
 print(table)
