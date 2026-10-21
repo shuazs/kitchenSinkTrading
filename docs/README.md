@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in five project docs on claude.ai (private
+The research behind this repo lives in six project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -13,6 +13,7 @@ prices, short crypto history), not forecasts.
 | [Defined-risk options spreads](https://claude.ai/artifact/JCmkpwmNzN9XkAGzzbtdpo) | `strategies/spreads.py` | `run_spreads.py`, `fit_spy_skew.py` |
 | [More strategy ideas: research and forums](https://claude.ai/artifact/8y1EZth95owGPrFMepp5n2) | `strategies/vol_target.py`, `vix_term_structure.py`, `sector_rotation.py`, `turn_of_month.py` | `run_vol_target.py`, `run_vix_term_structure.py`, `run_sector_rotation.py`, `run_turn_of_month.py` |
 | [Crypto strategies and meme coin sentiment](https://claude.ai/artifact/G2XAGWzHpp7rkDpTdA8FzM) | `strategies/crypto.py`, `memecoin_calls.py`, `data/memecoins.py` | `run_crypto_strategies.py`, `run_memecoin_calls.py` |
+| [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 
 ## Summaries
 
@@ -50,3 +51,21 @@ did not raise its Sharpe. A 10% DOGE/SHIB breakout sleeve added about 2 points
 of CAGR. Following public pump.fun calls lost money in every realistic
 variant, and sentiment trading on new meme coin launches is not realistic to
 backtest or trade from a small account.
+
+**Fund strategies for a $5k account.** What CTAs, hedge funds, risk-parity
+and event-driven desks run, rebuilt with ETFs and public SEC data. Multi-asset
+ETF trend (15 ETFs plus BTC, vol-scaled, inverse ETFs for shorts) made 6.9%/yr
+since mid-2007 with a -18% worst drawdown, +39% in 2008 and +5% in 2022, and
+beat DBMF and KMLM on Sharpe over their lives. 50% SSO plus 50% trend made
+16.3% against SPY's 15.1% since 2009 at the same Sharpe. Pension month-end
+rebalancing is the strongest new signal: after bonds beat stocks month to
+date, SPY rose 1.1% on average over the month's last 4 days (t = 3.1, similar
+in both halves of the sample); holding SSO then lifted SPY from 11.1% to
+13.4%/yr since 2006. Leveraged risk parity with 3x ETFs made 10%/yr since
+2010, behind SPY, and lost 23% in 2022 unless a 200-day trend filter was on.
+The 13F best-ideas clone (top 3 holdings of 300-900 concentrated managers,
+15 stocks, quarterly) made 15.8%/yr since late 2013 against SPY's 13.8%, but
+QQQ made 19% with a better Sharpe, and the clone fell 38% in 2022. Activist
+13D targets beat IWM by 2.8% in the first month after filing, but there are
+only about 16 a year, so a 5-slot book made about 2%/yr. S&P 500 additions
+and deletions left nothing tradeable from free data.

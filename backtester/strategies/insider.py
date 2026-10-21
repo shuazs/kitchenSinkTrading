@@ -30,6 +30,7 @@ import numpy as np
 import pandas as pd
 
 from ..core import MarketData, Strategy
+from .events import hold_events, liquid
 
 
 def cluster_signals(
@@ -148,59 +149,13 @@ class InsiderCluster(Strategy):
         return ev[ev["symbol"].isin(data.symbols)]
 
     def generate_targets(self, data: MarketData) -> pd.DataFrame:
-        idx = data.index
-        syms = data.symbols
-        col = {s: j for j, s in enumerate(syms)}
-        close = data.field("close")
-        dollar_vol = (close * data.field("volume")).rolling(20, min_periods=10).median()
-        close_a = close.ffill().to_numpy(float)
-        ok = ((close >= self.p["min_price"]) & (dollar_vol >= self.p["min_dollar_volume"])).to_numpy()
-
-        # Signal day = first trading day on or after the filing date.
-        ev = self.events(data).copy()
-        ev["day"] = idx.searchsorted(ev["filed"].to_numpy(), side="left")
+        ok = liquid(data, self.p["min_price"], self.p["min_dollar_volume"])
         # When more clusters fire than there are free slots, prefer more
         # insiders, then more dollars (both stronger signals in the papers).
-        ev = ev[ev["day"] < len(idx)].sort_values(
-            ["day", "n_insiders", "value"], ascending=[True, False, False]
+        ev = self.events(data).rename(columns={"filed": "date"})
+        w, taken = hold_events(
+            data, ev, self.p["hold_days"], self.p["max_positions"], ok,
+            sort_by=("n_insiders", "value"), extra_cols=("n_insiders", "value"),
         )
-        by_day = {d: g for d, g in ev.groupby("day")}
-
-        k, hold = self.p["max_positions"], self.p["hold_days"]
-        weights = np.zeros((len(idx), len(syms)))
-        held: dict[int, int] = {}  # column -> exit day
-        value = np.zeros(len(syms))  # shadow book, starts at 1.0 in cash
-        cash = 1.0
-        self.taken = []
-        for i in range(len(idx)):
-            changed = False
-            if i > 0 and held:
-                cols = list(held)
-                r = close_a[i, cols] / close_a[i - 1, cols]
-                value[cols] *= np.where(np.isfinite(r), r, 1.0)
-            for j in [j for j, out in held.items() if i >= out]:
-                cash += value[j]
-                value[j] = 0.0
-                del held[j]
-                changed = True
-            if i in by_day:
-                for e in by_day[i].itertuples():
-                    if len(held) >= k:
-                        break
-                    j = col[e.symbol]
-                    if j in held or not ok[i, j]:
-                        continue
-                    alloc = min((cash + value.sum()) / k, cash)
-                    if alloc <= 0:
-                        break
-                    cash -= alloc
-                    value[j] = alloc
-                    held[j] = i + hold
-                    changed = True
-                    self.taken.append((idx[i], e.symbol, e.n_insiders, e.value))
-            if changed or i == 0:
-                weights[i] = value / (cash + value.sum())
-            else:
-                weights[i] = weights[i - 1]
-        self.taken = pd.DataFrame(self.taken, columns=["signal_day", "symbol", "n_insiders", "value"])
-        return pd.DataFrame(weights, index=idx, columns=syms)
+        self.taken = taken
+        return w

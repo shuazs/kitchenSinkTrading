@@ -132,3 +132,18 @@ def test_sortino_uses_downside_deviation():
     ppy = _periods_per_year(idx)
     expected = rets.mean() * ppy / (np.sqrt((rets.clip(upper=0) ** 2).mean()) * np.sqrt(ppy))
     assert summary(res)["sortino"] == pytest.approx(expected)
+
+
+def test_order_waits_for_a_symbol_without_a_bar():
+    """An order formed on a day the symbol does not trade (e.g. a crypto
+    weekend in a mixed ETF + crypto book) fills at the symbol's next open."""
+    from backtester.strategies import BuyAndHold
+
+    idx = pd.date_range("2024-01-01", periods=20, freq="D")
+    bars = pd.DataFrame({"open": 100.0, "high": 100.0, "low": 100.0, "close": 100.0, "volume": 1.0}, index=idx)
+    weekdays = bars[bars.index.dayofweek < 5]
+    data = MarketData({"ETF": weekdays, "COIN": bars})
+    # Starting on a Friday puts the first fill on Saturday, when the ETF is closed.
+    res = Backtester(costs=CostModel(spread_bps=0, slippage_bps=0)).run(BuyAndHold(symbols=["ETF"]), data, start="2024-01-05")
+    assert res.trades["date"].iloc[0] == pd.Timestamp("2024-01-08")
+    assert res.positions["ETF"].iloc[-1] > 0
