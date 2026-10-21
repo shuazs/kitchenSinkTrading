@@ -126,6 +126,42 @@ def parse_form4(cik: int, accession: str, primary_doc: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def submissions(ticker: str, refresh: bool = False) -> pd.DataFrame:
+    """Every filing a company has made: the recent list plus the older pages
+    the submissions API splits off (about 1,000 filings per page)."""
+    cik = ticker_to_cik()[ticker.upper()]
+    sub = _cached_json(f"subs_{cik}.json", f"https://data.sec.gov/submissions/CIK{cik:010d}.json", refresh)
+    pages = [pd.DataFrame(sub["filings"]["recent"])]
+    for f in sub["filings"].get("files", []):
+        pages.append(pd.DataFrame(_cached_json(f["name"], f"https://data.sec.gov/submissions/{f['name']}", refresh)))
+    df = pd.concat(pages, ignore_index=True)
+    df["cik"] = cik
+    df["filingDate"] = pd.to_datetime(df["filingDate"])
+    return df
+
+
+def earnings_dates(ticker: str, refresh: bool = False) -> pd.DataFrame:
+    """Earnings release dates from 8-K filings with Item 2.02 (Results of
+    Operations), which companies file the day they report (Item 12 before
+    August 2004, so history starts there).
+
+    `date` is the first trading session that could react: the filing date if
+    the SEC accepted it before 16:00 New York time, else the next weekday.
+    Columns: date, filed, accepted (New York time).
+    """
+    df = submissions(ticker, refresh)
+    items = df["items"].fillna("").astype(str)
+    df = df[(df["form"] == "8-K") & items.str.contains(r"\b2\.02\b")]
+    accepted = pd.to_datetime(df["acceptanceDateTime"], utc=True).dt.tz_convert("America/New_York").dt.tz_localize(None)
+    after_close = accepted.dt.hour >= 16
+    day = df["filingDate"].where(~after_close, df["filingDate"] + pd.offsets.BDay(1))
+    out = pd.DataFrame({"date": day.values, "filed": df["filingDate"].values, "accepted": accepted.values})
+    # Some companies file a second 2.02 8-K the same week (e.g. a correction).
+    out = out.sort_values("date").drop_duplicates("date")
+    out = out[out["date"].diff().dt.days.fillna(999) > 20]
+    return out.reset_index(drop=True)
+
+
 def insider_trades(ticker: str, since: str = "2015-01-01") -> pd.DataFrame:
     """All open-market insider buys and sells with their filing date."""
     filings = insider_filings(ticker)

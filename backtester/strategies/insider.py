@@ -17,6 +17,12 @@ total. Because the window runs on FILING dates and the signal is formed at the
 close of the filing day (or the next trading day if it was a holiday), the
 engine buys at the next open: nothing is used before it was public.
 
+`trader_types=("opportunistic",)` keeps only purchases by insiders that
+`classify_insiders` labels opportunistic (traded in each of the last three
+years, but not in the same month every year), following Cohen, Malloy and
+Pomorski. That needs sales as well as purchases, and three years of history
+before the first signal.
+
 Positions are held `hold_days` trading days in up to `max_positions` slots of
 1/max_positions of equity each (or the cash left, if less). Held positions are
 left to drift: targets only change on entry/exit days, and then carry each
@@ -30,6 +36,38 @@ import numpy as np
 import pandas as pd
 
 from ..core import MarketData, Strategy
+from .events import hold_events, liquid
+
+
+def classify_insiders(trades: pd.DataFrame, years: int = 3) -> pd.DataFrame:
+    """Add `trader_type` to each trade: routine, opportunistic or unclassified.
+
+    Cohen, Malloy and Pomorski (2012): at the start of each year, an insider
+    who traded (bought or sold) in each of the previous `years` calendar
+    years is classified. If some calendar month appears in all of those
+    years, they are a routine trader (e.g. buys every April after the annual
+    bonus); otherwise opportunistic. Everyone else is unclassified. Only
+    trades from earlier years are used, so the label is known in advance.
+    """
+    owner = "owner_cik" if "owner_cik" in trades else "owner"
+    when = pd.to_datetime(trades["trans_date"] if "trans_date" in trades else trades["filed"])
+    when = when.fillna(pd.to_datetime(trades["filed"]))
+    months = (
+        pd.DataFrame({"o": trades[owner].to_numpy(), "y": when.dt.year, "m": when.dt.month})
+        .dropna()
+        .groupby(["o", "y"])["m"]
+        .agg(frozenset)
+    )
+    hist = months.to_dict()
+    labels = {}
+    for o, y in set(zip(trades[owner], when.dt.year)):
+        past = [hist.get((o, y - k)) for k in range(1, years + 1)]
+        if any(p is None for p in past):
+            labels[(o, y)] = "unclassified"
+        else:
+            labels[(o, y)] = "routine" if frozenset.intersection(*past) else "opportunistic"
+    kind = [labels[(o, y)] for o, y in zip(trades[owner], when.dt.year)]
+    return trades.assign(trader_type=kind)
 
 
 def cluster_signals(
@@ -42,6 +80,7 @@ def cluster_signals(
     exclude_plan: bool = True,
     min_mcap: float | None = None,
     max_mcap: float | None = None,
+    trader_types: tuple[str, ...] | None = None,
 ) -> pd.DataFrame:
     """Cluster purchase events from open-market trades.
 
@@ -51,7 +90,13 @@ def cluster_signals(
     qualifying filing arrived: symbol, filed, n_insiders, n_officers, value,
     mcap. If `trades` has an `mcap` column (see insider_bulk.add_market_cap),
     min_mcap/max_mcap keep only events whose filing-day size is in range.
+    With `trader_types`, only purchases by those kinds of insider count (see
+    `classify_insiders`, which runs here if `trades` has no trader_type).
     """
+    if trader_types is not None:
+        if "trader_type" not in trades:
+            trades = classify_insiders(trades)
+        trades = trades[trades["trader_type"].isin(trader_types)]
     df = trades[trades["code"] == "P"].dropna(subset=["symbol"])
     df = df[df["value"] > 0]
     owner = "owner_cik" if "owner_cik" in df else "owner"
@@ -116,6 +161,7 @@ class InsiderCluster(Strategy):
         "exclude_plan": True,
         "min_mcap": None,
         "max_mcap": None,
+        "trader_types": None,
         "hold_days": 60,
         "max_positions": 10,
         "min_price": 2.0,
@@ -144,63 +190,18 @@ class InsiderCluster(Strategy):
                 exclude_plan=self.p["exclude_plan"],
                 min_mcap=self.p["min_mcap"],
                 max_mcap=self.p["max_mcap"],
+                trader_types=self.p["trader_types"],
             )
         return ev[ev["symbol"].isin(data.symbols)]
 
     def generate_targets(self, data: MarketData) -> pd.DataFrame:
-        idx = data.index
-        syms = data.symbols
-        col = {s: j for j, s in enumerate(syms)}
-        close = data.field("close")
-        dollar_vol = (close * data.field("volume")).rolling(20, min_periods=10).median()
-        close_a = close.ffill().to_numpy(float)
-        ok = ((close >= self.p["min_price"]) & (dollar_vol >= self.p["min_dollar_volume"])).to_numpy()
-
-        # Signal day = first trading day on or after the filing date.
-        ev = self.events(data).copy()
-        ev["day"] = idx.searchsorted(ev["filed"].to_numpy(), side="left")
+        ok = liquid(data, self.p["min_price"], self.p["min_dollar_volume"])
         # When more clusters fire than there are free slots, prefer more
         # insiders, then more dollars (both stronger signals in the papers).
-        ev = ev[ev["day"] < len(idx)].sort_values(
-            ["day", "n_insiders", "value"], ascending=[True, False, False]
+        ev = self.events(data).rename(columns={"filed": "date"})
+        w, taken = hold_events(
+            data, ev, self.p["hold_days"], self.p["max_positions"], ok,
+            sort_by=("n_insiders", "value"), extra_cols=("n_insiders", "value"),
         )
-        by_day = {d: g for d, g in ev.groupby("day")}
-
-        k, hold = self.p["max_positions"], self.p["hold_days"]
-        weights = np.zeros((len(idx), len(syms)))
-        held: dict[int, int] = {}  # column -> exit day
-        value = np.zeros(len(syms))  # shadow book, starts at 1.0 in cash
-        cash = 1.0
-        self.taken = []
-        for i in range(len(idx)):
-            changed = False
-            if i > 0 and held:
-                cols = list(held)
-                r = close_a[i, cols] / close_a[i - 1, cols]
-                value[cols] *= np.where(np.isfinite(r), r, 1.0)
-            for j in [j for j, out in held.items() if i >= out]:
-                cash += value[j]
-                value[j] = 0.0
-                del held[j]
-                changed = True
-            if i in by_day:
-                for e in by_day[i].itertuples():
-                    if len(held) >= k:
-                        break
-                    j = col[e.symbol]
-                    if j in held or not ok[i, j]:
-                        continue
-                    alloc = min((cash + value.sum()) / k, cash)
-                    if alloc <= 0:
-                        break
-                    cash -= alloc
-                    value[j] = alloc
-                    held[j] = i + hold
-                    changed = True
-                    self.taken.append((idx[i], e.symbol, e.n_insiders, e.value))
-            if changed or i == 0:
-                weights[i] = value / (cash + value.sum())
-            else:
-                weights[i] = weights[i - 1]
-        self.taken = pd.DataFrame(self.taken, columns=["signal_day", "symbol", "n_insiders", "value"])
-        return pd.DataFrame(weights, index=idx, columns=syms)
+        self.taken = taken
+        return w
