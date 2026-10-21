@@ -59,6 +59,17 @@ class GoldenCross(Strategy):
 - **Overfitting checks.** `sweep` records how many variants you tried; `walk_forward`
   re-picks parameters on each training window and only reports the following unseen window.
 
+## Options spreads
+
+`CreditSpreads` (put credit spreads, call spreads, iron condors) and `Wheel` are
+standalone daily simulators, since target weights cannot express short options.
+Both price options with Black-Scholes off VIX because there is no free option
+history. `CreditSpreads` adds the VIX term structure and a put skew fitted to
+real SPY quotes (`examples/fit_spy_skew.py`), and runs each trade at today's SPY
+price so dollar costs stay realistic. `examples/run_spreads.py` compares costs,
+management rules, sizing and skew assumptions on a $5,000 account. The skew is
+the assumption that decides the answer, so real chain data is the next check.
+
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
 there is no free options price history, and Yahoo returns only recent headlines, so
