@@ -29,7 +29,8 @@ def summary(result, benchmark: pd.Series | None = None, rf: float | pd.Series = 
     else:
         rf_p = rf / ppy
     ex = rets - rf_p
-    downside = ex[ex < 0].std(ddof=0) * np.sqrt(ppy)
+    # Downside deviation: root mean square of the shortfall below zero, over all periods.
+    downside = np.sqrt((ex.clip(upper=0) ** 2).mean()) * np.sqrt(ppy)
     dd = drawdown(eq)
     cagr = (eq.iloc[-1] / eq.iloc[0]) ** (1 / years) - 1 if years > 0 and eq.iloc[-1] > 0 else np.nan
     traded = (result.trades["qty"].abs() * result.trades["fill_price"]).sum() if len(result.trades) else 0.0

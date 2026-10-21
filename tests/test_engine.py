@@ -117,3 +117,18 @@ def test_on_change_skips_drift_trades():
     daily = Backtester(costs=FREE, rebalance="daily").run(hold, data)
     assert len(on_change.trades) == 2
     assert len(daily.trades) > 100
+
+
+def test_sortino_uses_downside_deviation():
+    from backtester.core import Result
+    from backtester.metrics import _periods_per_year, summary
+
+    idx = pd.date_range("2024-01-01", periods=5, freq="D")
+    eq = pd.Series([100, 101, 100, 102, 101], index=idx, dtype=float)
+    empty = pd.DataFrame(columns=["qty", "fill_price"])
+    res = Result(eq, pd.DataFrame(index=idx), pd.DataFrame({"x": 1.0}, index=idx), empty,
+                 pd.Series(0.0, index=idx), 100.0, "t")
+    rets = eq.pct_change().dropna()
+    ppy = _periods_per_year(idx)
+    expected = rets.mean() * ppy / (np.sqrt((rets.clip(upper=0) ** 2).mean()) * np.sqrt(ppy))
+    assert summary(res)["sortino"] == pytest.approx(expected)
