@@ -1,6 +1,9 @@
 """Machine-learning signal combination: a weekly feature panel built from the
 repo's strategy signals, purged walk-forward folds, and a ladder of models
 (equal weight, ridge, gradient boosting, MLP, LSTM) that compete on them.
+Also meta-labeling of a primary strategy's trades (labels, metalabel),
+jump-model regimes (regime), volatility forecasts for sizing (vol_forecast)
+and monthly cross-sectional ranking (rank).
 
 Needs the optional extra: pip install -e ".[ml]"
 """
