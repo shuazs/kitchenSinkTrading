@@ -15,6 +15,7 @@ from .pension_rebalance import PensionRebalance
 from .risk_parity import RiskParity
 from .seasonality import SameMonthSeasonality
 from .sector_rotation import SectorRotation
+from .signal_blend import SignalBlend
 from .spreads import CreditSpreads
 from .stock_momentum import HedgedMomentum
 from .trend_filter import TrendFilter
@@ -47,6 +48,7 @@ __all__ = [
     "RSIMeanReversion",
     "SameMonthSeasonality",
     "SectorRotation",
+    "SignalBlend",
     "Sleeves",
     "TrendFilter",
     "TurnOfMonth",

@@ -1,6 +1,7 @@
 # Research write-ups
 
-The research behind this repo lives in ten project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -18,6 +19,10 @@ prices, short crypto history), not forecasts.
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
 | [Kalshi minute signals for 0DTE](https://claude.ai/artifact/UEKZrhbdbKtC5f59sVmHig) | `kalshi_minute.py`, `data/minute_mirrors.py` | `run_kalshi_minute_leadlag.py` |
+| [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
+| [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
+| [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
+| [Machine learning on the repo's research signals](https://claude.ai/artifact/73kpBbdn17TCsHkBjvNuNv) | `ml/labels.py`, `metalabel.py`, `regime.py`, `vol_forecast.py`, `rank.py` | `run_ml_research.py` |
 
 ## Summaries
 
@@ -131,3 +136,57 @@ with the previous minute and about 0 with the next. Extreme signals are right
 the out-of-sample option proxy loses in every variant. `minute_mirrors.py`
 loads free 1-minute SPX, MES, NQ and BTC bars from Hugging Face, which also
 unblocks intraday tests without Alpaca keys.
+
+**Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
+to Oct 2026) of intraday momentum, cross-asset, overnight BTC/Treasury,
+VIX and Kalshi/Polymarket inputs, combined by equal weight, ridge and
+LightGBM with monthly walk-forward refits and a May-Oct 2026 holdout. Rest-of-
+day direction hit rates were 46-53% (51-57% on the most confident fifth),
+never significantly above 50%, and the Kalshi/Polymarket inputs made models
+worse. Buying ATM 0DTE options held to the close needs about 52% accuracy at
+fair prices and 57% with a 10% volatility premium, so there is no trade.
+Option prices are modelled (no free 0DTE history).
+
+**Prediction markets as leading signals.** Hourly tests from 2024 to 2026
+found Polymarket and Kalshi prices moving in the same hour as related assets,
+not before them; for Fed-decision markets 2-year Treasury futures moved about
+an hour first. The exception is a Polymarket Iran escalation index (322
+markets): after a jump of 5 points or more while WTI futures traded, oil kept
+going the jump's way for 3 hours, +0.66% per trade after costs over 34 trades
+(t 2.4, 65% hits). The grid of thresholds and holds is positive almost
+everywhere but rarely significant, entering an hour late halves it, and half
+the trades come from the June 2025 war, so it is being paper traded with
+`watch_polymarket_iran.py` rather than run with money. Jumps while oil was
+closed were already in the reopening price (+1.6% gap).
+
+**Neural nets for combining signals.** A literature review (Gu, Kelly and Xiu;
+Deep Momentum Networks; the Momentum Transformer; Nagel's critique of
+"virtue of complexity") and a fair contest: 20 weekly features taken from
+the strategies here, purged expanding walk-forward folds, and equal weight,
+ridge, LightGBM, an MLP and an LSTM traded with the same sizing and costs.
+Neither net beat ridge and equal weight by the 0.2 Sharpe bar on ETFs
+(2012 to mid-2024), crypto (2021 to mid-2024) or the S&P 100. On crypto and
+stocks, staying long with the same sizing beat every model, and the existing
+strategies (MultiAssetTrend, EnsembleTrend, top-10 momentum) matched or beat
+them all. The locked holdout from July 2024 agreed. Weekly rank correlation
+of the forecasts with next week's return was at most about 0.05. Adding nine
+weekly Kalshi features (CPI, payrolls, Fed and recession contracts) did not
+reliably help: forecast accuracy did not improve, other models moved either
+way by up to 0.5 Sharpe, and the LSTM's gains (better than time-shuffled
+Kalshi data in 4 of 6 checks) are a weak lead to recheck with more data.
+
+**Machine learning on the research signals.** Four framings other than
+forecasting weekly returns, tested walk-forward (refit yearly, purged) with
+costs on $5,000 and scored once on the July 2024 holdout. Meta-labeling
+worked on ETFs: a classifier that sees each 20/10 Donchian breakout on 32
+ETFs, with the repo's signals at entry, and skips the worse half lifted
+Sharpe from 0.61 to 0.76 (random-skip control 0.64 +- 0.10) and from 0.67 to
+1.43 on the holdout (control 0.83 +- 0.28); kept trades beat skipped ones by
+0.6 points each (t 3.6). It failed on 55 coins. A statistical jump model
+(Shu, Yu and Mulvey 2024) cut SPY's drawdown but trailed the 200-day filter
+and hurt the UPRO vol-target keeper. HAR volatility forecasts cut forecast
+error 40% against trailing volatility and nudged the UPRO keeper's Sharpe
+up (0.86 to 0.89; 0.68 to 0.75 on the holdout); LightGBM did worse than HAR.
+Monthly S&P 100 ranking with ridge or LambdaMART beat momentum, but holding
+today's most volatile members does nearly as well, so survivor bias explains
+it. Reinforcement learning was ruled out for lack of data.
