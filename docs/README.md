@@ -51,3 +51,24 @@ did not raise its Sharpe. A 10% DOGE/SHIB breakout sleeve added about 2 points
 of CAGR. Following public pump.fun calls lost money in every realistic
 variant, and sentiment trading on new meme coin launches is not realistic to
 backtest or trade from a small account.
+
+**Academic strategy shortlist.** A literature search (replication studies:
+Jensen-Kelly-Pedersen, McLean-Pontiff, Chen-Velikov) found most stock
+anomalies net close to zero after costs and publication. Four picks were
+tested on real data with $5,000 and realistic costs:
+- *Ensemble crypto trend* (8 Donchian lookbacks, top 20 liquid coins,
+  volatility-sized): Sharpe 1.2 and -20% max drawdown since late 2018 at a
+  50% vol target, but only about 20% invested (20% CAGR); a 100% target gave
+  36% CAGR with -41% drawdown. BTC held: 38%, -77%. Walk-forward 12%, -9%.
+  Survivorship bias remains for coins Yahoo has dropped.
+- *Opportunistic insider buys*: opportunistic purchases had higher mean
+  excess returns than routine ones (+2.0% vs +1.4% over 60 days vs IWM),
+  but medians were negative, and no variant beat IWM after small-cap costs.
+  Dropping routine insiders did lift the cluster strategy from 3.5% to 6.9% CAGR.
+- *Earnings announcement premium* (8-K Item 2.02 dates, predicted a year
+  ahead): +0.34% per trade vs SPY in 2006-12, +0.20% in 2013-19, +0.15%
+  since 2020, gross. Costs take all of it: 11.4% CAGR vs SPY's 11.1%.
+- *Same-month seasonality* on sector and country ETFs: picks lagged the
+  equal-weight universe in every 5-year block; no edge with ETF-length history.
+- *Intraday SPY/QQQ momentum*: simulators built; real test waits on Alpaca
+  minute data (free account, see the README).
