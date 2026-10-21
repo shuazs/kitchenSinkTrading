@@ -18,6 +18,7 @@ from .sector_rotation import SectorRotation
 from .spreads import CreditSpreads
 from .stock_momentum import HedgedMomentum
 from .trend_filter import TrendFilter
+from .trump import EventDip, GovStakeEvents, PostRiskOverlay
 from .turn_of_month import TurnOfMonth
 from .vix_term_structure import VixTermStructure
 from .vol_target import VolTarget
@@ -32,13 +33,16 @@ __all__ = [
     "DualMomentum",
     "EarningsPremium",
     "EnsembleTrend",
+    "EventDip",
     "EventHold",
     "FXCarry",
+    "GovStakeEvents",
     "HedgedMomentum",
     "HedgeFundClone",
     "InsiderCluster",
     "MultiAssetTrend",
     "PensionRebalance",
+    "PostRiskOverlay",
     "RiskParity",
     "RSIMeanReversion",
     "SameMonthSeasonality",

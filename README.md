@@ -33,6 +33,8 @@ backtester/
     activists.py   Schedule 13D filings by known activists (EDGAR form index)
     sp500.py       S&P 500 membership history and dated adds and deletions
     sentiment.py   FinBERT headline scores, aligned to when news was public
+    trump_posts.py Trump's tweets (2017-2021) and Truth Social posts, daily topic counts
+    gov_stakes.py  US government equity stakes in listed companies, by first report
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
     synthetic.py   random-walk prices for tests
   strategies/      one file per plug-in strategy
