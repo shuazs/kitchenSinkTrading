@@ -12,6 +12,7 @@ prices, short crypto history), not forecasts.
 | [Strategy backtests on real data](https://claude.ai/artifact/DGHDmCB4QAUhNubmXSa4eq) | the above | `run_robustness.py` |
 | [Defined-risk options spreads](https://claude.ai/artifact/JCmkpwmNzN9XkAGzzbtdpo) | `strategies/spreads.py` | `run_spreads.py`, `fit_spy_skew.py` |
 | [More strategy ideas: research and forums](https://claude.ai/artifact/8y1EZth95owGPrFMepp5n2) | `strategies/vol_target.py`, `vix_term_structure.py`, `sector_rotation.py`, `turn_of_month.py` | `run_vol_target.py`, `run_vix_term_structure.py`, `run_sector_rotation.py`, `run_turn_of_month.py` |
+| [Academic strategy shortlist](https://claude.ai/artifact/Cr3Wy5dch15aHhypKRvSgo) | `strategies/crypto.py` (`EnsembleTrend`), `insider.py` (`classify_insiders`), `earnings.py`, `seasonality.py`, `intraday.py`, `data/alpaca.py` | `run_ensemble_trend.py`, `run_opportunistic_insider.py`, `run_earnings_premium.py`, `run_seasonality.py`, `run_intraday_momentum.py` |
 | [Crypto strategies and meme coin sentiment](https://claude.ai/artifact/G2XAGWzHpp7rkDpTdA8FzM) | `strategies/crypto.py`, `memecoin_calls.py`, `data/memecoins.py` | `run_crypto_strategies.py`, `run_memecoin_calls.py` |
 
 ## Summaries

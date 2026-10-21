@@ -20,11 +20,14 @@ backtester/
   core.py          MarketData, Strategy base class, CostModel, Backtester
   metrics.py       CAGR, Sharpe, Sortino, drawdown, turnover, cost drag, beta
   research.py      parameter sweeps and walk-forward tests
+  intraday.py      day-trading simulators on minute bars (SPY/QQQ intraday momentum)
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
-    edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades
+    edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades,
+                   earnings dates (8-K Item 2.02)
+    alpaca.py      minute bars from Alpaca (free account) for intraday tests
     sentiment.py   FinBERT headline scores, aligned to when news was public
     memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
     synthetic.py   random-walk prices for tests
@@ -69,6 +72,22 @@ real SPY quotes (`examples/fit_spy_skew.py`), and runs each trade at today's SPY
 price so dollar costs stay realistic. `examples/run_spreads.py` compares costs,
 management rules, sizing and skew assumptions on a $5,000 account. The skew is
 the assumption that decides the answer, so real chain data is the next check.
+
+## Intraday strategies and Alpaca
+
+`backtester/intraday.py` simulates two intraday momentum rules on SPY or QQQ:
+the first-half-hour rule (Gao, Han, Li and Zhou 2018) and the noise-area
+breakout (Zarattini, Aziz and Barbon 2024). They need years of minute bars,
+and yfinance keeps only about 60 days, so:
+
+> **To do: sign up for a free Alpaca account** at https://alpaca.markets
+> (paper trading is enough, no deposit), create a paper-trading API key, and
+> set `APCA_API_KEY_ID` and `APCA_API_SECRET_KEY`. Then
+> `python examples/run_intraday_momentum.py` loads 1-minute bars from 2016.
+> Without keys it runs on Yahoo's last 60 days, which only checks the plumbing.
+
+Day trading a margin account under $25,000 runs into the pattern-day-trader
+rule, so the realistic $5,000 setup is long-only in a cash account.
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
