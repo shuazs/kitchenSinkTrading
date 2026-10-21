@@ -35,22 +35,24 @@ from .core import CostModel
 SESSION_MINUTES = 390
 
 
-def minute_grid(bars: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def minute_grid(bars: pd.DataFrame, start: int = 570, length: int = SESSION_MINUTES) -> dict[str, pd.DataFrame]:
     """Pivot bars into day x minute frames keyed by field.
 
-    Columns are minutes after 09:30 at the bar's END (1 = 09:31 for a
-    1-minute bar, 390 = 16:00), so column m holds the price known at m.
-    Missing bars are forward-filled within the day.
+    Columns are minutes after the session start (`start` minutes after
+    midnight, 570 = 09:30) at the bar's END (1 = 09:31 for a 1-minute bar,
+    390 = 16:00), so column m holds the price known at m. Missing bars are
+    forward-filled within the day. A 24-hour crypto day is start=0,
+    length=1440 on UTC bars.
     """
     t = bars.index
     step = pd.Series(t).diff().dt.total_seconds().div(60)
     step = int(step[(step > 0) & (step < 60)].median())
-    end = (t.hour * 60 + t.minute - 570) + step
-    keep = (end > 0) & (end <= SESSION_MINUTES)
+    end = (t.hour * 60 + t.minute - start) + step
+    keep = (end > 0) & (end <= length)
     b = bars[keep]
     day = pd.DatetimeIndex(b.index.normalize())
     minute = end[keep]
-    cols = np.arange(step, SESSION_MINUTES + 1, step)
+    cols = np.arange(step, length + 1, step)
     out = {}
     for f in ("open", "high", "low", "close", "volume"):
         g = pd.DataFrame({"day": day, "m": minute, "v": b[f].to_numpy()}).pivot_table(
