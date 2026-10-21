@@ -202,6 +202,7 @@ class Backtester:
         cost_hist = np.zeros(n_days)
         trades = []
         last_px = np.full(n_sym, np.nan)
+        pending, waiting = None, np.zeros(n_sym, dtype=bool)
 
         for i in range(n_days):
             if i > 0:
@@ -210,17 +211,22 @@ class Backtester:
             mark = np.where(np.isnan(o), last_px, o)
             equity_open = cash + np.nansum(qty * mark)
 
-            tgt = orders_a[i]
-            if not np.isnan(tgt).all() and equity_open > 0:
-                tgt = np.nan_to_num(tgt)
+            if not np.isnan(orders_a[i]).all():
+                pending = np.nan_to_num(orders_a[i])
+                waiting = np.ones(n_sym, dtype=bool)
+            if pending is not None and equity_open > 0:
+                tgt = pending
                 gross = np.abs(tgt).sum()
                 if gross > self.max_leverage:
                     tgt = tgt * self.max_leverage / gross
                 deltas = []
                 for j in range(n_sym):
                     px = o[j]
-                    if np.isnan(px) or px <= 0:
+                    if not waiting[j] or np.isnan(px) or px <= 0:
                         continue
+                    # A symbol with no bar today (weekend, holiday, not yet
+                    # listed) keeps its order until it next trades.
+                    waiting[j] = False
                     want = tgt[j] * equity_open / px
                     if not self.fractional:
                         want = np.trunc(want)
@@ -249,6 +255,8 @@ class Backtester:
                     cost_hist[i] += fee + slip
                     trades.append((idx[i], symbols[j], d, px, fp, fee, slip))
 
+            if pending is not None and not waiting.any():
+                pending = None
             c = closes[i]
             last_px = np.where(np.isnan(c), last_px, c)
             value = qty * np.nan_to_num(c)
