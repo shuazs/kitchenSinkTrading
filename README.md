@@ -20,11 +20,13 @@ backtester/
   core.py          MarketData, Strategy base class, CostModel, Backtester
   metrics.py       CAGR, Sharpe, Sortino, drawdown, turnover, cost drag, beta
   research.py      parameter sweeps and walk-forward tests
+  memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   data/
     yahoo.py       yfinance bars, today's option chains, headlines archive
     fred.py        FRED series (T-bill rate, yield curve, credit spreads)
     edgar.py       SEC company facts, earnings surprise (SUE), Form 4 insider trades
     sentiment.py   FinBERT headline scores, aligned to when news was public
+    memecoins.py   pump.fun call feed and launch outcomes (Hugging Face datasets)
     synthetic.py   random-walk prices for tests
   strategies/      one file per plug-in strategy
 ```
@@ -56,6 +58,17 @@ class GoldenCross(Strategy):
   cash checks so buys never overdraw, leverage cap, optional shorting, interest on cash.
 - **Overfitting checks.** `sweep` records how many variants you tried; `walk_forward`
   re-picks parameters on each training window and only reports the following unseen window.
+
+## Options spreads
+
+`CreditSpreads` (put credit spreads, call spreads, iron condors) and `Wheel` are
+standalone daily simulators, since target weights cannot express short options.
+Both price options with Black-Scholes off VIX because there is no free option
+history. `CreditSpreads` adds the VIX term structure and a put skew fitted to
+real SPY quotes (`examples/fit_spy_skew.py`), and runs each trade at today's SPY
+price so dollar costs stay realistic. `examples/run_spreads.py` compares costs,
+management rules, sizing and skew assumptions on a $5,000 account. The skew is
+the assumption that decides the answer, so real chain data is the next check.
 
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
