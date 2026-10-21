@@ -30,6 +30,9 @@ def load_series(series_id: str, refresh: bool = False) -> pd.Series:
         r = requests.get(URL.format(series_id), timeout=30)
         r.raise_for_status()
         text = r.text
+        if text.lstrip().startswith("<"):
+            # FRED serves an HTML maintenance page with status 200 at times.
+            raise RuntimeError(f"FRED returned a web page instead of {series_id} data")
         path.write_text(text)
     df = pd.read_csv(io.StringIO(text))
     df.columns = ["date", series_id]
@@ -38,5 +41,11 @@ def load_series(series_id: str, refresh: bool = False) -> pd.Series:
 
 
 def tbill_rate() -> pd.Series:
-    """Annual 3-month T-bill rate as a decimal, for Backtester(cash_rate=...)."""
-    return load_series("DTB3") / 100
+    """Annual 3-month T-bill rate as a decimal, for Backtester(cash_rate=...).
+    Falls back to Yahoo's 13-week T-bill yield (^IRX) when FRED is down."""
+    try:
+        return load_series("DTB3") / 100
+    except (RuntimeError, requests.RequestException):
+        from .yahoo import load_bars
+
+        return load_bars("^IRX")["close"].dropna() / 100
