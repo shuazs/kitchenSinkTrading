@@ -114,6 +114,13 @@ and the pass criteria from the design doc (needs `pip install -e ".[ml]"`).
 prediction-market features added (`data/kalshi.py`; the daily file comes from
 the Kalshi research and is read from disk).
 
+`examples/run_ml_research.py` tries four other framings on the same signals:
+meta-labeling breakout trades (`ml/metalabel.py`, triple-barrier labels in
+`ml/labels.py`), a statistical jump model for regimes (`ml/regime.py`), HAR
+and LightGBM volatility forecasts for vol-target sizing (`ml/vol_forecast.py`)
+and monthly learning-to-rank on the S&P 100 (`ml/rank.py`). Only the ETF
+meta-label filter beat its controls; see docs/README.md.
+
 Known limits: yfinance only lists securities that exist today (survivorship bias),
 intraday history is short (1-minute bars for about 7 days, hourly for about 2 years),
 there is no free options price history, and Yahoo returns only recent headlines, so

@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in ten project docs on claude.ai (private
+The research behind this repo lives in eleven project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -18,6 +18,7 @@ prices, short crypto history), not forecasts.
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
 | [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
+| [Machine learning on the repo's research signals](https://claude.ai/artifact/73kpBbdn17TCsHkBjvNuNv) | `ml/labels.py`, `metalabel.py`, `regime.py`, `vol_forecast.py`, `rank.py` | `run_ml_research.py` |
 
 ## Summaries
 
@@ -135,3 +136,19 @@ stocks, staying long with the same sizing beat every model, and the existing
 strategies (MultiAssetTrend, EnsembleTrend, top-10 momentum) matched or beat
 them all. The locked holdout from July 2024 agreed. Weekly rank correlation
 of the forecasts with next week's return was at most about 0.05.
+
+**Machine learning on the research signals.** Four framings other than
+forecasting weekly returns, tested walk-forward (refit yearly, purged) with
+costs on $5,000 and scored once on the July 2024 holdout. Meta-labeling
+worked on ETFs: a classifier that sees each 20/10 Donchian breakout on 32
+ETFs, with the repo's signals at entry, and skips the worse half lifted
+Sharpe from 0.61 to 0.76 (random-skip control 0.64 +- 0.10) and from 0.67 to
+1.43 on the holdout (control 0.83 +- 0.28); kept trades beat skipped ones by
+0.6 points each (t 3.6). It failed on 55 coins. A statistical jump model
+(Shu, Yu and Mulvey 2024) cut SPY's drawdown but trailed the 200-day filter
+and hurt the UPRO vol-target keeper. HAR volatility forecasts cut forecast
+error 40% against trailing volatility and nudged the UPRO keeper's Sharpe
+up (0.86 to 0.89; 0.68 to 0.75 on the holdout); LightGBM did worse than HAR.
+Monthly S&P 100 ranking with ridge or LambdaMART beat momentum, but holding
+today's most volatile members does nearly as well, so survivor bias explains
+it. Reinforcement learning was ruled out for lack of data.
