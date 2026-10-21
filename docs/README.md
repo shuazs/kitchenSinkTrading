@@ -1,9 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in project docs on claude.ai (private
-The research behind this repo lives in project docs on claude.ai (private
-The research behind this repo lives in project docs on claude.ai (private
-The research behind this repo lives in project docs on claude.ai (private
+The research behind this repo lives in seventeen project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -20,14 +17,15 @@ prices, short crypto history), not forecasts.
 | [Fund strategies for a $5k account](https://claude.ai/artifact/N273u9qQ2t6VC6xEf6KoZf) | `strategies/multi_asset_trend.py`, `risk_parity.py`, `pension_rebalance.py`, `hedge_fund_clone.py`, `events.py`, `data/thirteenf.py`, `data/activists.py`, `data/sp500.py` | `run_multi_asset_trend.py`, `run_risk_parity.py`, `run_pension_rebalance.py`, `run_hedge_fund_clone.py`, `run_activists.py`, `run_index_changes.py` |
 | [Large-account strategies scaled to $5k](https://claude.ai/artifact/JKf6qVGf7N7Ep47XbSixYL) | `strategies/carry.py`, `basis.py`, `stock_momentum.py`, `data/fx.py` | `run_fx_carry.py`, `run_basis_carry.py`, `run_hedged_momentum.py` |
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
-| [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
-| [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
-| [Prediction markets as pairs trades](https://claude.ai/artifact/9zz3e8t7mY7g2Mmq8ZPL7F) | `pairs.py` | `run_prediction_market_pairs.py` |
-| [Kalshi minute signals for 0DTE](https://claude.ai/artifact/UEKZrhbdbKtC5f59sVmHig) | `kalshi_minute.py`, `data/minute_mirrors.py` | `run_kalshi_minute_leadlag.py` |
-| [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
-| [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
 | [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
 | [Machine learning on the repo's research signals](https://claude.ai/artifact/73kpBbdn17TCsHkBjvNuNv) | `ml/labels.py`, `metalabel.py`, `regime.py`, `vol_forecast.py`, `rank.py` | `run_ml_research.py` |
+| [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
+| [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
+| [Kalshi minute signals for 0DTE](https://claude.ai/artifact/UEKZrhbdbKtC5f59sVmHig) | `kalshi_minute.py`, `data/minute_mirrors.py` | `run_kalshi_minute_leadlag.py` |
+| [Prediction markets as pairs trades](https://claude.ai/artifact/9zz3e8t7mY7g2Mmq8ZPL7F) | `pairs.py` | `run_prediction_market_pairs.py` |
+| [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
+| Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
+| [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 
 ## Summaries
 
@@ -134,66 +132,6 @@ edge. After 13 government equity stake reports the median stock gapped 13%
 before anyone could buy; holding 5 days from the first open made money in
 this small sample, but 20- and 60-day holds lost (median -4% and -17%).
 
-**Intraday strategies on 1-minute data.** Free 1-minute S&P, Nasdaq, BTC and
-ETH bars (2021-2026) let the intraday rules run without Alpaca. 3,448 rule
-variants (noise area, opening range, VWAP trend and reversion, end-of-day
-momentum, gaps, crypto hour of day, overnight split) at four cost levels:
-trend rules are profitable before costs in 80-100% of variants, but earn only
-about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
-spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
-15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
-
-**Trading Kalshi off stock moves.** Kalshi's hourly S&P, Nasdaq, BTC and ETH
-ladders lag the underlying at the hourly scale, but at 1-minute resolution
-their prints already price in the last minute's move. Buying the contract
-whose last ask had not caught up after a sharp move (Oct 2024 to Jan 2026,
-fees, bid/ask from trade prints, fills capped at printed size) lost on BTC
-(t about -3 over ~1,800 fills: bots take it), was noise on ETH and the
-Nasdaq-100, and made about $3,000 on the S&P 500 after 2-minute moves
-(t 2.0, positive in both halves) on small fills, median 80 contracts. Fed
-contracts traded off 2-year Treasury futures moves had no edge after costs.
-
-**Prediction markets as pairs trades.** Kalshi ladders (S&P, Nasdaq-100, BTC,
-ETH) turned into implied prices, Kalshi strike prices against their fair value
-from spot, and Polymarket Iran and Fed indices against oil and Treasury
-futures, traded with z-score pairs rules. The Kalshi spreads close in 4 to 8
-minutes, but by Kalshi moving: the asset leg earns 0 to 2 bp gross (ETH about
-4.5 bp over 30 minutes if entered within a minute), under costs, and fading
-Kalshi contracts loses once fills come at the real bid and ask and the
-0.07 x p x (1-p) fee is paid. Polymarket Fed pairs fail; Iran vs oil only
-repeats the jump rule. No pair is tradeable on $5k; maker orders on Kalshi
-would need live order-book data to test.
-
-**Kalshi minute signals for 0DTE.** Kalshi's hourly S&P, Nasdaq and BTC
-ladders lag the underlying at 1-10 minutes too: taker flow correlates 0.15
-with the previous minute and about 0 with the next. Extreme signals are right
-49-52% of the time, while a bought ATM 0DTE option needs 60-72% to break even;
-the out-of-sample option proxy loses in every variant. `minute_mirrors.py`
-loads free 1-minute SPX, MES, NQ and BTC bars from Hugging Face, which also
-unblocks intraday tests without Alpaca keys.
-
-**Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
-to Oct 2026) of intraday momentum, cross-asset, overnight BTC/Treasury,
-VIX and Kalshi/Polymarket inputs, combined by equal weight, ridge and
-LightGBM with monthly walk-forward refits and a May-Oct 2026 holdout. Rest-of-
-day direction hit rates were 46-53% (51-57% on the most confident fifth),
-never significantly above 50%, and the Kalshi/Polymarket inputs made models
-worse. Buying ATM 0DTE options held to the close needs about 52% accuracy at
-fair prices and 57% with a 10% volatility premium, so there is no trade.
-Option prices are modelled (no free 0DTE history).
-
-**Prediction markets as leading signals.** Hourly tests from 2024 to 2026
-found Polymarket and Kalshi prices moving in the same hour as related assets,
-not before them; for Fed-decision markets 2-year Treasury futures moved about
-an hour first. The exception is a Polymarket Iran escalation index (322
-markets): after a jump of 5 points or more while WTI futures traded, oil kept
-going the jump's way for 3 hours, +0.66% per trade after costs over 34 trades
-(t 2.4, 65% hits). The grid of thresholds and holds is positive almost
-everywhere but rarely significant, entering an hour late halves it, and half
-the trades come from the June 2025 war, so it is being paper traded with
-`watch_polymarket_iran.py` rather than run with money. Jumps while oil was
-closed were already in the reopening price (+1.6% gap).
-
 **Neural nets for combining signals.** A literature review (Gu, Kelly and Xiu;
 Deep Momentum Networks; the Momentum Transformer; Nagel's critique of
 "virtue of complexity") and a fair contest: 20 weekly features taken from
@@ -225,3 +163,71 @@ up (0.86 to 0.89; 0.68 to 0.75 on the holdout); LightGBM did worse than HAR.
 Monthly S&P 100 ranking with ridge or LambdaMART beat momentum, but holding
 today's most volatile members does nearly as well, so survivor bias explains
 it. Reinforcement learning was ruled out for lack of data.
+
+**Prediction markets as leading signals.** Hourly tests from 2024 to 2026
+found Polymarket and Kalshi prices moving in the same hour as related assets,
+not before them; for Fed-decision markets 2-year Treasury futures moved about
+an hour first. The exception is a Polymarket Iran escalation index (322
+markets): after a jump of 5 points or more while WTI futures traded, oil kept
+going the jump's way for 3 hours, +0.66% per trade after costs over 34 trades
+(t 2.4, 65% hits). The grid of thresholds and holds is positive almost
+everywhere but rarely significant, entering an hour late halves it, and half
+the trades come from the June 2025 war, so it is being paper traded with
+`watch_polymarket_iran.py` rather than run with money. Jumps while oil was
+closed were already in the reopening price (+1.6% gap).
+
+**Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
+to Oct 2026) of intraday momentum, cross-asset, overnight BTC/Treasury,
+VIX and Kalshi/Polymarket inputs, combined by equal weight, ridge and
+LightGBM with monthly walk-forward refits and a May-Oct 2026 holdout. Rest-of-
+day direction hit rates were 46-53% (51-57% on the most confident fifth),
+never significantly above 50%, and the Kalshi/Polymarket inputs made models
+worse. Buying ATM 0DTE options held to the close needs about 52% accuracy at
+fair prices and 57% with a 10% volatility premium, so there is no trade.
+Option prices are modelled (no free 0DTE history).
+
+**Kalshi minute signals for 0DTE.** Kalshi's hourly S&P, Nasdaq and BTC
+ladders lag the underlying at 1-10 minutes too: taker flow correlates 0.15
+with the previous minute and about 0 with the next. Extreme signals are right
+49-52% of the time, while a bought ATM 0DTE option needs 60-72% to break even;
+the out-of-sample option proxy loses in every variant. `minute_mirrors.py`
+loads free 1-minute SPX, MES, NQ and BTC bars from Hugging Face, which also
+unblocks intraday tests without Alpaca keys.
+
+**Prediction markets as pairs trades.** Kalshi ladders (S&P, Nasdaq-100, BTC,
+ETH) turned into implied prices, Kalshi strike prices against their fair value
+from spot, and Polymarket Iran and Fed indices against oil and Treasury
+futures, traded with z-score pairs rules. The Kalshi spreads close in 4 to 8
+minutes, but by Kalshi moving: the asset leg earns 0 to 2 bp gross (ETH about
+4.5 bp over 30 minutes if entered within a minute), under costs, and fading
+Kalshi contracts loses once fills come at the real bid and ask and the
+0.07 x p x (1-p) fee is paid. Polymarket Fed pairs fail; Iran vs oil only
+repeats the jump rule. No pair is tradeable on $5k; maker orders on Kalshi
+would need live order-book data to test.
+
+**Trading Kalshi off stock moves.** Kalshi's hourly S&P, Nasdaq, BTC and ETH
+ladders lag the underlying at the hourly scale, but at 1-minute resolution
+their prints already price in the last minute's move. Buying the contract
+whose last ask had not caught up after a sharp move (Oct 2024 to Jan 2026,
+fees, bid/ask from trade prints, fills capped at printed size) lost on BTC
+(t about -3 over ~1,800 fills: bots take it), was noise on ETH and the
+Nasdaq-100, and made about $3,000 on the S&P 500 after 2-minute moves
+(t 2.0, positive in both halves) on small fills, median 80 contracts. Fed
+contracts traded off 2-year Treasury futures moves had no edge after costs.
+
+**Kalshi crowd bias after big moves.** Kalshi alerts users when BTC, ETH or
+the indexes trend hard; with no record of when, those moments were proxied by
+big 15-minute to 1-day moves and by Kalshi volume spikes (Oct 2024 to Jan
+2026, hourly S&P, Nasdaq-100, BTC and ETH ladders). Continuation sides were
+not overpriced afterwards (15 of 16 cells within 2 standard errors), taker
+flow stayed about 50/50, and 240 fade/follow variants looked like the
+random-time control; maker variants lost to adverse selection. No edge.
+
+**Intraday strategies on 1-minute data.** Free 1-minute S&P, Nasdaq, BTC and
+ETH bars (2021-2026) let the intraday rules run without Alpaca. 3,448 rule
+variants (noise area, opening range, VWAP trend and reversion, end-of-day
+momentum, gaps, crypto hour of day, overnight split) at four cost levels:
+trend rules are profitable before costs in 80-100% of variants, but earn only
+about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
+spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
+15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.

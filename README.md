@@ -25,6 +25,11 @@ backtester/
                    on one minute-grid engine, with walk-forward selection
   memecoin_calls.py  pump.fun bonding-curve fills for following meme coin calls
   jump_trades.py   trade an asset after a sudden prediction-market move (hourly bars)
+  shortterm.py     hourly SPY/QQQ signal panel, walk-forward combiners, 0DTE option simulator
+  pairs.py         prediction-market vs asset pairs (implied levels and single contracts)
+  kalshi_minute.py   minute-level lead-lag between Kalshi hourly ladders and the underlying
+  kalshi_catchup.py  buy Kalshi contracts that lag a move in the underlying, fills from prints
+  kalshi_crowd.py    Kalshi pricing and flow after big moves (crowd-bias test)
   ml/              signal combination: weekly feature panel from the strategies,
                    purged walk-forward folds, equal weight / ridge / LightGBM /
                    MLP / LSTM models, Deflated Sharpe
