@@ -75,6 +75,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`

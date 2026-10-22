@@ -258,3 +258,19 @@ that is a bet that Nasdaq keeps beating the S&P, as it has since 2007.
 Mega-cap fundamental picks worked in 2019-2026 but not in 2010-2018.
 Josh picked the 80/10/10 QQQ version as the class default; the stock picker
 is `stock_etf=None` with 60/20/20 sleeves.
+
+**Kalshi S&P range vs VIX1D for selling 0DTE.** Kalshi's end-of-day S&P
+ladders imply an expected range for the close. Every return model on 29
+daily Kalshi features (lasso, elastic net, random forest, gradient
+boosting, nearest neighbours, logistic, small MLP) lost to predicting zero,
+but the ladder width forecasts rest-of-day volatility about as well as
+VIX1D. At 12:30 and 14:30 ET (not 10:30), days when Kalshi's range is
+narrow vs VIX1D (bottom third of its own history) let a volatility seller
+keep 62-67% of VIX1D-implied variance, vs 45-46% on wide days (SPX
+1-minute bars, Jan 2024 to Jan 2026). As modelled XSP iron flies at
+break-even option prices, the 12:30 rule made +13.5% on risk per trade
+(t 2.5, 165 trades) while selling every day lost 4%; with a 10% variance
+premium it made +21% (t 3.6, both halves positive, max drawdown -28% at 10%
+risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
+paper trading before any money (`backtester/kalshi_vol.py`,
+`examples/run_kalshi_vol.py`).
