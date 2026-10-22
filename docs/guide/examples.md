@@ -73,6 +73,7 @@ verdicts are in [strategies.md](strategies.md).
 - `watch_polymarket_iran.py`: Paper-trade the Iran-to-oil rule live.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
+- `run_crypto_pairs.py`: Crypto pairs: BTC/ETH daily, 19-coin rolling pairs + walk-forward, intraday 5m/15m/1h; writes CSVs to `crypto-pairs/results/`.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
