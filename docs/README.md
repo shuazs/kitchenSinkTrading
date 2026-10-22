@@ -45,7 +45,14 @@ prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
 positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
 Polymarket's international book (no US persons), assumes no Polymarket fee,
 and covers only Apr 2025 to Jan 2026, so a log-only watcher comes first.
-Weather-vs-forecast was not testable (forecast archives blocked).
+Weather-vs-forecast was not testable (forecast archives blocked). A follow-up
+matched 5,640 Kalshi/Polymarket pairs across nine families (US games, soccer
+incl. draws, UFC, esports, tennis, championship futures, elections, awards,
+Fed decisions): the lead is a live-event effect (US games +5.2c, soccer
++7.8c, UFC +32c on few trades, esports +7.6c per share at 60s late/60 min);
+Fed, futures, elections and awards show none, and there the venues sit within
+about 1.6c of each other. Flat $250 trades capped at printed size made ~$69k
+over Apr 2025-Jan 2026 with at most $1.6k tied up (upper bound).
 
 **Research shortlist.** Nine candidates for a small, risk-tolerant account,
 ranked by evidence: leveraged-ETF 200-day trend filter, crypto N-day-high

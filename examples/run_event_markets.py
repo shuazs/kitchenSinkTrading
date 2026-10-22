@@ -5,6 +5,7 @@ or rebuilds the Kalshi side from the Hugging Face mirror (slow: ~5GB scan).
 
     python examples/run_event_markets.py              # summary of every test
     python examples/run_event_markets.py --rebuild    # re-run calibration and the Kalshi-vs-Polymarket tests
+    python examples/run_event_markets.py --families   # per-family tables: games, soccer, UFC, esports, futures, elections, awards, Fed
 
 Tests: taker calibration by category and price, Kalshi-vs-Polymarket
 two-venue arbitrage and the Kalshi -> Polymarket lead on matched sports
@@ -102,11 +103,37 @@ def bankroll_lead_follow(r: pd.DataFrame, start: float = 5000, stake: float = 0.
     return eq, float((s / s.cummax() - 1).min())
 
 
+def families() -> None:
+    """Lead-follow and two-venue arbitrage per market family (built by event-markets/scripts/match2.py and xv2.py)."""
+    lf, arb = pd.read_parquet(f"{DIR}/xv2_lf.parquet"), pd.read_parquet(f"{DIR}/xv2_arb.parquet")
+    settle = pd.read_parquet(f"{DIR}/xv2_lf_settle.parquet")
+
+    def stats(d, col="ret"):
+        g = d.groupby("id")[col].mean()
+        return pd.Series({"trades": len(d), "markets": len(g), "ret_c": 100 * d[col].mean(),
+                          "t_mkt": g.mean() / (g.std() / np.sqrt(len(g))) if len(g) > 2 else np.nan})
+
+    print("\n== By market family: follow the leader on the other venue, 5c+ gap")
+    for th, lat, hold in [(0.05, "2s", "15min"), (0.05, "60s", "60min")]:
+        x = lf[(lf["th"] == th) & (lf["lat"] == lat) & (lf["hold"] == hold)]
+        print(f"-- {lat} late, {hold} hold, exit at the next opposite print")
+        print(x.groupby(["family", "dir"]).apply(stats).round(2).unstack("dir").to_string())
+    print("-- 60s late, held to settlement")
+    print(settle.groupby(["family", "dir"]).apply(stats, col="ret_s").round(2).unstack("dir").to_string())
+    print("\n== By market family: two-venue arbitrage (same contract, YES on one venue + NO on the other, 10s)")
+    print(arb.groupby("family").agg(episodes=("profit", "size"), markets=("id", "nunique"),
+                                    edge_c=("edge", lambda e: 100 * e.median()), dollars=("profit", "sum")).round(2).to_string())
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rebuild", action="store_true")
+    ap.add_argument("--families", action="store_true", help="only the per-family Kalshi/Polymarket tables")
     args = ap.parse_args()
     pd.set_option("display.width", 200)
+    if args.families:
+        families()
+        return
 
     print("== Kalshi takers by category (cents per contract; makers earn the mirror before maker fees)")
     print(calibration_table(args.rebuild).to_string())
@@ -131,6 +158,8 @@ def main():
     months = best["entry"].dt.strftime("%Y-%m")
     print(f"60s late, 60min hold: $5,000 -> ${eq:,.0f}, max DD {dd:.0%}, "
           f"{(best.groupby(months)['ret'].mean() > 0).mean():.0%} of months positive")
+    if os.path.exists(f"{DIR}/xv2_lf.parquet"):
+        families()
 
 
 if __name__ == "__main__":

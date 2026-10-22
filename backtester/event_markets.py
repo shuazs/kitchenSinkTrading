@@ -325,3 +325,63 @@ def lead_follow(lead: pd.DataFrame, follow: pd.DataFrame, threshold: float = 0.0
                      "size": n, "ret": ret})
         busy_until = t_out
     return pd.DataFrame(rows, columns=["signal", "entry", "exit", "gap", "p_in", "p_out", "size", "ret"])
+
+
+_STOP = {"the", "will", "win", "wins", "winner", "fc", "cf", "sc", "ac", "afc", "club", "de", "on", "be", "to", "of",
+         "and", "in", "a", "vs", "at", "who", "for", "by", "team", "game", "match"}
+
+
+def name_tokens(text: str) -> frozenset:
+    """Lower-case, accent-free word set of a team/person name, minus filler words and dates."""
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(text)).encode("ascii", "ignore").decode().lower()
+    words = re.findall(r"[a-z][a-z0-9'.]*", t)
+    return frozenset(w.strip(".'") for w in words if w.strip(".'") not in _STOP and len(w.strip(".'")) >= 2)
+
+
+def poly_subject(question: str, answer1: str) -> str:
+    """What a Polymarket market's YES token pays on: answer1 for two-way markets, else the 'Will X ...' name."""
+    if answer1 and answer1.lower() not in ("yes", "no"):
+        return answer1
+    q = re.sub(r"\s+", " ", question)
+    if re.search(r"\bdraw\b|\btie\b", q, re.I):
+        return "tie"
+    m = re.match(r"Will (?:the )?(.+?) (?:win|be|finish|become|make|advance|reach|qualify)\b", q, re.I)
+    return m.group(1) if m else q
+
+
+def name_score(a: frozenset, b: frozenset) -> float:
+    """Overlap of two name token sets as a share of the smaller one (1.0 = one name contains the other)."""
+    if not a or not b:
+        return 0.0
+    return len(a & b) / min(len(a), len(b))
+
+
+def match_by_name(kalshi: pd.DataFrame, poly: pd.DataFrame, tol: str = "2D", min_score: float = 0.67) -> pd.DataFrame:
+    """Pair each Polymarket market with the Kalshi market on the same subject and date.
+
+    kalshi: ticker, event_ticker, subject, date. poly: id, subject, date.
+    A pair needs dates within `tol`, a name score of at least `min_score`, and
+    a clear winner (the runner-up scores lower). Draws match Kalshi 'Tie'.
+    Returns id, ticker, event_ticker, score.
+    """
+    tie = frozenset({"tie"})
+    tok = [tie if str(s).lower() in ("tie", "draw") else name_tokens(s) for s in kalshi["subject"]]
+    k = kalshi.assign(tok=tok).sort_values("date").reset_index(drop=True)
+    kd = k["date"].to_numpy()
+    tol = pd.Timedelta(tol).to_timedelta64()
+    rows = []
+    for pid, subj, d in zip(poly["id"], poly["subject"], poly["date"]):
+        tok = tie if str(subj).lower() in ("tie", "draw") else name_tokens(subj)
+        d = np.datetime64(d.tz_convert(None) if getattr(d, "tzinfo", None) else d, "ns")
+        lo, hi = np.searchsorted(kd, d - tol), np.searchsorted(kd, d + tol, side="right")
+        if hi <= lo:
+            continue
+        cand = k.iloc[lo:hi]
+        s = np.array([name_score(tok, t) for t in cand["tok"]])
+        best = int(s.argmax())
+        if s[best] < min_score or (s >= s[best]).sum() > 1:
+            continue
+        r = cand.iloc[best]
+        rows.append({"id": pid, "ticker": r["ticker"], "event_ticker": r["event_ticker"], "score": float(s[best])})
+    return pd.DataFrame(rows, columns=["id", "ticker", "event_ticker", "score"])

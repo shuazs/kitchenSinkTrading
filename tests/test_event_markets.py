@@ -127,3 +127,18 @@ def test_first_entries_and_bankroll():
     assert led["contracts"].iloc[0] == n
     assert led["equity"].iloc[-1] == pytest.approx(1000 + n * (1 - 0.7 - 0.07 * 0.7 * 0.3))
     assert np.isfinite(kalshi_fee(0.5))
+
+
+def test_name_matching():
+    from backtester.event_markets import match_by_name, name_tokens, poly_subject
+    assert name_tokens("Club Atlético de Madrid") == frozenset({"atletico", "madrid"})
+    assert poly_subject("Will Chelsea FC win on 2026-01-07?", "Yes") == "Chelsea FC"
+    assert poly_subject("Will Chelsea FC vs. Fulham end in a draw?", "Yes") == "tie"
+    assert poly_subject("Bucks vs. Hornets", "Bucks") == "Bucks"
+    d = pd.Timestamp("2026-01-07")
+    k = pd.DataFrame({"ticker": ["G-CHE", "G-FUL", "G-TIE", "H-CHE"], "event_ticker": ["G", "G", "G", "H"],
+                      "subject": ["Chelsea", "Fulham", "Tie", "Chelsea"],
+                      "date": [d, d, d, d + pd.Timedelta("10D")]})
+    p = pd.DataFrame({"id": ["1", "2", "3"], "subject": ["Chelsea FC", "tie", "Arsenal"], "date": [d] * 3})
+    m = match_by_name(k, p, "2D").set_index("id")
+    assert m.loc["1", "ticker"] == "G-CHE" and m.loc["2", "ticker"] == "G-TIE" and "3" not in m.index
