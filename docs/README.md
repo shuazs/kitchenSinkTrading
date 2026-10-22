@@ -285,4 +285,6 @@ rebuilt from Yahoo): extreme fear precedes the best SPY month but with ~1.8x
 the volatility; no fear/greed, VIX-backwardation, credit, Michigan or crypto
 funding overlay beat UPRO vol target, multi-asset trend, BTC/ETH breakout or
 ensemble trend in both design and holdout. VIX > VIX3M exit helps plain SPY
-only. Mood at entry doesn't sort ETF breakout trades. No edge.
+only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
+market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
+after upbeat news weeks added only 0.02-0.05 Sharpe. No edge.

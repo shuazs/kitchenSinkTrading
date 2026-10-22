@@ -49,6 +49,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | Same-month seasonality | `seasonality.py` `SameMonthSeasonality` | lagged EW universe in every 5-yr block |
 | Crypto basis carry | `basis.py` `BasisCarry` (standalone) | ~3%/yr since 2021, below T-bills |
 | Market sentiment overlays | `sentiment_overlay.py` `SentimentOverlay` (wraps any strategy; `signal_key`, low/high, low_mult/high_mult) + `data/sentiment_indices.py` `mood_index` | extreme fear -> higher next-month SPY return but ~1.8x vol; no fear/greed, VIX-backwardation, credit or Michigan rule beats UPRO vol target or multi-asset trend in both 2009-18 and 2019-26 (walk-forward Sharpe 0.60 vs 0.72); VIX>VIX3M exit helps plain SPY only (Sharpe 0.45->0.61, 0.93->1.00) |
+| FinBERT market news mood overlay | same, `signal_key` 5d Benzinga headline z (`/mnt/project-files/finbert-sentiment/`) | halving exposure after very upbeat news weeks: UPRO VT Sharpe 0.68->0.73 (2010-15), 0.80->0.82 (2016-Jun 2020); tiny, data ends 2020; news mood mostly echoes yesterday's return |
 | Crypto funding-rate overlay | same, `signal_key` 7d BTC/ETH funding | cut on crowded longs helped 2021-23, hurt 2024-26 (2 episodes) |
 | Trump post overlay | `trump.py` `PostRiskOverlay` | no vol prediction; Sharpe flat, turnover x2 |
 | TACO dip | `trump.py` `EventDip` | 23 events, t 0.47 |

@@ -202,3 +202,23 @@ for group, t in [("equity ETFs", trades[trades["symbol"].isin(equity_etfs)]), ("
                      "trades": len(part)})
 print("ETF 20/10 breakout trade return by mood quintile at entry (q1 = fear)")
 save(pd.DataFrame(rows), "etf_breakout_trades_by_mood")
+
+# ------------------------------------- FinBERT market news mood (Benzinga)
+# Daily mean FinBERT score of all Benzinga headlines, 2009 - Jun 2020, from the
+# FinBERT news thread. Each row is keyed by the day whose open first sees the
+# text; the engine trades the open after, so the test is one day late (safe).
+NEWS = Path("/mnt/project-files/finbert-sentiment/benzinga_daily_mood.parquet")
+if NEWS.exists():
+    news = pd.read_parquet(NEWS)
+    news = news.loc[news["n"] >= 30, "z"].rolling(5, min_periods=3).mean()
+    eqdata.extra["news"] = news
+    p_news = {"2010-15": ("2010-01-01", "2015-12-31"), "2016-Jun 2020": ("2016-01-01", "2020-06-12")}
+    for name, base, symbols in [("UPRO vol target", upro, ["UPRO"]), ("SPY", BuyAndHold(symbols=["SPY"]), ["SPY"])]:
+        runs = {
+            "base": base,
+            "news gloom (5d z <= -1) x0.5": SentimentOverlay(base=base, symbols=symbols, signal_key="news", low=-1, low_mult=0.5),
+            "news gloom x2 (contrarian)": SentimentOverlay(base=base, symbols=symbols, signal_key="news", low=-1, low_mult=2.0),
+            "news cheer (5d z >= 1) x0.5": SentimentOverlay(base=base, symbols=symbols, signal_key="news", high=1, high_mult=0.5),
+        }
+        print(f"{name} with Benzinga news mood")
+        save(run_table(runs, eqdata, bt, p_news, spy), f"overlay_news_{name.split()[0].lower()}")
