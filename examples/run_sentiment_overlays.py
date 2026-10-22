@@ -222,3 +222,36 @@ if NEWS.exists():
         }
         print(f"{name} with Benzinga news mood")
         save(run_table(runs, eqdata, bt, p_news, spy), f"overlay_news_{name.split()[0].lower()}")
+
+# ------------------------------------------- FinBERT Reddit mood (2021-2025)
+# Daily FinBERT mood per subreddit, keyed by the day whose 09:00 ET first sees
+# the post; traded the open after. Each subreddit is z-scored on its own
+# trailing year, then averaged: WSB + stocks + investing for stocks,
+# r/CryptoCurrency for crypto.
+REDDIT = Path("/mnt/project-files/finbert-sentiment/reddit_daily_mood.parquet")
+if REDDIT.exists():
+    rd = pd.read_parquet(REDDIT)
+
+    def z(col: str) -> pd.Series:
+        s = rd[col].dropna()
+        return (s - s.rolling(252, min_periods=60).mean()) / s.rolling(252, min_periods=60).std()
+
+    eqdata.extra["reddit"] = pd.concat([z(f"mood_{s}") for s in ("wallstreetbets", "stocks", "investing")], axis=1).mean(axis=1).rolling(5, min_periods=3).mean()
+    cdata.extra["reddit"] = z("mood_cryptocurrency").rolling(7, min_periods=4).mean()
+
+    def reddit_rules(base, symbols) -> dict:
+        def O(**k):
+            return SentimentOverlay(base=base, symbols=symbols, signal_key="reddit", **k)
+
+        return {"base": base, "Reddit gloom (z <= -1) x0.5": O(low=-1, low_mult=0.5),
+                "Reddit gloom x2 (contrarian)": O(low=-1, low_mult=2.0), "Reddit cheer (z >= 1) x0.5": O(high=1, high_mult=0.5)}
+
+    p_r = {"2021-23": ("2021-04-01", "2023-12-31"), "2024-25": ("2024-01-01", "2025-12-31")}
+    for name, base, symbols, d, b, bench in [
+        ("UPRO vol target", upro, ["UPRO"], eqdata, bt, spy),
+        ("SPY", BuyAndHold(symbols=["SPY"]), ["SPY"], eqdata, bt, spy),
+        ("BTC+ETH breakout", Sleeves(sleeves=[(Breakout(entry=20, exit=10), ["BTC-USD", "ETH-USD"], 1.0)]), ["BTC-USD", "ETH-USD"], cdata, cbt, btc),
+        ("Ensemble trend", EnsembleTrend(target_vol=0.5), None, cdata, cbt, btc),
+    ]:
+        print(f"{name} with Reddit mood")
+        save(run_table(reddit_rules(base, symbols), d, b, p_r, bench), f"overlay_reddit_{name.split()[0].lower().replace('+', '_')}")
