@@ -71,12 +71,14 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_iran_oil.py`: Polymarket Iran-war odds as a leading signal for crude oil.
 - `watch_polymarket_iran.py`: Paper-trade the Iran-to-oil rule live.
+- `watch_kalshi_polymarket_us.py`: Log Kalshi and Polymarket US game books side by side, no orders, on Josh's machine; `--once` lists pairs, `--report` replays the Kalshi -> Polymarket rule net of the US fee.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
 - `run_crypto_pairs.py`: Crypto pairs: BTC/ETH daily, 19-coin rolling pairs + walk-forward, intraday 5m/15m/1h; writes CSVs to `crypto-pairs/results/`.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine

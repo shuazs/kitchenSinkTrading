@@ -15,9 +15,11 @@ Each has one example script and one test file. Verdicts are final unless noted.
 | `pairs.py` | `kalshi_fee`, `half_life`, `rolling_hedge`, `zscore`, `asset_leg_trades`, `fade_contract_spread` | prediction market vs asset as pairs | costs exceed edge |
 | `crypto_pairs.py` | `adf_t`, `band_positions`, `simulate_pair`, `rotation_returns`, `rolling_spread_z`, `select_pairs`, `rolling_pairs`, `trade_list`, `COST_BPS` | crypto pairs/stat-arb: BTC/ETH z-score, 19-coin cointegration/distance pairs, long-only rotation, 5m-1h intraday | no edge: BTC/ETH spread trends (reversion Sharpe -0.65 even at futures fees); pair walk-forward -10%/yr; intraday 0-4 bp gross per round trip vs 14 bp futures cost |
 | `jump_trades.py` | `jump_events`, `jump_trades`, `summarize`, `grid` | trade asset after a prediction-market jump (hourly) | Iran -> oil is the one lead (see strategies.md) |
+| `event_markets.py` | `kalshi_category`, `taker_prints`, `calibration`, `exclusive_events`, `bracket_arb`, `arb_episodes`, `cross_arb`, `snapshot_quotes`, `favourite_bets`, `first_entries`, `bankroll`, `lead_follow`, `name_tokens`, `poly_subject`, `match_by_name`, `POLY_US_SPORTS` | non-financial Kalshi/Polymarket (sports, politics, weather, culture): taker calibration, longshot/favourite rules, jumps, sum-to-$1 and two-venue arbitrage, Kalshi -> Polymarket lead | takers lose 1-3c/contract everywhere; arbs 0.5-2c taken by bots in <1s; candidate: follow Kalshi on Polymarket sports when last prices differ 5c+ (60s late, 60min hold +5.6c/share, t 7, 1,943 trades), Polymarket fee 0 assumed, paper-trade first. Across 5,640 matched pairs the lead holds for live events (US games +5.2c, soccer +7.8c, UFC, esports) and not for Fed, futures, elections or awards. Net of the Polymarket US sports taker fee (5%·p(1-p)) US games +3.6c (t 7), soccer +6.4c |
 | `memecoin_calls.py` | `buy`, `sell`, `simulate_calls`, `bankroll` | following pump.fun calls on the bonding curve | loses in every realistic variant |
 
 Kalshi fee: `0.07 * p * (1-p)` per contract (taker), rounded up to the cent.
+Makers earn what takers lose (0.4-2c/contract by category, ~2c on mentions) before maker fees and queue position.
 Untested: passive (maker) Kalshi orders, which need a live order-book recorder.
 
 ## `ml/`
