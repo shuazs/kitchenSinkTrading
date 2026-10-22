@@ -10,7 +10,7 @@ plus a walk-forward that re-picks signal and top_n each year.
 """
 import pandas as pd
 
-from backtester import COSTS, Backtester, CostModel
+from backtester import Backtester, CostModel
 from backtester.data import cot
 from backtester.data.fred import tbill_rate
 from backtester.data.yahoo import load_market
