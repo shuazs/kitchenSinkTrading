@@ -31,7 +31,7 @@ def fundamentals(flip_after=None):
 
 def market(flip_after=None, spy_drift=0.0003, unrate=None):
     stocks = {f"S{i}": bars(seed=i) for i in range(N_STOCKS)}
-    etfs = {s: bars(seed=100 + k, drift=spy_drift if s == "SPY" else 0.0002) for k, s in enumerate(["SPY", "EFA", "EEM", "IJR", "IEF", "BIL"])}
+    etfs = {s: bars(seed=100 + k, drift=spy_drift if s == "SPY" else 0.0002) for k, s in enumerate(["SPY", "QQQ", "EFA", "EEM", "IJR", "IEF", "BIL"])}
     extra = {
         "members": pd.Series([frozenset(stocks)], index=[IDX[0]]),
         "fundamentals": fundamentals(flip_after),
@@ -43,7 +43,7 @@ def market(flip_after=None, spy_drift=0.0003, unrate=None):
     return MarketData({**stocks, **etfs}, extra)
 
 
-QUALITY_ONLY = dict(factors={"quality": 1.0}, macro=False, sleeve_trend=False, vol_target=None, min_history=200)
+QUALITY_ONLY = dict(stock_etf=None, factors={"quality": 1.0}, macro=False, sleeve_trend=False, vol_target=None, min_history=200)
 
 
 def test_as_of_ignores_values_before_they_are_public():
@@ -71,8 +71,14 @@ def test_new_filing_changes_picks_only_after_it_is_public():
     assert after[[f"S{i}" for i in range(10)]].sum() > 0.99
 
 
+def test_default_holds_qqq_intl_and_small_caps():
+    w = FundamentalAllocator(min_history=200, macro=False, sleeve_trend=False, vol_target=None).generate_targets(market())
+    last = w.iloc[-1]
+    assert np.isclose(last["QQQ"], 0.8) and np.isclose(last["IJR"], 0.1) and np.isclose(last[["EFA", "EEM"]].sum(), 0.1)
+
+
 def test_weights_are_long_only_and_fully_invested():
-    w = FundamentalAllocator(min_history=200, vol_target=0.05).generate_targets(market())
+    w = FundamentalAllocator(stock_etf=None, min_history=200, vol_target=0.05).generate_targets(market())
     assert (w >= -1e-12).all().all()
     # Fully invested once the defensive assets have 6 months of history.
     assert np.allclose(w.loc["2012-08-01":].sum(axis=1), 1.0)
@@ -84,6 +90,6 @@ def test_weak_economy_and_downtrend_goes_fully_defensive():
     unrate = pd.Series(np.linspace(4, 9, len(months)), index=months)  # steadily rising
     data = market(spy_drift=-0.002, unrate=unrate)
     assert macro_stress(data, IDX).iloc[-1]
-    w = FundamentalAllocator(min_history=200).generate_targets(data)
+    w = FundamentalAllocator(stock_etf=None, min_history=200).generate_targets(data)
     last = w.iloc[-1]
     assert last[["IEF", "BIL"]].sum() > 0.999

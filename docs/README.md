@@ -256,3 +256,5 @@ sleeve at 80/10/10 it made 16.0%/yr vs SPY 17.4% with a -27% vs -34%
 drawdown in 2019-2026, and 14.6% vs 10.7% (-27% vs -55%) over 2007-2026;
 that is a bet that Nasdaq keeps beating the S&P, as it has since 2007.
 Mega-cap fundamental picks worked in 2019-2026 but not in 2010-2018.
+Josh picked the 80/10/10 QQQ version as the class default; the stock picker
+is `stock_etf=None` with 60/20/20 sleeves.

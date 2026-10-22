@@ -31,23 +31,26 @@ spy = data.bars["SPY"]["close"]
 cols = ["cagr", "volatility", "sharpe", "max_drawdown", "annual_turnover", "cost_drag_pct_per_year", "beta"]
 
 off = dict(macro=False, sleeve_trend=False, vol_target=None)
+# The original stock picker: 60/20/20 with fundamental picks as the US sleeve.
+# The class default is now 80/10/10 with QQQ as the US sleeve.
+PICKS = dict(stock_etf=None, sleeves={"stocks": 0.6, "intl": 0.2, "small": 0.2})
 US = dict(sleeves={"stocks": 1.0})
 runs = {
     "SPY": FA(**US, stock_etf="SPY", **off),
     "RSP (equal-weight S&P 500)": FA(**US, stock_etf="RSP", **off),
-    "Equal weight of members Yahoo has": FA(**US, top_n=None, **off),
-    "Static 60/20/20 SPY/EFA+EEM/IJR": FA(stock_etf="SPY", **off),
-    "US picks only (quality + low vol)": FA(**US, **off),
-    "Manager, no risk overlays": FA(**off),
-    "Manager (defaults)": FA(),
-    "Manager + credit-spread signal": FA(macro_signals=("unemployment", "credit")),
-    "Manager, 50% SPY core + 2x ETF when calm": FA(core_frac=0.5, lever_frac=0.5),
+    "Equal weight of members Yahoo has": FA(**US, stock_etf=None, top_n=None, **off),
+    "Static 60/20/20 SPY/EFA+EEM/IJR": FA(stock_etf="SPY", sleeves=PICKS["sleeves"], **off),
+    "US picks only (quality + low vol)": FA(**US, stock_etf=None, **off),
+    "Stock picker, no risk overlays": FA(**PICKS, **off),
+    "Stock picker": FA(**PICKS),
+    "Stock picker + credit-spread signal": FA(**PICKS, macro_signals=("unemployment", "credit")),
+    "Stock picker, 50% SPY core + 2x ETF when calm": FA(**PICKS, core_frac=0.5, lever_frac=0.5),
     # Big-tech tilts, added after seeing the holdout (so the holdout is not clean for these).
     "QQQ": FA(**US, stock_etf="QQQ", **off),
-    "Manager, US sleeve = QQQ": FA(stock_etf="QQQ"),
-    "Manager 80/10/10, US sleeve = QQQ": FA(stock_etf="QQQ", sleeves={"stocks": 0.8, "intl": 0.1, "small": 0.1}),
+    "60/20/20, US sleeve = QQQ": FA(sleeves=PICKS["sleeves"]),
+    "Manager (defaults: 80/10/10, US sleeve = QQQ)": FA(),
     "100% QQQ + macro switch + vol cap": FA(**US, stock_etf="QQQ"),
-    "Mega-cap quality + momentum picks, cap-weighted": FA(factors={"quality": 1, "momentum": 1, "size": 1}, weighting="cap"),
+    "Mega-cap quality + momentum picks, cap-weighted": FA(**PICKS, factors={"quality": 1, "momentum": 1, "size": 1}, weighting="cap"),
 }
 periods = {
     "Design, full cycle": ("2007-06-01", "2018-12-31"),
@@ -79,7 +82,7 @@ class Mix(FA):
 
 recent = data.slice("2009-07-01")
 recent.extra = data.extra
-eq, picks = walk_forward(Mix, {"mix": [0, 1, 2, 3], "top_n": [15, 25]}, recent, bt, train_years=5, test_years=1)
+eq, picks = walk_forward(Mix, {"mix": [0, 1, 2, 3], "top_n": [15, 25]}, recent, bt, train_years=5, test_years=1, **PICKS)
 res = Result(eq, pd.DataFrame(index=eq.index), pd.DataFrame(index=eq.index), pd.DataFrame(columns=["qty", "fill_price"]),
              pd.Series(0.0, index=eq.index), eq.iloc[0], "walk-forward")
 print(f"\nWalk-forward ({len(MIXES) * 2} variants per window)")

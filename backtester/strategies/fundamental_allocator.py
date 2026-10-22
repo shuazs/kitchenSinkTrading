@@ -1,9 +1,11 @@
 """Long-term fundamental portfolio manager across US large caps, international
 and small caps, with a macro regime switch and portfolio-level risk control.
 
-Three sleeves (default 60/20/20):
+Three sleeves. The default is 80% QQQ, 10% international, 10% small caps,
+Josh's pick after the big-tech test below; set `stock_etf=None` and
+`sleeves` 60/20/20 for the original fundamental stock picker.
 
-- US stocks: point-in-time S&P 500 members ranked monthly, each factor
+- US stocks: QQQ by default, or point-in-time S&P 500 members ranked monthly, each factor
   ranked within its sector. Available factors: value (earnings, book and
   cash flow yield), quality (ROE, gross profitability, cash flow on assets,
   low leverage, low accruals), 12-1 month momentum and low volatility. The
@@ -180,11 +182,11 @@ def macro_stress(data: MarketData, index: pd.DatetimeIndex, sahm: float = 0.3, c
 class FundamentalAllocator(Strategy):
     name = "fundamental_allocator"
     params = {
-        "sleeves": {"stocks": 0.6, "intl": 0.2, "small": 0.2},
+        "sleeves": {"stocks": 0.8, "intl": 0.1, "small": 0.1},
         "intl": ("EFA", "EEM"),
         "small": ("IJR",),
         "market": "SPY",
-        "stock_etf": None,  # hold this ETF instead of picking stocks
+        "stock_etf": "QQQ",  # hold this ETF as the US sleeve; None picks stocks
         "top_n": 25,  # None holds every eligible member equally
         "max_sector": 0.25,
         "factors": {"value": 0.0, "quality": 1.0, "momentum": 0.0, "lowvol": 1.0, "size": 0.0},
