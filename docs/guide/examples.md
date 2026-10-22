@@ -51,6 +51,7 @@ verdicts are in [strategies.md](strategies.md).
 
 ## Trump / events
 
+- `run_sentiment_overlays.py`: Market sentiment (mood index, VIX, credit, Michigan, crypto funding) as forecaster and overlay on the keepers; `[out_dir]` saves CSVs.
 - `run_trump_overlay.py`: Cut leverage after a burst of Trump posts on tariffs or markets.
 - `run_taco_dip.py`: The "TACO" trade: buy index ETFs after a tariff-scare selloff.
 - `run_gov_stakes.py`: Buy companies after the first report of a US government equity stake.
@@ -76,6 +77,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
