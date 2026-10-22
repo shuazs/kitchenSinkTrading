@@ -25,6 +25,7 @@ import numpy as np
 import pandas as pd
 
 KALSHI_TAKER = 0.07
+POLY_US_SPORTS = 0.05  # Polymarket US taker fee on sports since Jul 2026, x p(1-p); makers pay nothing
 BUCKETS = [0, 0.05, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 0.95, 1.0001]
 
 _FIN = (r"^(KX)?(INX|NASDAQ|BTC|ETH|SOL|XRP|DOGE|FED|CPI|GDP|PAYROLL|U3|JOBLESS|PCE|PPI|RATECUT|TNOTE|AAAGAS|WTI|OIL|"
@@ -385,3 +386,97 @@ def match_by_name(kalshi: pd.DataFrame, poly: pd.DataFrame, tol: str = "2D", min
         r = cand.iloc[best]
         rows.append({"id": pid, "ticker": r["ticker"], "event_ticker": r["event_ticker"], "score": float(s[best])})
     return pd.DataFrame(rows, columns=["id", "ticker", "event_ticker", "score"])
+
+
+def pair_games(kalshi: list[dict], poly: list[dict]) -> list[dict]:
+    """Pair live Kalshi game markets with Polymarket US markets on the same game and side.
+
+    Games match on date and team codes (Kalshi KXNBAGAME-26JAN30DETGSW vs
+    Polymarket slug nba-det-gsw-2026-01-30, either team order). The side
+    matches on the Polymarket team abbreviation or name against the Kalshi
+    ticker suffix and yes_sub_title. If the Polymarket market's long side is
+    the opponent, `flip` is True and its prices become 1 - price.
+    Returns kalshi_ticker, poly_slug, flip.
+    """
+    from .data.live_books import kalshi_game_key, poly_game_key
+
+    games: dict = {}
+    for m in poly:
+        key = poly_game_key(m.get("slug", "")) or poly_game_key(m.get("eventSlug", ""))
+        if key:
+            games.setdefault((key[0], "".join(key[1])), []).append(m)
+            games.setdefault((key[0], "".join(reversed(key[1]))), []).append(m)
+
+    def side_tokens(m):
+        t = m.get("team") or {}
+        abbr = {str(t.get(k, "")).upper() for k in ("abbreviation", "displayAbbreviation") if t.get(k)}
+        name = " ".join(str(x) for x in (t.get("name"), t.get("alias"), m.get("outcome")) if x)
+        tok = frozenset({"tie"}) if re.search(r"\b(draw|tie)\b", name, re.I) else name_tokens(name)
+        return abbr, tok
+
+    def same(kt, ksub, m):
+        abbr, tok = side_tokens(m)
+        code = kt.rsplit("-", 1)[-1].upper()
+        ktok = frozenset({"tie"}) if code == "TIE" or str(ksub).lower() in ("tie", "draw") else name_tokens(ksub)
+        return code in abbr or name_score(ktok, tok) >= 0.67
+
+    by_event: dict = {}
+    for k in kalshi:
+        by_event.setdefault(k.get("event_ticker", ""), []).append(k)
+    out = []
+    for ev, ks in by_event.items():
+        key = kalshi_game_key(ev)
+        cands = games.get(key, []) if key else []
+        for k in ks:
+            hit = [m for m in cands if same(k["ticker"], k.get("yes_sub_title", ""), m)]
+            if len(hit) == 1:
+                out.append({"kalshi_ticker": k["ticker"], "poly_slug": hit[0]["slug"], "flip": False})
+                continue
+            # A single Polymarket market per game whose long side is the other team.
+            opp = [o for o in ks if o is not k]
+            if len(cands) == 1 and len(ks) == 2 and same(opp[0]["ticker"], opp[0].get("yes_sub_title", ""), cands[0]):
+                out.append({"kalshi_ticker": k["ticker"], "poly_slug": cands[0]["slug"], "flip": True})
+    return out
+
+
+def gap_followthrough(quotes: pd.DataFrame, threshold: float = 0.05, latency: str = "60s", hold: str = "60min",
+                      rate: float = POLY_US_SPORTS) -> pd.DataFrame:
+    """Replay the Kalshi -> Polymarket rule on logged top-of-book quotes.
+
+    quotes: time, kalshi_ticker, k_bid, k_ask, p_bid, p_ask (Polymarket
+    already oriented to the Kalshi side). A signal is a poll where the Kalshi
+    mid moved and the mid gap first reaches `threshold`. Enter on Polymarket at
+    the first poll `latency` later, crossing the spread (buy the long side at
+    the ask if Kalshi is higher, else the short side at 1 - bid); exit by
+    crossing back at the first poll `hold` after entry (or the last poll).
+    ret is per share after the taker fee on both legs; `toward` is how far the
+    Polymarket mid moved toward Kalshi from signal to exit. One trade at a
+    time per market.
+    """
+    lat, hd = pd.Timedelta(latency), pd.Timedelta(hold)
+    rows = []
+    for tk, q in quotes.sort_values("time").groupby("kalshi_ticker"):
+        q = q.reset_index(drop=True)
+        km, pm = (q["k_bid"] + q["k_ask"]) / 2, (q["p_bid"] + q["p_ask"]) / 2
+        gap = km - pm
+        sig = (gap.abs() >= threshold) & (gap.shift().abs() < threshold) & (km != km.shift())
+        t = q["time"].dt.as_unit("ns").astype("int64").to_numpy()
+        free_at = t[0]
+        for i in np.flatnonzero(sig.to_numpy()):
+            if t[i] < free_at:
+                continue
+            e = int(np.searchsorted(t, t[i] + lat.value))
+            if e >= len(q):
+                break
+            x = min(int(np.searchsorted(t, t[e] + hd.value)), len(q) - 1)
+            up = gap.iat[i] > 0
+            p_in = q["p_ask"].iat[e] if up else 1 - q["p_bid"].iat[e]
+            p_out = q["p_bid"].iat[x] if up else 1 - q["p_ask"].iat[x]
+            if not (np.isfinite(p_in) and np.isfinite(p_out)) or x <= e:
+                continue
+            fee = rate * (p_in * (1 - p_in) + p_out * (1 - p_out))
+            rows.append({"kalshi_ticker": tk, "signal": q["time"].iat[i], "entry": q["time"].iat[e], "exit": q["time"].iat[x],
+                         "gap": gap.iat[i], "p_in": p_in, "p_out": p_out, "ret": p_out - p_in - fee,
+                         "toward": np.sign(gap.iat[i]) * (pm.iat[x] - pm.iat[i])})
+            free_at = t[x]
+    return pd.DataFrame(rows, columns=["kalshi_ticker", "signal", "entry", "exit", "gap", "p_in", "p_out", "ret", "toward"])

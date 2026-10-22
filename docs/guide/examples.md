@@ -69,6 +69,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_iran_oil.py`: Polymarket Iran-war odds as a leading signal for crude oil.
 - `watch_polymarket_iran.py`: Paper-trade the Iran-to-oil rule live.
+- `watch_kalshi_polymarket_us.py`: Log Kalshi and Polymarket US game books side by side (no orders); `--once` lists pairs, `--report` replays the Kalshi -> Polymarket rule net of the US fee.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
@@ -77,6 +78,6 @@ verdicts are in [strategies.md](strategies.md).
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
-Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
+Notes: `watch_polymarket_iran.py` and `watch_kalshi_polymarket_us.py` are log-only and run on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.

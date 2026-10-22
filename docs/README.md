@@ -53,6 +53,10 @@ Fed decisions): the lead is a live-event effect (US games +5.2c, soccer
 Fed, futures, elections and awards show none, and there the venues sit within
 about 1.6c of each other. Flat $250 trades capped at printed size made ~$69k
 over Apr 2025-Jan 2026 with at most $1.6k tied up (upper bound).
+Josh can only trade Polymarket US, a separate book with no public history,
+whose sports takers pay 5%·p(1-p). Net of that fee the lead is still +3.6c
+(US games) and +6.4c (soccer) per share, ~$57k on the same flat trades;
+`watch_kalshi_polymarket_us.py` logs both live books to test it on the US book.
 
 **Research shortlist.** Nine candidates for a small, risk-tolerant account,
 ranked by evidence: leveraged-ETF 200-day trend filter, crypto N-day-high

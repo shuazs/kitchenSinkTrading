@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from backtester.event_markets import arb_episodes, cross_arb, lead_follow, taker_prints  # noqa: E402
+from backtester.event_markets import POLY_US_SPORTS, arb_episodes, cross_arb, lead_follow, taker_prints  # noqa: E402
 
 DIR = os.environ.get("KS_EVENT_DIR", "/mnt/project-files/event-markets")
 
@@ -118,6 +118,10 @@ def families() -> None:
         x = lf[(lf["th"] == th) & (lf["lat"] == lat) & (lf["hold"] == hold)]
         print(f"-- {lat} late, {hold} hold, exit at the next opposite print")
         print(x.groupby(["family", "dir"]).apply(stats).round(2).unstack("dir").to_string())
+    us = lf[(lf["th"] == 0.05) & (lf["lat"] == "60s") & (lf["hold"] == "60min") & (lf["dir"] == "K->P")]
+    us = us.assign(net=us["ret"] - POLY_US_SPORTS * (us["p_in"] * (1 - us["p_in"]) + us["p_out"] * (1 - us["p_out"])))
+    print("-- Kalshi -> Polymarket, 60s late, 60min hold, net of the Polymarket US taker fee on both legs")
+    print(us.groupby("family").apply(stats, col="net").round(2).to_string())
     print("-- 60s late, held to settlement")
     print(settle.groupby(["family", "dir"]).apply(stats, col="ret_s").round(2).unstack("dir").to_string())
     print("\n== By market family: two-venue arbitrage (same contract, YES on one venue + NO on the other, 10s)")
