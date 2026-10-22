@@ -28,6 +28,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | SVXY on VIX < VIX3M | `vix_term_structure.py` `VixTermStructure` | 29%/-55%, fragile to params |
 | Sector rotation | `sector_rotation.py` `SectorRotation` (top_n 3, SPY 200d) | 9.9%/-20% |
 | Turn of month | `turn_of_month.py` `TurnOfMonth` | TQQQ at TOM else QQQ 22.6%/-52% |
+| Fundamental portfolio manager | `fundamental_allocator.py` `FundamentalAllocator` (sleeves 60/20/20 US picks/EFA+EEM/IJR, factors quality+lowvol, top_n 25, max_sector 0.25, macro unemployment+SPY 200d, vol_target 0.18; `stock_etf`, `core_frac`, `lever_frac`, `weighting`) | 2007-18 11.0%/-17% vs SPY 6.5%/-55%; holdout 2019-26 11.1%/-35% vs 17.4%/-34% (no edge). QQQ as US sleeve 80/10/10: 16.0%/-27% holdout, 14.6%/-27% 2007-26 (post-holdout tilt) |
 | Wheel | `wheel.py` `Wheel` (standalone; XLF, put 0.25d, call 0.30d) | XLF 4.9%/-59% vs 5.7%/-83%; ±2%/yr skew uncertainty |
 | RSI(2) mean reversion | `mean_reversion.py` `RSIMeanReversion` (rsi_n 2, entry 10, exit 70, trend_ma 200) | 6.5%/-20%, 26% invested; walk-forward 4.5% |
 | Dual momentum (GEM) | `dual_momentum.py` `DualMomentum` | 5.9%/-33% vs SPY 10.9% |

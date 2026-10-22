@@ -16,7 +16,8 @@ first call.
 | --- | --- | --- |
 | `yahoo.py` | `load_bars(sym,start,end,interval)`, `load_market(symbols,start,**extra) -> MarketData`, `load_hourly` (~730 days of 1h), `option_chain` (today only), `headlines`, `append_headlines` | yfinance |
 | `yahoo_batch.py` | `prefetch(symbols)` | yfinance, many tickers |
-| `fred.py` | `load_series(id)`, `tbill_rate()` (for `cash_rate`) | FRED CSV, no key |
+| `fred.py` | `load_series(id)`, `tbill_rate()` (for `cash_rate`), `unemployment_rate()` (HF mirror fallback, ends Feb 2026) | FRED CSV, no key |
+| `fundamentals.py` | `market_data()` -> MarketData for `FundamentalAllocator`; `panel()` (EDGAR frames, all filers, 60-90 day lag), `as_of`, `sectors` (SIC), `load_bars` (total-return OHLC + `raw_close`), `sp500_universe` (renames mapped), `coverage` | data.sec.gov frames + Yahoo; first run ~15 min |
 | `fx.py` | `load_fx_market(ccys)`, `total_return_index`, `known_rate_gap` | Yahoo FX + FRED rates |
 | `edgar.py` | `company_facts`, `fact_series`, `earnings_surprise` (SUE), `earnings_dates` (8-K 2.02), `insider_trades`, `parse_form4` | data.sec.gov |
 | `insider_bulk.py` | `open_market_trades(start,end)`, `attach_current_tickers`, `add_market_cap` | SEC Form 3/4/5 quarterly sets |
@@ -48,6 +49,6 @@ Polymarket: HF `SII-WANGZJ/Polymarket_data`.
 
 ## Network from the cloud environment
 
-Reachable: Yahoo, FRED, SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org.
+Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
+Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org.
 Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.
