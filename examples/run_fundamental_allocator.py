@@ -42,6 +42,12 @@ runs = {
     "Manager (defaults)": FA(),
     "Manager + credit-spread signal": FA(macro_signals=("unemployment", "credit")),
     "Manager, 50% SPY core + 2x ETF when calm": FA(core_frac=0.5, lever_frac=0.5),
+    # Big-tech tilts, added after seeing the holdout (so the holdout is not clean for these).
+    "QQQ": FA(**US, stock_etf="QQQ", **off),
+    "Manager, US sleeve = QQQ": FA(stock_etf="QQQ"),
+    "Manager 80/10/10, US sleeve = QQQ": FA(stock_etf="QQQ", sleeves={"stocks": 0.8, "intl": 0.1, "small": 0.1}),
+    "100% QQQ + macro switch + vol cap": FA(**US, stock_etf="QQQ"),
+    "Mega-cap quality + momentum picks, cap-weighted": FA(factors={"quality": 1, "momentum": 1, "size": 1}, weighting="cap"),
 }
 periods = {
     "Design, full cycle": ("2007-06-01", "2018-12-31"),

@@ -251,3 +251,8 @@ didn't fix it; adding a credit-spread signal held the holdout drawdown to
 -19% but at 9.8%/yr. Survivorship bias of Yahoo's universe: equal weight of
 the members it still has beat RSP by about 1.2%/yr in 2010-2018 (72-86% of
 members covered) and by 0% in 2019-2026 (89-99%). Verdict: no edge over SPY.
+Tilting to big tech (tested after seeing the holdout): with QQQ as the US
+sleeve at 80/10/10 it made 16.0%/yr vs SPY 17.4% with a -27% vs -34%
+drawdown in 2019-2026, and 14.6% vs 10.7% (-27% vs -55%) over 2007-2026;
+that is a bet that Nasdaq keeps beating the S&P, as it has since 2007.
+Mega-cap fundamental picks worked in 2019-2026 but not in 2010-2018.

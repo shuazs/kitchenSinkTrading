@@ -232,7 +232,7 @@ def stock_cik_map(tickers) -> dict[str, int]:
     return {t: cik[t] for t in tickers if t in cik}
 
 
-ETFS = ["SPY", "RSP", "EFA", "EEM", "IJR", "IEF", "BIL", "HYG", "LQD", "SHY", "TLT", "GLD", "SSO"]
+ETFS = ["SPY", "QQQ", "RSP", "EFA", "EEM", "IJR", "IEF", "BIL", "HYG", "LQD", "SHY", "TLT", "GLD", "SSO"]
 
 
 def market_data(since: str = "2009-01-01", etfs=ETFS, macro: pd.DataFrame | None = None):

@@ -38,7 +38,11 @@ Result ($5,000, costs; examples/run_fundamental_allocator.py): 11.0%/yr,
 max drawdown -17% in 2007-2018 vs SPY 6.5%, -55% (the gain is 2008), but
 11.1% vs 17.4% and -35% vs -34% in the 2019-2026 holdout. Quality + low vol
 lagged mega-cap growth, and the macro switch is too slow for a crash like
-March 2020.
+March 2020. Tilting to big tech (after seeing the holdout): US sleeve = QQQ
+at 80/10/10 made 16.0% vs 17.4%, -27% vs -34% drawdown in 2019-2026 and
+14.6% vs 10.7%, -27% vs -55% over 2007-2026; 100% QQQ with the macro switch
+and vol cap 16.7% / -27% and 15.6% / -27%. Mega-cap picks (size factor,
+cap-weighted) did well in 2019-2026 but badly in 2010-2018.
 
 data.extra needs: "members" (date -> frozenset of tickers, point-in-time
 index membership), "fundamentals" (long table from data.fundamentals.panel),
@@ -131,7 +135,9 @@ def factor_scores(data: MarketData, dates: pd.DatetimeIndex, min_history: int = 
             "quality": ranks[QUALITY].mean(axis=1, skipna=True).where(ranks[QUALITY].notna().sum(axis=1) >= 3),
             "momentum": _sector_rank(mom[uni], sec),
             "lowvol": _sector_rank(-vol.loc[d, uni], sec),
+            "size": mcap.rank(pct=True),
             "vol": vol.loc[d, uni],
+            "mcap": mcap,
             "sector": sec,
         })
         out[d] = tab
@@ -181,9 +187,9 @@ class FundamentalAllocator(Strategy):
         "stock_etf": None,  # hold this ETF instead of picking stocks
         "top_n": 25,  # None holds every eligible member equally
         "max_sector": 0.25,
-        "factors": {"value": 0.0, "quality": 1.0, "momentum": 0.0, "lowvol": 1.0},
+        "factors": {"value": 0.0, "quality": 1.0, "momentum": 0.0, "lowvol": 1.0, "size": 0.0},
         "buffer": 2.0,
-        "weighting": "equal",  # or "inv_vol"
+        "weighting": "equal",  # or "inv_vol", "cap" (market value)
         "stock_rebalance_months": 1,
         "macro": True,
         "caution_mult": 1.0,
@@ -228,7 +234,9 @@ class FundamentalAllocator(Strategy):
                 break
         if not picks:
             return pd.Series(dtype=float)
-        if p["weighting"] == "inv_vol":
+        if p["weighting"] == "cap":
+            w = tab.loc[picks, "mcap"].fillna(tab["mcap"].median())
+        elif p["weighting"] == "inv_vol":
             w = 1 / tab.loc[picks, "vol"].clip(lower=0.005)
         else:
             w = pd.Series(1.0, index=picks)
