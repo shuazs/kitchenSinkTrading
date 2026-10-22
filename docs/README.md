@@ -26,6 +26,7 @@ prices, short crypto history), not forecasts.
 | [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 
 ## Summaries
 
@@ -231,3 +232,14 @@ trend rules are profitable before costs in 80-100% of variants, but earn only
 about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
 spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
 15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
+
+**Sentiment strategies.** Literature review of survey and composite indices
+(Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
+social media and retail attention, and crypto sentiment: slow measures
+forecast years, fast text forecasts days but sits in small caps and decays as
+tools spread. Tests (surveys blocked, so a Fear & Greed style mood index was
+rebuilt from Yahoo): extreme fear precedes the best SPY month but with ~1.8x
+the volatility; no fear/greed, VIX-backwardation, credit, Michigan or crypto
+funding overlay beat UPRO vol target, multi-asset trend, BTC/ETH breakout or
+ensemble trend in both design and holdout. VIX > VIX3M exit helps plain SPY
+only. Mood at entry doesn't sort ETF breakout trades. No edge.

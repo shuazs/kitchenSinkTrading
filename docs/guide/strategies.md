@@ -47,6 +47,8 @@ Defaults shown are the class defaults, not necessarily the best run.
 | Earnings premium | `earnings.py` `EarningsPremium` | 11.4% vs SPY 11.1%; costs take the edge |
 | Same-month seasonality | `seasonality.py` `SameMonthSeasonality` | lagged EW universe in every 5-yr block |
 | Crypto basis carry | `basis.py` `BasisCarry` (standalone) | ~3%/yr since 2021, below T-bills |
+| Market sentiment overlays | `sentiment_overlay.py` `SentimentOverlay` (wraps any strategy; `signal_key`, low/high, low_mult/high_mult) + `data/sentiment_indices.py` `mood_index` | extreme fear -> higher next-month SPY return but ~1.8x vol; no fear/greed, VIX-backwardation, credit or Michigan rule beats UPRO vol target or multi-asset trend in both 2009-18 and 2019-26 (walk-forward Sharpe 0.60 vs 0.72); VIX>VIX3M exit helps plain SPY only (Sharpe 0.45->0.61, 0.93->1.00) |
+| Crypto funding-rate overlay | same, `signal_key` 7d BTC/ETH funding | cut on crowded longs helped 2021-23, hurt 2024-26 (2 episodes) |
 | Trump post overlay | `trump.py` `PostRiskOverlay` | no vol prediction; Sharpe flat, turnover x2 |
 | TACO dip | `trump.py` `EventDip` | 23 events, t 0.47 |
 | Gov equity stakes | `trump.py` `GovStakeEvents` | 13% gap before tradeable; 20/60d holds lose |
