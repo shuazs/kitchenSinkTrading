@@ -43,6 +43,11 @@ verdicts are in [strategies.md](strategies.md).
 - `run_basis_carry.py`: Crypto cash-and-carry (long spot, short the CME front month) on $5,000.
 - `run_fundamental_allocator.py`: Long-term fundamental portfolio manager (S&P 500 picks on SEC fundamentals + intl + small caps, macro switch) vs SPY: design, holdout, walk-forward, survivorship check, big-tech (QQQ) tilts. Needs `SEC_USER_AGENT`.
 
+## Fund
+
+- `run_fund_plan.py`: Re-runs the keepers and combines them into the $5,000 fund (Balanced / Growth) with rebalancing and drawdown-brake variants; `[out_dir]` saves equity CSVs.
+- `fund_signals.py`: Today's dollar target per symbol for the fund plan (`[equity] [balanced|growth]`), no orders.
+
 ## Crypto
 
 - `run_crypto_strategies.py`: Crypto momentum basket, volatility-targeted breakout and a capped meme coin sleeve, against the plain BTC+ETH breakout and buy and hold.

@@ -10,11 +10,11 @@ Defaults shown are the class defaults, not necessarily the best run.
 
 | Strategy | File / class | Key params (default) | Result | Example |
 | --- | --- | --- | --- | --- |
-| Crypto ensemble trend | `crypto.py` `EnsembleTrend` | lookbacks (5..250), top_n 20, target_vol 0.25, band 0.25 | 20%/yr, -20% DD at 50% vol target (Sharpe 1.2, ~20% invested); 100% target 36%/-41%; walk-forward 12%/-9% | `run_ensemble_trend.py` |
+| Crypto ensemble trend | `crypto.py` `EnsembleTrend` | lookbacks (5..250), top_n 20, target_vol 0.25, band 0.25 | 20%/yr, -20% DD at 50% vol target (Sharpe 1.2, ~20% invested); 100% target 36%/-41%; walk-forward 12%/-9%; BTC+ETH only (`top_n` 2, `min_history` 60) 28%/-32% at 0.4% fees 2018-26, ~110 trades/yr vs ~1,900 for top 20 | `run_ensemble_trend.py` |
 | BTC+ETH Donchian breakout | `breakout.py` `Breakout` | entry 20, exit 10, max_positions | 39.5%/-64% vs BTC 31.4%/-83% (2017+); fees decide it (0.1% fee: 50.8%); walk-forward 36% | `run_breakout.py`, `run_robustness.py` |
 | Vol-targeted breakout | `crypto.py` `VolTargetBreakout` | Breakout + target_vol 0.5, vol_lookback 30 | cuts DD -62% -> -37%, same Sharpe | `run_crypto_strategies.py` |
 | UPRO vol target | `vol_target.py` `VolTarget` | symbol UPRO, target_vol 0.2, lookback 20, band 0.1 | 17.4%/-27%; HAR forecast version (`ml.vol_forecast.ForecastVolTarget`) Sharpe 0.86 -> 0.89 | `run_vol_target.py` |
-| Multi-asset ETF trend | `multi_asset_trend.py` `MultiAssetTrend` | lookbacks (21,63,126,252), target_vol 0.15, max_gross 1.5, shorts via inverse ETFs | 6.9%/-18% since 2007, +39% in 2008; 50% SSO + 50% trend 16.3% vs SPY 15.1% | `run_multi_asset_trend.py` |
+| Multi-asset ETF trend | `multi_asset_trend.py` `MultiAssetTrend` | lookbacks (21,63,126,252), target_vol 0.15, max_gross 1.5, shorts via inverse ETFs | 6.9%/-18% since 2007 with BTC in the universe, +39% in 2008; ETFs only 3.9%/-22% (1.5x) or 3.3%/-16% at 1x gross; 50% SSO + 50% trend 16.3% vs SPY 15.1% | `run_multi_asset_trend.py` |
 | Pension month-end | `pension_rebalance.py` `PensionRebalance` | stock SPY, bond TLT, days 4, when_bonds_lead SSO | SPY +1.1% avg in last 4 days after bonds lead (t 3.1); SPY 11.1% -> 13.4%/yr | `run_pension_rebalance.py` |
 | Hedged S&P 100 momentum | `stock_momentum.py` `HedgedMomentum` | top_n 10, lookback 252, skip 21, hedge None/SH | 22%/yr unhedged vs 15.7% EW (survivor-biased); SH-hedged 4.3% | `run_hedged_momentum.py` |
 | ETF breakout + meta-label filter (candidate) | `ml/metalabel.py` `MetaFiltered` around `Breakout` | 20/10 on 32 ETFs, skip worse half | Sharpe 0.61 -> 0.76 walk-forward, 0.67 -> 1.43 holdout (Jul 2024+); paper-trade | `run_ml_research.py` |
@@ -59,6 +59,12 @@ Defaults shown are the class defaults, not necessarily the best run.
 | ML signal blend (ridge/LGBM/MLP/LSTM) | `signal_blend.py` `SignalBlend` + `ml/` | no model beats equal weight / ridge; Kalshi features don't help |
 | Regime switch, learning-to-rank | `ml/regime.py` `RegimeSwitch`, `ml/rank.py` `TopN` | trails 200d filter; ranking = survivor bias |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
+
+## Combined fund
+
+| Plan | Code | Result |
+| --- | --- | --- |
+| $5,000 fund: Balanced 30% UPRO vol target, 35% multi-asset trend (ETFs, 1x), 15% pension month-end, 20% BTC+ETH ensemble trend; Growth 40/20/10/30 | `portfolio.py` `sleeve_returns`, `combine` (quarterly + 10-pt band, optional drawdown brake) | Balanced 15.2%/-16% vs SPY 15.3%/-34% (Nov 2018-Oct 2026, Sharpe 1.00 vs 0.69); 2022-26 9.2%/-15% vs SPY 11.8%/-25% (same Sharpe); drawdown brakes cost 1-2 pts/yr; `run_fund_plan.py`, today's targets `fund_signals.py` |
 
 Intraday, Kalshi, 0DTE, pairs and meme-coin results are in
 [research-modules.md](research-modules.md).
