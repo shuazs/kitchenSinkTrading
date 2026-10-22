@@ -27,6 +27,7 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 
@@ -317,3 +318,12 @@ only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
 market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
 after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
 (2021-25) overlays moved Sharpe by under 0.1 either way. No edge.
+
+**Futures positioning (COT).** Survey of Hugging Face finance data found
+CFTC Commitments of Traders with real publication times (2010-2026) as the
+best new source. Literature: Kang-Rouwenhorst-Tang (fade weekly speculator
+flow), Basu-Miffre (hedging pressure), practitioner COT index. On 20 futures
+ETFs the KRT reversal is there before costs (Sharpe 0.41) but turns over 72x
+a year and loses after costs; hedging pressure has the wrong sign since 2010;
+siding with commercials at extremes is positive in every period but only
+~1%/yr over T-bills and needs shorts. No edge.

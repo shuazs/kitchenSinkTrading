@@ -58,6 +58,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | S&P 500 index changes | `events.py` `EventHold` + `data/sp500.py` | nothing tradeable from free data |
 | ML signal blend (ridge/LGBM/MLP/LSTM) | `signal_blend.py` `SignalBlend` + `ml/` | no model beats equal weight / ridge; Kalshi features don't help |
 | Regime switch, learning-to-rank | `ml/regime.py` `RegimeSwitch`, `ml/rank.py` `TopN` | trails 200d filter; ranking = survivor bias |
+| COT positioning | `cot_positioning.py` `CotPositioning` (signal_key, top_n 3, short False) + `data/cot.py` `positioning_signals` (`flow1/4` KRT reversal, `hedging_pressure`, `commercial_index`, `combo`) | 20 futures ETFs, weekly, 2011-2026: KRT flow reversal Sharpe 0.41 pre-cost but 72x turnover -> -0.7 net; hedging pressure wrong sign; commercial index L/S 0.24/0.17/0.02 (design/valid/holdout), ~1%/yr over T-bills; equal weight beats all long-only versions |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
 
 Intraday, Kalshi, 0DTE, pairs and meme-coin results are in

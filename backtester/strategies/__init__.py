@@ -3,6 +3,7 @@ from .basis import BasisCarry
 from .benchmark import BuyAndHold
 from .breakout import Breakout
 from .carry import FXCarry
+from .cot_positioning import CotPositioning
 from .crypto import CrossSectionalMomentum, EnsembleTrend, Sleeves, VolTargetBreakout
 from .dual_momentum import DualMomentum
 from .earnings import EarningsPremium
@@ -27,6 +28,7 @@ from .vol_target import VolTarget
 from .wheel import Wheel
 
 __all__ = [
+    "CotPositioning",
     "FundamentalAllocator",
     "BasisCarry",
     "Breakout",
