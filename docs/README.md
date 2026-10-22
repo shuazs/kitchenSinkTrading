@@ -231,3 +231,19 @@ trend rules are profitable before costs in 80-100% of variants, but earn only
 about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
 spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
 15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
+
+**Kalshi S&P range vs VIX1D for selling 0DTE.** Kalshi's end-of-day S&P
+ladders imply an expected range for the close. Every return model on 29
+daily Kalshi features (lasso, elastic net, random forest, gradient
+boosting, nearest neighbours, logistic, small MLP) lost to predicting zero,
+but the ladder width forecasts rest-of-day volatility about as well as
+VIX1D. At 12:30 and 14:30 ET (not 10:30), days when Kalshi's range is
+narrow vs VIX1D (bottom third of its own history) let a volatility seller
+keep 63-67% of VIX1D-implied variance, vs 45-46% on wide days (SPX
+1-minute bars, Jan 2024 to Jan 2026). As modelled XSP iron flies at
+break-even option prices, the 12:30 rule made +13.5% on risk per trade
+(t 2.5, 165 trades) while selling every day lost 4%; with a 10% variance
+premium it made +21% (t 3.6, both halves positive, max drawdown -28% at 10%
+risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
+paper trading before any money (`backtester/kalshi_vol.py`,
+`examples/run_kalshi_vol.py`).
