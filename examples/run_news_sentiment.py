@@ -65,10 +65,10 @@ def wsb_fade():
     g = g.dropna(subset=["oc", "ab", "dv"])
     g = g[g.dv > 2e6].assign(cost=lambda x: cost_for(x.dv))
     for name, x in [("2021-2022", g[g["T"].dt.year <= 2022]), ("2023-2025 holdout", g[g["T"].dt.year > 2022])]:
-        tr, day = fade_book(x, min_ratio=10, min_mentions=3, hold=1)
+        tr, _ = fade_book(x, min_ratio=10, min_mentions=3, hold=1)
         print(f"\nFade WSB spikes (>=10x usual mentions), short open->close, {name}: {len(tr)} trades, "
               f"{1e4 * tr.pnl.mean():+.0f} bp/trade net, win {np.mean(tr.pnl > 0):.0%}, worst {tr.pnl.min():+.0%}, "
-              f"t {day.mean() / day.std() * np.sqrt(len(day)):.1f}")
+              f"t {tr.pnl.mean() / tr.pnl.std() * np.sqrt(len(tr)):.1f} (per trade)")
 
 
 def kalshi():

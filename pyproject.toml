@@ -6,7 +6,7 @@ requires-python = ">=3.10"
 dependencies = ["numpy", "pandas", "requests", "yfinance"]
 
 [project.optional-dependencies]
-sentiment = ["transformers", "torch"]
+sentiment = ["transformers", "torch", "zstandard"]
 polymarket = ["pyarrow", "fsspec", "aiohttp"]
 ml = ["scikit-learn", "lightgbm", "torch", "scipy"]
 dev = ["pytest"]

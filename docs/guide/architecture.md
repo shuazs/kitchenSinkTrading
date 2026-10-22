@@ -57,4 +57,4 @@ print(res.stats())
 ```
 
 Known limits: yfinance survivorship bias, no free option or 0DTE history,
-Yahoo headlines only recent, taxes not modelled.
+Yahoo headlines only recent (historical news/Reddit: `data/news_mirrors.py`), taxes not modelled.

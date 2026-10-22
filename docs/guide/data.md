@@ -25,6 +25,7 @@ first call.
 | `activists.py` | `events(since)` | EDGAR form index 13D |
 | `sp500.py` | `membership()`, `changes(since)` | S&P 500 history (GitHub) |
 | `sentiment.py` | `score(texts)`, `daily_sentiment` | FinBERT (huggingface.co) |
+| `news_mirrors.py` | `load_benzinga()` (1.57M stock-tagged headlines 2009-02..2020-06; 685k with minute times), `reddit_month("2021-01")` (streams a Pushshift month, keeps finance subs; 7-14 min/month, needs `zstandard`) | HF mirrors `idleengine/financial-news-multisource`, `Avni2110/pushshift-reddit` |
 | `kalshi.py` | `load_daily_features(path)`, `weekly_features` | local daily file from Kalshi research |
 | `minute_mirrors.py` | `load_minute(sym)`, `rth_bars(sym)` | HF mirrors / `KS_MINUTE_DIR`; SPX, MES, NQ, BTC (+QQQ, ETH, NDX local) |
 | `alpaca.py` | `load_minute_bars`, `load_yahoo_intraday` (last 60 days) | Alpaca (blocked from cloud) |
@@ -42,6 +43,7 @@ first call.
 | `prediction-markets/` | Kalshi target markets/trades (Fed, CPI, recession...), Polymarket targets + fills since Oct 2024, hourly Iran/Fed theme indices, yfinance 1h prices |
 | `kalshi-leading/`, `kalshi-catchup/`, `kalshi-crowd/`, `kalshi-pairs/`, `kalshi-0dte/` | Kalshi trades/prints per series (KXINXU, KXNASDAQ100U, KXBTCD, KXETHD), derived features, result CSVs, scratch scripts; `kalshi-leading/data/` also has `sel_trades.parquet`/`sel_markets.parquet` (55 finance series, 2021-2026), `vix1d_1h.parquet` and `kalshi_vol_panel.parquet` for `run_kalshi_vol.py` |
 | `shortterm-combo/` | hourly SPY/QQQ panels, Kalshi 30-min implied closes, walk-forward and holdout results |
+| `finbert-sentiment/` | FinBERT-scored Benzinga headlines (`benzinga_scores`), Reddit posts 2021-2025 with tickers + scores (`reddit_posts`), daily mood series (`benzinga_daily_mood`, `reddit_daily_mood`), Kalshi nearest-strike books (`kalshi_book_spx/btc`), event tables, scratch scripts |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
