@@ -239,7 +239,7 @@ boosting, nearest neighbours, logistic, small MLP) lost to predicting zero,
 but the ladder width forecasts rest-of-day volatility about as well as
 VIX1D. At 12:30 and 14:30 ET (not 10:30), days when Kalshi's range is
 narrow vs VIX1D (bottom third of its own history) let a volatility seller
-keep 63-67% of VIX1D-implied variance, vs 45-46% on wide days (SPX
+keep 62-67% of VIX1D-implied variance, vs 45-46% on wide days (SPX
 1-minute bars, Jan 2024 to Jan 2026). As modelled XSP iron flies at
 break-even option prices, the 12:30 rule made +13.5% on risk per trade
 (t 2.5, 165 trades) while selling every day lost 4%; with a 10% variance
