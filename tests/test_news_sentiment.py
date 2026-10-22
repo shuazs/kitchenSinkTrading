@@ -62,3 +62,15 @@ def test_kalshi_directional_buys_the_signalled_side():
     assert list(tr.side) == ["yes", "no"]
     assert np.isclose(tr.pnl.iloc[0], 0.5 - kalshi_fee(0.5)) and np.isclose(tr.pnl.iloc[1], -0.5 - kalshi_fee(0.5))
     assert kalshi_fee(0.5) == 0.02
+
+
+def test_post_session_and_live_spike_filter():
+    from backtester.news_sentiment import load_wsb_tickers, post_session, spike_candidates
+
+    ts = pd.to_datetime(["2024-01-05 09:00", "2024-01-05 10:00", "2024-01-06 12:00"]).tz_localize("America/New_York")
+    T = post_session([int(t.timestamp()) for t in ts], SESSIONS)
+    assert list(pd.DatetimeIndex(T).strftime("%m-%d")) == ["01-05", "01-08", "01-08"]
+    counts = pd.DataFrame({"GME": [2] * 20 + [40], "AAPL": [5] * 21}, index=SESSIONS[:21])
+    c = spike_candidates(counts, SESSIONS[20])
+    assert list(c.ticker) == ["GME"] and np.isclose(c.ratio.iloc[0], 41 / 3)
+    assert {"GME", "AAPL", "NVDA"} <= load_wsb_tickers()

@@ -76,8 +76,9 @@ verdicts are in [strategies.md](strategies.md).
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
 - `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
+- `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
-Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
+Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.

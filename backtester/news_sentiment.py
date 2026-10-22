@@ -155,3 +155,37 @@ def kalshi_directional(book, signal, threshold=1.0, slippage=0.01, fee_mult=0.07
             p = 1 - r.yes + slippage
             out.append((day, "no", (1 - r.result) - p - kalshi_fee(p, fee_mult)))
     return pd.DataFrame(out, columns=["day", "side", "pnl"]).set_index("day")
+
+
+def load_wsb_tickers(path=None):
+    """The ticker whitelist the backtest used (`data/wsb_tickers.txt`)."""
+    from pathlib import Path
+
+    path = Path(path or Path(__file__).parent / "data" / "wsb_tickers.txt")
+    return {t.strip() for t in path.read_text().splitlines() if t.strip() and not t.startswith("#")}
+
+
+def post_session(created_utc, sessions, cutoff="09:25", tz="America/New_York"):
+    """Session whose `cutoff` first follows each post (posts after 09:25 count toward the next session)."""
+    t = pd.to_datetime(pd.Series(created_utc), unit="s", utc=True).dt.tz_convert(tz).dt.tz_localize(None)
+    h, m = map(int, cutoff.split(":"))
+    anchor = (t - pd.Timedelta(hours=h, minutes=m)).dt.normalize() + pd.Timedelta(days=1)
+    days = pd.DatetimeIndex(sessions).values.astype("datetime64[ns]")
+    pos = np.searchsorted(days, anchor.values.astype("datetime64[ns]"))
+    out = np.full(len(t), np.datetime64("NaT"), dtype="datetime64[ns]")
+    ok = pos < len(days)
+    out[ok] = days[pos[ok]]
+    return out
+
+
+def spike_candidates(counts, day, min_ratio=10, min_mentions=3, max_names=3, window=20, min_periods=10):
+    """Live version of the fade filter: rank tickers on `day` by mentions vs their prior-session average.
+
+    `counts` is session x ticker mention counts that includes `day` as its last row.
+    Returns a frame (ticker, mentions, base, ratio) of at most `max_names` that pass.
+    """
+    ab = mention_spikes(counts, window, min_periods)
+    base = counts.rolling(window, min_periods=min_periods).mean().shift(1)
+    x = pd.DataFrame({"mentions": counts.loc[day], "base": base.loc[day], "ratio": ab.loc[day]}).dropna()
+    x = x[(x.ratio >= min_ratio) & (x.mentions >= min_mentions)].sort_values("ratio", ascending=False)
+    return x.head(max_names).rename_axis("ticker").reset_index()
