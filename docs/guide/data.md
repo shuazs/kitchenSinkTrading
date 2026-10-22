@@ -27,7 +27,6 @@ first call.
 | `kalshi.py` | `load_daily_features(path)`, `weekly_features` | local daily file from Kalshi research |
 | `minute_mirrors.py` | `load_minute(sym)`, `rth_bars(sym)` | HF mirrors / `KS_MINUTE_DIR`; SPX, MES, NQ, BTC (+QQQ, ETH, NDX local) |
 | `alpaca.py` | `load_minute_bars`, `load_yahoo_intraday` (last 60 days) | Alpaca (blocked from cloud) |
-| `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, parsers `kalshi_top`, `poly_us_top` | live Kalshi and Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 | `kalshi_hf.py` | `load_markets()` (every market + result), `load_trades(tickers, name)` | HF `TrevorJS/kalshi-trades`, scans 16 shards |
 | `polymarket.py` | `load_markets`, `load_fills` (`side=True` keeps taker side), `hourly_prices`, `escalation_index`, `iran_markets`, `live_markets` | HF snapshot; live API needs local machine |
 | `memecoins.py` | `load_calls`, `load_launches` | HF pump.fun datasets |
