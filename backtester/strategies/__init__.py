@@ -7,6 +7,7 @@ from .crypto import CrossSectionalMomentum, EnsembleTrend, Sleeves, VolTargetBre
 from .dual_momentum import DualMomentum
 from .earnings import EarningsPremium
 from .events import EventHold
+from .fundamental_allocator import FundamentalAllocator
 from .hedge_fund_clone import best_ideas, HedgeFundClone
 from .insider import classify_insiders, cluster_signals, InsiderCluster
 from .mean_reversion import RSIMeanReversion
@@ -26,6 +27,7 @@ from .vol_target import VolTarget
 from .wheel import Wheel
 
 __all__ = [
+    "FundamentalAllocator",
     "BasisCarry",
     "Breakout",
     "BuyAndHold",

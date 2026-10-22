@@ -27,6 +27,8 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
+| [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 
 ## Summaries
 
@@ -260,6 +262,32 @@ about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
 spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
 15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
 
+**Long-term fundamental portfolio manager.** A 60/20/20 allocator: S&P 500
+stocks picked monthly on SEC fundamentals (point-in-time membership, frames
+data public 60-90 days after period end, sector-relative ranks, 25 names,
+sector cap), EFA+EEM and IJR, a growth-trend macro switch (rising
+unemployment and SPY below its 200-day average -> Treasuries or T-bills),
+200-day trend on the non-US sleeves and an 18% vol cap. Quality + low vol
+was the best stock factor mix on 2007-2018 (14.8%/yr vs SPY 13.2%, -14% vs
+-19% drawdown in 2010-2018), and the full manager made 11.0%/yr with a -17%
+drawdown vs SPY 6.5% and -55% in 2007-2018, almost all from sitting out 2008.
+The untouched 2019-2026 holdout failed: 11.1%/yr vs SPY 17.4%, drawdown -35%
+vs -34%. Quality + low vol lagged mega-cap growth (equal-weight RSP also
+trailed SPY by 3.7%/yr), international and small caps lagged, and the macro
+switch reacted after the March 2020 crash. Walk-forward of the factor mix
+(2014-2026): 9.4%/yr vs 13.6%. A SPY core and a 2x ETF in calm regimes
+didn't fix it; adding a credit-spread signal held the holdout drawdown to
+-19% but at 9.8%/yr. Survivorship bias of Yahoo's universe: equal weight of
+the members it still has beat RSP by about 1.2%/yr in 2010-2018 (72-86% of
+members covered) and by 0% in 2019-2026 (89-99%). Verdict: no edge over SPY.
+Tilting to big tech (tested after seeing the holdout): with QQQ as the US
+sleeve at 80/10/10 it made 16.0%/yr vs SPY 17.4% with a -27% vs -34%
+drawdown in 2019-2026, and 14.6% vs 10.7% (-27% vs -55%) over 2007-2026;
+that is a bet that Nasdaq keeps beating the S&P, as it has since 2007.
+Mega-cap fundamental picks worked in 2019-2026 but not in 2010-2018.
+Josh picked the 80/10/10 QQQ version as the class default; the stock picker
+is `stock_etf=None` with 60/20/20 sleeves.
+
 **Kalshi S&P range vs VIX1D for selling 0DTE.** Kalshi's end-of-day S&P
 ladders imply an expected range for the close. Every return model on 29
 daily Kalshi features (lasso, elastic net, random forest, gradient
@@ -275,3 +303,17 @@ premium it made +21% (t 3.6, both halves positive, max drawdown -28% at 10%
 risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
 paper trading before any money (`backtester/kalshi_vol.py`,
 `examples/run_kalshi_vol.py`).
+
+**Sentiment strategies.** Literature review of survey and composite indices
+(Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
+social media and retail attention, and crypto sentiment: slow measures
+forecast years, fast text forecasts days but sits in small caps and decays as
+tools spread. Tests (surveys blocked, so a Fear & Greed style mood index was
+rebuilt from Yahoo): extreme fear precedes the best SPY month but with ~1.8x
+the volatility; no fear/greed, VIX-backwardation, credit, Michigan or crypto
+funding overlay beat UPRO vol target, multi-asset trend, BTC/ETH breakout or
+ensemble trend in both design and holdout. VIX > VIX3M exit helps plain SPY
+only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
+market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
+after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
+(2021-25) overlays moved Sharpe by under 0.1 either way. No edge.

@@ -16,7 +16,8 @@ first call.
 | --- | --- | --- |
 | `yahoo.py` | `load_bars(sym,start,end,interval)`, `load_market(symbols,start,**extra) -> MarketData`, `load_hourly` (~730 days of 1h), `option_chain` (today only), `headlines`, `append_headlines` | yfinance |
 | `yahoo_batch.py` | `prefetch(symbols)` | yfinance, many tickers |
-| `fred.py` | `load_series(id)`, `tbill_rate()` (for `cash_rate`) | FRED CSV, no key |
+| `fred.py` | `load_series(id)`, `tbill_rate()` (for `cash_rate`), `unemployment_rate()` (HF mirror fallback, ends Feb 2026) | FRED CSV, no key |
+| `fundamentals.py` | `market_data()` -> MarketData for `FundamentalAllocator`; `panel()` (EDGAR frames, all filers, 60-90 day lag), `as_of`, `sectors` (SIC), `load_bars` (total-return OHLC + `raw_close`), `sp500_universe` (renames mapped), `coverage` | data.sec.gov frames + Yahoo; first run ~15 min |
 | `fx.py` | `load_fx_market(ccys)`, `total_return_index`, `known_rate_gap` | Yahoo FX + FRED rates |
 | `edgar.py` | `company_facts`, `fact_series`, `earnings_surprise` (SUE), `earnings_dates` (8-K 2.02), `insider_trades`, `parse_form4` | data.sec.gov |
 | `insider_bulk.py` | `open_market_trades(start,end)`, `attach_current_tickers`, `add_market_cap` | SEC Form 3/4/5 quarterly sets |
@@ -24,6 +25,7 @@ first call.
 | `activists.py` | `events(since)` | EDGAR form index 13D |
 | `sp500.py` | `membership()`, `changes(since)` | S&P 500 history (GitHub) |
 | `sentiment.py` | `score(texts)`, `daily_sentiment` | FinBERT (huggingface.co) |
+| `sentiment_indices.py` | `mood_index` (Fear & Greed style, 0-100, from SPY/VIX/VIX3M/HYG/IEF/TLT), `mood_components`, `consumer_sentiment` (FRED UMCSENT, lagged), `funding_rates(coin)` (Binance BTC/ETH perp, May 2021-Feb 2026) | Yahoo, FRED, HF `Torch-Trade/*_perp_funding_8h_*` |
 | `kalshi.py` | `load_daily_features(path)`, `weekly_features` | local daily file from Kalshi research |
 | `minute_mirrors.py` | `load_minute(sym)`, `rth_bars(sym)` | HF mirrors / `KS_MINUTE_DIR`; SPX, MES, NQ, BTC (+QQQ, ETH, NDX local) |
 | `alpaca.py` | `load_minute_bars`, `load_yahoo_intraday` (last 60 days) | Alpaca (blocked from cloud) |
@@ -44,12 +46,14 @@ first call.
 | `event-markets/` | Non-financial Kalshi + Polymarket: `nf_markets.parquet` (441k Kalshi markets with `cat`), `pm_nf_markets.parquet` (10k Polymarket markets >$1M), `raw/nf_trades_*.parquet` (131M Kalshi prints) and `raw/pm_nf_fills.parquet` (145M fills with side, 2024+), `xvenue_*` (1,104 Kalshi/Polymarket matched games), `xv2_*` (5,640 matched pairs across 9 market families with prints, fills and results), result parquet files, `scripts/` |
 | `shortterm-combo/` | hourly SPY/QQQ panels, Kalshi 30-min implied closes, walk-forward and holdout results |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
+| `sentiment-research/results/` | mood index and sentiment overlay result CSVs from `run_sentiment_overlays.py` |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
 
 ## Network from the cloud environment
 
-Reachable: Yahoo, FRED, SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org.
+Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
+Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.

@@ -41,6 +41,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_index_changes.py`: S&P 500 additions and deletions: the index-rebalancing trade event desks run, and what is left of it for a small account.
 - `run_fx_carry.py`: G10 + MXN currency carry on a $5,000 account, as micro FX futures would trade it.
 - `run_basis_carry.py`: Crypto cash-and-carry (long spot, short the CME front month) on $5,000.
+- `run_fundamental_allocator.py`: Long-term fundamental portfolio manager (S&P 500 picks on SEC fundamentals + intl + small caps, macro switch) vs SPY: design, holdout, walk-forward, survivorship check, big-tech (QQQ) tilts. Needs `SEC_USER_AGENT`.
 
 ## Crypto
 
@@ -50,6 +51,7 @@ verdicts are in [strategies.md](strategies.md).
 
 ## Trump / events
 
+- `run_sentiment_overlays.py`: Market sentiment (mood index, VIX, credit, Michigan, crypto funding) as forecaster and overlay on the keepers; `[out_dir]` saves CSVs.
 - `run_trump_overlay.py`: Cut leverage after a burst of Trump posts on tariffs or markets.
 - `run_taco_dip.py`: The "TACO" trade: buy index ETFs after a tariff-scare selloff.
 - `run_gov_stakes.py`: Buy companies after the first report of a US government equity stake.
