@@ -27,6 +27,7 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
+| [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 
 ## Summaries
 
@@ -274,3 +275,17 @@ premium it made +21% (t 3.6, both halves positive, max drawdown -28% at 10%
 risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
 paper trading before any money (`backtester/kalshi_vol.py`,
 `examples/run_kalshi_vol.py`).
+
+**Sentiment strategies.** Literature review of survey and composite indices
+(Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
+social media and retail attention, and crypto sentiment: slow measures
+forecast years, fast text forecasts days but sits in small caps and decays as
+tools spread. Tests (surveys blocked, so a Fear & Greed style mood index was
+rebuilt from Yahoo): extreme fear precedes the best SPY month but with ~1.8x
+the volatility; no fear/greed, VIX-backwardation, credit, Michigan or crypto
+funding overlay beat UPRO vol target, multi-asset trend, BTC/ETH breakout or
+ensemble trend in both design and holdout. VIX > VIX3M exit helps plain SPY
+only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
+market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
+after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
+(2021-25) overlays moved Sharpe by under 0.1 either way. No edge.

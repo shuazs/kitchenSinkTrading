@@ -51,6 +51,7 @@ verdicts are in [strategies.md](strategies.md).
 
 ## Trump / events
 
+- `run_sentiment_overlays.py`: Market sentiment (mood index, VIX, credit, Michigan, crypto funding) as forecaster and overlay on the keepers; `[out_dir]` saves CSVs.
 - `run_trump_overlay.py`: Cut leverage after a burst of Trump posts on tariffs or markets.
 - `run_taco_dip.py`: The "TACO" trade: buy index ETFs after a tariff-scare selloff.
 - `run_gov_stakes.py`: Buy companies after the first report of a US government equity stake.

@@ -25,6 +25,7 @@ first call.
 | `activists.py` | `events(since)` | EDGAR form index 13D |
 | `sp500.py` | `membership()`, `changes(since)` | S&P 500 history (GitHub) |
 | `sentiment.py` | `score(texts)`, `daily_sentiment` | FinBERT (huggingface.co) |
+| `sentiment_indices.py` | `mood_index` (Fear & Greed style, 0-100, from SPY/VIX/VIX3M/HYG/IEF/TLT), `mood_components`, `consumer_sentiment` (FRED UMCSENT, lagged), `funding_rates(coin)` (Binance BTC/ETH perp, May 2021-Feb 2026) | Yahoo, FRED, HF `Torch-Trade/*_perp_funding_8h_*` |
 | `kalshi.py` | `load_daily_features(path)`, `weekly_features` | local daily file from Kalshi research |
 | `minute_mirrors.py` | `load_minute(sym)`, `rth_bars(sym)` | HF mirrors / `KS_MINUTE_DIR`; SPX, MES, NQ, BTC (+QQQ, ETH, NDX local) |
 | `alpaca.py` | `load_minute_bars`, `load_yahoo_intraday` (last 60 days) | Alpaca (blocked from cloud) |
@@ -43,6 +44,7 @@ first call.
 | `kalshi-leading/`, `kalshi-catchup/`, `kalshi-crowd/`, `kalshi-pairs/`, `kalshi-0dte/` | Kalshi trades/prints per series (KXINXU, KXNASDAQ100U, KXBTCD, KXETHD), derived features, result CSVs, scratch scripts; `kalshi-leading/data/` also has `sel_trades.parquet`/`sel_markets.parquet` (55 finance series, 2021-2026), `vix1d_1h.parquet` and `kalshi_vol_panel.parquet` for `run_kalshi_vol.py` |
 | `shortterm-combo/` | hourly SPY/QQQ panels, Kalshi 30-min implied closes, walk-forward and holdout results |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
+| `sentiment-research/results/` | mood index and sentiment overlay result CSVs from `run_sentiment_overlays.py` |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
@@ -50,5 +52,6 @@ Polymarket: HF `SII-WANGZJ/Polymarket_data`.
 ## Network from the cloud environment
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org.
+Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.
