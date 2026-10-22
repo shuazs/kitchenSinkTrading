@@ -14,9 +14,11 @@ Each has one example script and one test file. Verdicts are final unless noted.
 | `kalshi_crowd.py` | `move_z`, `move_triggers`, `spike_triggers`, `calibration`, `Ladder`, `simulate`, `summarize` | crowd bias after big moves / volume spikes | no edge; contracts stay calibrated |
 | `pairs.py` | `kalshi_fee`, `half_life`, `rolling_hedge`, `zscore`, `asset_leg_trades`, `fade_contract_spread` | prediction market vs asset as pairs | costs exceed edge |
 | `jump_trades.py` | `jump_events`, `jump_trades`, `summarize`, `grid` | trade asset after a prediction-market jump (hourly) | Iran -> oil is the one lead (see strategies.md) |
+| `event_markets.py` | `kalshi_category`, `taker_prints`, `calibration`, `exclusive_events`, `bracket_arb`, `arb_episodes`, `cross_arb`, `snapshot_quotes`, `favourite_bets`, `first_entries`, `bankroll`, `lead_follow` | non-financial Kalshi/Polymarket (sports, politics, weather, culture): taker calibration, longshot/favourite rules, jumps, sum-to-$1 and two-venue arbitrage, Kalshi -> Polymarket lead | takers lose 1-3c/contract everywhere; arbs 0.5-2c taken by bots in <1s; candidate: follow Kalshi on Polymarket sports when last prices differ 5c+ (60s late, 60min hold +5.6c/share, t 7, 1,943 trades), Polymarket fee 0 assumed, paper-trade first |
 | `memecoin_calls.py` | `buy`, `sell`, `simulate_calls`, `bankroll` | following pump.fun calls on the bonding curve | loses in every realistic variant |
 
 Kalshi fee: `0.07 * p * (1-p)` per contract (taker), rounded up to the cent.
+Makers earn what takers lose (0.4-2c/contract by category, ~2c on mentions) before maker fees and queue position.
 Untested: passive (maker) Kalshi orders, which need a live order-book recorder.
 
 ## `ml/`

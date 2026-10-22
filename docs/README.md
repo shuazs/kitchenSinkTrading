@@ -25,9 +25,27 @@ prices, short crypto history), not forecasts.
 | [Prediction markets as pairs trades](https://claude.ai/artifact/9zz3e8t7mY7g2Mmq8ZPL7F) | `pairs.py` | `run_prediction_market_pairs.py` |
 | [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
+| [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 
 ## Summaries
+
+**Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
+politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
+Polymarket fills on 10k non-financial markets over $1M. Takers lose 1.4-2.6c
+per contract after fees in every category; makers earn 0.6-2c of it.
+Favourite/longshot entry rules, pre-game favourites on Polymarket and
+momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
+arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
+multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
+set, but both legs usually print within one second, so bots already take
+them. The candidate: Kalshi leads Polymarket on sports games. When last
+prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
+60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
+positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
+Polymarket's international book (no US persons), assumes no Polymarket fee,
+and covers only Apr 2025 to Jan 2026, so a log-only watcher comes first.
+Weather-vs-forecast was not testable (forecast archives blocked).
 
 **Research shortlist.** Nine candidates for a small, risk-tolerant account,
 ranked by evidence: leveraged-ETF 200-day trend filter, crypto N-day-high

@@ -73,8 +73,12 @@ def iran_markets(markets: pd.DataFrame, min_volume: float = 1e6) -> pd.DataFrame
     return m[m["sign"] != 0]
 
 
-def load_fills(market_ids, since="2024-10-01", name="fills", refresh: bool = False) -> pd.DataFrame:
-    """Fills for the given markets since a date: time (UTC), market_id, price (YES), usd_amount."""
+def load_fills(market_ids, since="2024-10-01", name="fills", refresh: bool = False, side: bool = False) -> pd.DataFrame:
+    """Fills for the given markets since a date: time (UTC), market_id, price (YES), usd_amount.
+
+    side=True also keeps `side` (BUY = the taker bought YES at an ask, SELL =
+    sold YES at a bid), which bid/ask rebuilds need.
+    """
     import fsspec
     import pyarrow as pa
     import pyarrow.compute as pc
@@ -90,7 +94,7 @@ def load_fills(market_ids, since="2024-10-01", name="fills", refresh: bool = Fal
             stats = pf.metadata.row_group(i).column(0).statistics  # timestamp, file is in time order
             if stats is not None and stats.max < t0:
                 continue
-            t = pf.read_row_group(i, columns=["timestamp", "market_id", "price", "usd_amount"])
+            t = pf.read_row_group(i, columns=["timestamp", "market_id", "price", "usd_amount"] + (["side"] if side else []))
             parts.append(t.filter(pc.is_in(t["market_id"], value_set=ids)))
         pq.write_table(pa.concat_tables(parts), path)
     df = pd.read_parquet(path)
