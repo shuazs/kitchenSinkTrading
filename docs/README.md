@@ -28,6 +28,7 @@ prices, short crypto history), not forecasts.
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
+| [Copying Congress trades](https://claude.ai/artifact/B1FjpeyPjgr3z8uheNiMVK) | `data/congress.py`, `strategies/events.py` (`EventHold`) | `run_congress_trades.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 
@@ -327,3 +328,11 @@ ETFs the KRT reversal is there before costs (Sharpe 0.41) but turns over 72x
 a year and loses after costs; hedging pressure has the wrong sign since 2010;
 siding with commercials at extremes is positive in every period but only
 ~1%/yr over T-bills and needs shorts. No edge.
+
+**Copying Congress trades.** STOCK Act periodic reports (HF
+`ZipLime/congress-trading`, 2014-2026), bought the day after filing (median
+28 days after the trade). Matches the post-2012 papers: copying all purchases
+trails SPY and Democrats' buys lag since 2020. $50k+ purchases beat SPY since
+2020 but only through ~10 mega-cap tech names and flip sign with the holding
+period; 3+ member cluster buys gain ~0.5% per 3 months, too small to trade;
+Pelosi's 67 disclosed buys say nothing. No edge.

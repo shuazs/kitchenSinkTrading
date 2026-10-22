@@ -25,6 +25,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_vol_target.py`: Volatility-targeted UPRO vs buy and hold and the 200-day trend filter.
 - `run_vix_term_structure.py`: Short volatility (SVXY) only while VIX is below 3-month VIX, on real data.
+- `run_congress_trades.py`: Congress purchase disclosures: event study and $5k copy portfolios by subset (all, $50k+, clusters, party, leaders, fast filers); `[out_dir]` saves CSVs.
 - `run_cot_positioning.py`: CFTC COT signals (flow reversal, hedging pressure, commercial index) on 20 futures ETFs: periods, walk-forward, cost sensitivity.
 - `run_sector_rotation.py`: Sector SPDR momentum rotation vs SPY, on real data.
 - `run_turn_of_month.py`: Turn-of-month on SPY, QQQ and 3x ETFs vs buy and hold, on real data.
