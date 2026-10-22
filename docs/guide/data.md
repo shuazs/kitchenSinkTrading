@@ -35,6 +35,7 @@ first call.
 | `trump_posts.py` | `load_posts`, `daily_counts(posts,index,pattern)`, `covered` | GitHub archives |
 | `gov_stakes.py` | `stake_events(index)` | hand-built table |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
+| `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
 ## Shared datasets (`/mnt/project-files/`, cloud threads only)
 
