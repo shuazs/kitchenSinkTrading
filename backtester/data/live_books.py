@@ -118,6 +118,8 @@ def kalshi_book(ticker: str) -> tuple[float | None, float | None]:
 
 def poly_us_book(slug: str) -> tuple[float | None, float | None]:
     return poly_us_top(_get(f"{POLY_US}/v1/markets/{slug}/bbo"))
+
+
 def pair_games(kalshi: list[dict], poly: list[dict]) -> list[dict]:
     """Pair live Kalshi game markets with Polymarket US markets on the same game and side.
 
