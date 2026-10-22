@@ -26,6 +26,7 @@ prices, short crypto history), not forecasts.
 | [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 
 ## Summaries
 
@@ -231,3 +232,22 @@ trend rules are profitable before costs in 80-100% of variants, but earn only
 about 0.5-1.5 bp per trade on S&P and 1-4 bp on BTC, below ETF (1.5 bp) and
 spot crypto (10-25 bp) costs. Walk-forward picks lose; the one survivor, QQQ
 15-minute opening range (+10% in 2025), lost 7%/yr in the Jan-Oct 2026 holdout.
+
+**Long-term fundamental portfolio manager.** A 60/20/20 allocator: S&P 500
+stocks picked monthly on SEC fundamentals (point-in-time membership, frames
+data public 60-90 days after period end, sector-relative ranks, 25 names,
+sector cap), EFA+EEM and IJR, a growth-trend macro switch (rising
+unemployment and SPY below its 200-day average -> Treasuries or T-bills),
+200-day trend on the non-US sleeves and an 18% vol cap. Quality + low vol
+was the best stock factor mix on 2007-2018 (14.8%/yr vs SPY 13.2%, -14% vs
+-19% drawdown in 2010-2018), and the full manager made 11.0%/yr with a -17%
+drawdown vs SPY 6.5% and -55% in 2007-2018, almost all from sitting out 2008.
+The untouched 2019-2026 holdout failed: 11.1%/yr vs SPY 17.4%, drawdown -35%
+vs -34%. Quality + low vol lagged mega-cap growth (equal-weight RSP also
+trailed SPY by 3.7%/yr), international and small caps lagged, and the macro
+switch reacted after the March 2020 crash. Walk-forward of the factor mix
+(2014-2026): 9.4%/yr vs 13.6%. A SPY core and a 2x ETF in calm regimes
+didn't fix it; adding a credit-spread signal held the holdout drawdown to
+-19% but at 9.8%/yr. Survivorship bias of Yahoo's universe: equal weight of
+the members it still has beat RSP by about 1.2%/yr in 2010-2018 (72-86% of
+members covered) and by 0% in 2019-2026 (89-99%). Verdict: no edge over SPY.
