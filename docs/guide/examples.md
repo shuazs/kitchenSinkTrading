@@ -41,6 +41,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_index_changes.py`: S&P 500 additions and deletions: the index-rebalancing trade event desks run, and what is left of it for a small account.
 - `run_fx_carry.py`: G10 + MXN currency carry on a $5,000 account, as micro FX futures would trade it.
 - `run_basis_carry.py`: Crypto cash-and-carry (long spot, short the CME front month) on $5,000.
+- `run_fundamental_allocator.py`: Long-term fundamental portfolio manager (S&P 500 picks on SEC fundamentals + intl + small caps, macro switch) vs SPY: design, holdout, walk-forward, survivorship check, big-tech (QQQ) tilts. Needs `SEC_USER_AGENT`.
 
 ## Crypto
 
@@ -75,6 +76,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`

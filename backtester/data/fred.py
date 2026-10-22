@@ -49,3 +49,40 @@ def tbill_rate() -> pd.Series:
         from .yahoo import load_bars
 
         return load_bars("^IRX")["close"].dropna() / 100
+
+
+# Copies of FRED's UNRATE on Hugging Face, for when FRED is down: one runs
+# from 1948 to Oct 2024, the other covers 2022 to Feb 2026. Both are current
+# vintage (revised) values, like FRED's own download.
+UNRATE_MIRRORS = [
+    ("https://huggingface.co/datasets/bromleyp/unemployment_rate/resolve/main/UNRATE.jsonl", "jsonl"),
+    ("https://huggingface.co/datasets/market193/us-unemployment/resolve/main/us-unemployment.csv", "csv"),
+]
+
+
+def unemployment_rate() -> pd.Series:
+    """Monthly US unemployment rate (%), dated the 1st of the month it
+    measures. FRED first; if FRED is down, the Hugging Face mirrors, newer
+    copy winning where they overlap."""
+    try:
+        return load_series("UNRATE")
+    except (RuntimeError, requests.RequestException, pd.errors.ParserError, ValueError):
+        pass
+    path = cache_dir("fred") / "UNRATE_mirror.csv"
+    if not path.exists():
+        parts = []
+        for url, kind in UNRATE_MIRRORS:
+            r = requests.get(url, timeout=60)
+            r.raise_for_status()
+            if kind == "jsonl":
+                df = pd.read_json(io.StringIO(r.text), lines=True).rename(columns={"DATE": "date", "UNRATE": "value"})
+            else:
+                df = pd.read_csv(io.StringIO(r.text))
+                df = df[df["metric"] == "unemployment_rate"]
+            s = pd.to_numeric(df.set_index(pd.to_datetime(df["date"]))["value"], errors="coerce").dropna()
+            parts.append(s)
+        merged = pd.concat(parts)
+        merged = merged[~merged.index.duplicated(keep="last")].sort_index()
+        merged.rename("UNRATE").to_csv(path, index_label="date")
+    s = pd.read_csv(path, index_col=0, parse_dates=True)["UNRATE"]
+    return s
