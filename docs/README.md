@@ -38,6 +38,7 @@ prices, short crypto history), not forecasts.
 | Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
+| [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
 
 ## Summaries
 
@@ -411,3 +412,12 @@ were real before about 2016 and have decayed or flip in the holdout; the
 Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
 month-ends, and the EEM day after MSCI rebalances is a generic month-end
 effect. The auction cycle stays the only candidate.
+
+**Alpha hunt batch 6 (forced flows outside Treasuries).** Nine daily-data
+hypotheses (FX month-end hedging, fallen angels, muni season, carry-crash
+reversal, commodity January reweight, ex-US pension rebalancing, earnings-season
+leverage, VIX ETP rebalancing, dividend reinvestment), none passed as written.
+The commodity reweight runs the other way: prior-year winners beat losers on
+January business days 6-10 (+2.5% net, t 4.0 over 25 Januaries). It was found
+after the planned sign failed and has 2 holdout years, so it is a paper trade
+for January 2027.
