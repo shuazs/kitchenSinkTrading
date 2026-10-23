@@ -60,6 +60,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_signal_blend.py`: Can a neural net combine our signals better than a linear blend?.
 - `run_signal_blend_kalshi.py`: Do Kalshi prediction-market features help the signal combiner?.
+- `run_signal_combos.py`: Every strategy as a signal or sleeve, every subset combined (~3M trials), walk-forward + holdout + deflated Sharpe + PBO; writes CSVs to `/mnt/project-files/signal-combos/` (~15 min).
 - `run_ml_research.py`: Four machine-learning framings that use the repo's research as inputs, each tested walk-forward with costs on $5,000.
 
 ## Intraday
