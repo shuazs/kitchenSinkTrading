@@ -98,6 +98,6 @@ verdicts are in [strategies.md](strategies.md).
 - `run_fomc_overlay.py`: Pre-FOMC drift event study and UPRO VT overlay.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
-Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
+Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and run on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.
