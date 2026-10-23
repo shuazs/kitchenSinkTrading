@@ -30,6 +30,7 @@ prices, short crypto history), not forecasts.
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
+| [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
 | Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 
 ## Summaries
@@ -346,3 +347,11 @@ only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
 market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
 after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
 (2021-25) overlays moved Sharpe by under 0.1 either way. No edge.
+
+**Crypto pairs trading.** BTC/ETH z-score mean reversion loses even at 7 bp
+futures fees (median Sharpe -0.65 in 2018-23, -0.11 in 2024+): the ETH/BTC
+ratio trends. Ratio momentum is positive in design but fades after 2024, and
+the long-only rotation trails buying BTC (14% vs 28%/yr since 2024). Rolling
+cointegration/distance pairs over 19 coins lose after costs (walk-forward
+-10%/yr, -77% DD). Intraday 5m-1h pairs earn 0-4 bp gross per round trip vs a
+14 bp futures round trip. No edge; US spot accounts can't short alts anyway.
