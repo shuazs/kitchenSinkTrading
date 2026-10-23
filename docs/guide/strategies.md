@@ -57,6 +57,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | Gov equity stakes | `trump.py` `GovStakeEvents` | 13% gap before tradeable; 20/60d holds lose |
 | S&P 500 index changes | `events.py` `EventHold` + `data/sp500.py` | nothing tradeable from free data |
 | ML signal blend (ridge/LGBM/MLP/LSTM) | `signal_blend.py` `SignalBlend` + `ml/` | no model beats equal weight / ridge; Kalshi features don't help |
+| Signal combination search | `combo_search.py` + `run_signal_combos.py` (all strategies as 0/1 signals or sleeves, every subset) | SPY timing best pick walk-forward Sharpe -0.04 vs SPY 0.71 (DSR 0.02, PBO 0.69); BTC/ETH best fails holdout (-0.23 vs hold 0.19); sleeve mixes: equal weight of all 16 non-crypto sleeves (Sharpe 0.88 WF, 0.75 holdout, -21%/-14% DD) beats the searched pick (0.81 / 0.62) |
 | Regime switch, learning-to-rank | `ml/regime.py` `RegimeSwitch`, `ml/rank.py` `TopN` | trails 200d filter; ranking = survivor bias |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
 

@@ -29,8 +29,23 @@ prices, short crypto history), not forecasts.
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
+| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 
 ## Summaries
+
+**Signal combination search.** Every strategy turned into a daily 0/1
+signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
+trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
+target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
+inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
+timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
+PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
+Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
+holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
+drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
+15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
+diversification across sleeves is the only robust result, same as the $5k
+fund plan.
 
 **Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
 politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
