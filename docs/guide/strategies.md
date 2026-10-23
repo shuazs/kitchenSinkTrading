@@ -59,6 +59,8 @@ Defaults shown are the class defaults, not necessarily the best run.
 | ML signal blend (ridge/LGBM/MLP/LSTM) | `signal_blend.py` `SignalBlend` + `ml/` | no model beats equal weight / ridge; Kalshi features don't help |
 | Signal combination search | `combo_search.py` + `run_signal_combos.py` (all strategies as 0/1 signals or sleeves, every subset) | SPY timing best pick walk-forward Sharpe -0.04 vs SPY 0.71 (DSR 0.02, PBO 0.69); BTC/ETH best fails holdout (-0.23 vs hold 0.19); sleeve mixes: equal weight of all 16 non-crypto sleeves (Sharpe 0.88 WF, 0.75 holdout, -21%/-14% DD) beats the searched pick (0.81 / 0.62) |
 | Regime switch, learning-to-rank | `ml/regime.py` `RegimeSwitch`, `ml/rank.py` `TopN` | trails 200d filter; ranking = survivor bias |
+| COT positioning | `cot_positioning.py` `CotPositioning` (signal_key, top_n 3, short False) + `data/cot.py` `positioning_signals` (`flow1/4` KRT reversal, `hedging_pressure`, `commercial_index`, `combo`) | 20 futures ETFs, weekly, 2011-2026: KRT flow reversal Sharpe 0.41 pre-cost but 72x turnover -> -0.7 net; hedging pressure wrong sign; commercial index L/S 0.24/0.17/0.02 (design/valid/holdout), ~1%/yr over T-bills; equal weight beats all long-only versions |
+| Congress trade copying | `events.py` `EventHold` + `data/congress.py` `buy_events` (keyed on filing date) | 2014-2026, hold 63d, 10 slots: all buys trail SPY (-7.9/-0.4/-0.6 pts design/valid/holdout); $50k+ buys +12/+19 pts since 2020 but ~10 mega-cap tech names, -3 pts 2014-19, flips with hold 21/126d; 3+ member clusters +0.5% per 63d event, portfolio mixed |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
 
 ## Combined fund

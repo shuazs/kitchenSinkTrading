@@ -27,6 +27,8 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
+| [Copying Congress trades](https://claude.ai/artifact/B1FjpeyPjgr3z8uheNiMVK) | `data/congress.py`, `strategies/events.py` (`EventHold`) | `run_congress_trades.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [$5k fund playbook](https://claude.ai/artifact/XiZm64bF9cMya8pQ7uUcrK) | `portfolio.py` | `run_fund_plan.py`, `fund_signals.py` |
 | [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
@@ -348,6 +350,23 @@ only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
 market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
 after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
 (2021-25) overlays moved Sharpe by under 0.1 either way. No edge.
+
+**Futures positioning (COT).** Survey of Hugging Face finance data found
+CFTC Commitments of Traders with real publication times (2010-2026) as the
+best new source. Literature: Kang-Rouwenhorst-Tang (fade weekly speculator
+flow), Basu-Miffre (hedging pressure), practitioner COT index. On 20 futures
+ETFs the KRT reversal is there before costs (Sharpe 0.41) but turns over 72x
+a year and loses after costs; hedging pressure has the wrong sign since 2010;
+siding with commercials at extremes is positive in every period but only
+~1%/yr over T-bills and needs shorts. No edge.
+
+**Copying Congress trades.** STOCK Act periodic reports (HF
+`ZipLime/congress-trading`, 2014-2026), bought the day after filing (median
+28 days after the trade). Matches the post-2012 papers: copying all purchases
+trails SPY and Democrats' buys lag since 2020. $50k+ purchases beat SPY since
+2020 but only through ~10 mega-cap tech names and flip sign with the holding
+period; 3+ member cluster buys gain ~0.5% per 3 months, too small to trade;
+Pelosi's 67 disclosed buys say nothing. No edge.
 
 **$5,000 fund plan.** Every keeper re-run on one footing (2026-10-22):
 UPRO vol target 16.8%/-27% (2009-26, SPY 14.6%/-34%), BTC+ETH ensemble trend
