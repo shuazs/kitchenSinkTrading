@@ -30,6 +30,7 @@ prices, short crypto history), not forecasts.
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
+| [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 
 ## Summaries
 
@@ -43,6 +44,15 @@ negative in every period including the Jul 2024+ holdout; a TLT/TBF sleeve made
 prices), contract awards, micro-cap QVM, January rebound, pre-FOMC/OPEX/holiday
 overlays, bond month-end, VRP-gated SVXY, country reversal, duration timing,
 factor-ETF momentum, and the Polymarket -> Kalshi lead. Tender offers were untestable.
+
+**Alpha hunt batch 3 (scheduled flows).** Nine event windows in liquid ETFs
+and BTC with placebos: GSCI roll (USO-USL), Russell reconstitution, 2/5/7y,
+3y and 20y auction cycles, corporate tax and coupon dates, CME BTC expiry,
+MSCI rebalances, VIX expiry and quarter-end window dressing. All killed: most
+were real before about 2016 and have decayed or flip in the holdout; the
+Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
+month-ends, and the EEM day after MSCI rebalances is a generic month-end
+effect. The auction cycle stays the only candidate.
 
 **Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
 politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M

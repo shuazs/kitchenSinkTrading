@@ -62,6 +62,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | Closed-end fund discounts | `cef_discount.py` `CEFDiscount` (lookback 252, entry_z 1.5, exit_z 0.5, 10 slots) + `data/cef.py` | 261 CEFs: holdout (2019+) alpha 1.1%/yr vs equal-weight CEFs, 2.9% walk-forward; below the 3% bar |
 | Pre-FOMC drift overlay | `fomc_overlay.py` `PreFOMCOverlay` (base, add 0.5) + `data/fomc.py` | SPY pre-FOMC return = any 2 days since 2009; UPRO VT Sharpe -0.09 / 0.00 |
 | Calendar overlays (OPEX, holidays) | `fomc_overlay.py` `CalendarOverlay` (per-day multiplier), `opex_days` | OPEX week up / week after down: Sharpe -0.07/-0.10; pre-holiday x1.5: +0.015/0.00 |
+| Scheduled-flow windows (batch 3) | `event_windows.py` (standalone) | GSCI roll USO-USL, Russell recon IWM-IWB, other auction cycles, tax/coupon dates, CME BTC expiry, MSCI, VIX expiry, quarter-end: fail holdout or placebo |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
 
 Intraday, Kalshi, 0DTE, pairs and meme-coin results are in

@@ -18,6 +18,7 @@ Each has one example script and one test file. Verdicts are final unless noted.
 | `kalshi_maker.py` | `orders`, `quote_reference`, `maker_fills(prints,k,latency_s,through)`, `settle`, `summarize`, `maker_fee` | passive Kalshi quotes at last print ±k, 2 s latency, trade-through or trade-at fills, held to settlement | no edge: -2.8c/contract holdout (through), -1.3c (first in queue); long-tail markets -7 to -15c |
 | `weather_brackets.py` | `load_rows`, `brier`, `edge_trades`, `taker_fee` | Kalshi temperature brackets vs 7-model NWP consensus (HF openthomas replay, Aug-Oct 2026) | no edge: market Brier 0.122 vs model 0.163; -3 to -4c/contract every month |
 | `spinoffs.py` | `child_events`, `dead_fate`, `survivorship_bound` | Form 10-12B spin-offs, buy day 21, hold 6-12 months vs IWM, dead children added back | survivors +19.5%/yr holdout; with 208 dead +7.8%, t 1.25: unproven |
+| `event_windows.py` | `anchor_positions`, `nth_business_day`, `event_returns`, `split_stats`, `placebo`, `window_mask`, `russell_recon`, `vix_expiry`, `last_friday`, `third_friday` | event windows around scheduled flows (alpha hunt batch 3) | no edge: GSCI roll, Russell recon, 2/5/7/3/20y auctions, tax dates, CME BTC expiry, MSCI, coupon dates, VIX expiry, quarter-end all fail holdout or placebo |
 | `auction_cycle.py` | `cycles`, `window_mask`, `window_returns`, `simulate` | Treasury 10y/30y auction cycle (Lou-Yan-Zhang): long bonds cheapen before auctions | **candidate**: TLT -38 bp/cycle, t -2.9, every period and window 3-7 days negative; see strategies.md |
 | `memecoin_calls.py` | `buy`, `sell`, `simulate_calls`, `bankroll` | following pump.fun calls on the bonding curve | loses in every realistic variant |
 
@@ -25,7 +26,7 @@ Kalshi fee: `0.07 * p * (1-p)` per contract (taker), rounded up to the cent.
 Makers earn what takers lose (0.4-2c/contract by category, ~2c on mentions) before maker fees and queue position.
 Passive (maker) quotes replayed from prints in `kalshi_maker.py` lose; a live order-book recorder would only matter for queue-first bots.
 
-Alpha hunt (2026-10-23, doc https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs): 20 hypotheses, one candidate (auction cycle). Also killed with scratch scripts only (`/mnt/project-files/alpha-hunt/scripts/`): small-cap PEAD, federal contract awards, micro-cap QVM, January rebound, Polymarket->Kalshi lead, bond month-end, vol target on other ETFs, VRP-gated SVXY, country-ETF reversal, duration timing, factor-ETF momentum.
+Alpha hunt (2026-10-23, doc https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs): 20 hypotheses, one candidate (auction cycle). Also killed with scratch scripts only (`/mnt/project-files/alpha-hunt/scripts/`): small-cap PEAD, federal contract awards, micro-cap QVM, January rebound, Polymarket->Kalshi lead, bond month-end, vol target on other ETFs, VRP-gated SVXY, country-ETF reversal, duration timing, factor-ETF momentum. Batch 3 (scheduled flows, doc https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH): 9 more, all killed (`run_scheduled_flows.py`).
 
 ## `ml/`
 
