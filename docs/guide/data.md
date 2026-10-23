@@ -35,6 +35,10 @@ first call.
 | `memecoins.py` | `load_calls`, `load_launches` | HF pump.fun datasets |
 | `trump_posts.py` | `load_posts`, `daily_counts(posts,index,pattern)`, `covered` | GitHub archives |
 | `gov_stakes.py` | `stake_events(index)` | hand-built table |
+| `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
+| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions |
+| `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
+| `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
@@ -55,6 +59,7 @@ first call.
 | `finbert-sentiment/` | FinBERT-scored Benzinga headlines (`benzinga_scores`), Reddit posts 2021-2025 with tickers + scores (`reddit_posts`), daily mood series (`benzinga_daily_mood`, `reddit_daily_mood`), Kalshi nearest-strike books (`kalshi_book_spx/btc`), event tables, scratch scripts |
 | `signal-combos/` | `run_signal_combos.py` output: top-2,000 boards, walk-forward picks and summaries per search, sleeve equity curves |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
+| `alpha-hunt/` | alpha hunt outputs: `kalshi_maker_output.txt`/`kalshi_maker_agg.parquet`, `treasury_auctions.parquet`, `sue.parquet` (SUE from SEC Financial Statement Data Sets 2009-2026), `pead_events.parquet`, `gov_award_events.parquet` (HF ZipLime/us-government-contracts), spin-off tables, `scripts/` |
 | `sentiment-research/results/` | mood index and sentiment overlay result CSVs from `run_sentiment_overlays.py` |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
@@ -64,6 +69,7 @@ Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-
 ## Network from the cloud environment
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
+No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.

@@ -89,6 +89,12 @@ verdicts are in [strategies.md](strategies.md).
 - `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
 - `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
+- `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
+- `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
+- `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).
+- `run_weather_brackets.py`: Kalshi temperature brackets vs NWP consensus (HF replay rows).
+- `run_spinoffs.py`: Spin-off event study with the dead-children survivorship bound (needs `SEC_USER_AGENT`).
+- `run_fomc_overlay.py`: Pre-FOMC drift event study and UPRO VT overlay.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
