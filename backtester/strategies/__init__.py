@@ -4,6 +4,7 @@ from .benchmark import BuyAndHold
 from .breakout import Breakout
 from .carry import FXCarry
 from .cef_discount import CEFDiscount
+from .cot_positioning import CotPositioning
 from .crypto import CrossSectionalMomentum, EnsembleTrend, Sleeves, VolTargetBreakout
 from .dual_momentum import DualMomentum
 from .earnings import EarningsPremium
@@ -29,12 +30,12 @@ from .vol_target import VolTarget
 from .wheel import Wheel
 
 __all__ = [
-    "FundamentalAllocator",
     "BasisCarry",
     "Breakout",
     "BuyAndHold",
     "CalendarOverlay",
     "CEFDiscount",
+    "CotPositioning",
     "CreditSpreads",
     "CrossSectionalMomentum",
     "DualMomentum",
@@ -42,6 +43,7 @@ __all__ = [
     "EnsembleTrend",
     "EventDip",
     "EventHold",
+    "FundamentalAllocator",
     "FXCarry",
     "GovStakeEvents",
     "HedgedMomentum",
