@@ -60,6 +60,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_signal_blend.py`: Can a neural net combine our signals better than a linear blend?.
 - `run_signal_blend_kalshi.py`: Do Kalshi prediction-market features help the signal combiner?.
+- `run_signal_combos.py`: Every strategy as a signal or sleeve, every subset combined (~3M trials), walk-forward + holdout + deflated Sharpe + PBO; writes CSVs to `/mnt/project-files/signal-combos/` (~15 min).
 - `run_ml_research.py`: Four machine-learning framings that use the repo's research as inputs, each tested walk-forward with costs on $5,000.
 
 ## Intraday
@@ -78,9 +79,11 @@ verdicts are in [strategies.md](strategies.md).
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
+- `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
-Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
+Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.

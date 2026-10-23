@@ -28,10 +28,26 @@ prices, short crypto history), not forecasts.
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
+| [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 | [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
+| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 
 ## Summaries
+
+**Signal combination search.** Every strategy turned into a daily 0/1
+signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
+trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
+target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
+inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
+timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
+PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
+Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
+holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
+drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
+15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
+diversification across sleeves is the only robust result, same as the $5k
+fund plan.
 
 **Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
 politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
@@ -304,6 +320,19 @@ premium it made +21% (t 3.6, both halves positive, max drawdown -28% at 10%
 risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
 paper trading before any money (`backtester/kalshi_vol.py`,
 `examples/run_kalshi_vol.py`).
+
+**FinBERT news and Reddit sentiment.** FinBERT on 282k Benzinga headlines
+(2009-2020) finds a real but small effect: stocks with very positive pre-open
+news beat very negative ones by 0.19% open-to-close (t 3.9, holdout too). Most
+of the news is already in the opening gap, and two legs of costs eat the rest,
+so it's no edge at $5k. Daily news mood and Reddit mood (4.0M posts from
+r/wallstreetbets & co., 2021-2025) don't predict SPY or BTC, and trading Kalshi
+S&P/BTC "closes above" contracts on them loses 0.3-9.5 cents per contract after
+fees. One candidate: short the stock at the open when its WSB mentions jump 10x
+or more, cover at the close. That made +1.8% per trade in 2021-22 and +2.2% in
+2023-25 (57-58% wins, t 1.6-2.0), with single squeezes of -60 to -70%. It
+needs borrow checks and paper trading (`backtester/news_sentiment.py`,
+`examples/run_news_sentiment.py`).
 
 **Sentiment strategies.** Literature review of survey and composite indices
 (Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
