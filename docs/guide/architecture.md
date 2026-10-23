@@ -35,6 +35,7 @@ Package `backtester/`; public API in `backtester/__init__.py`.
   train_years, test_years, metric)` (re-pick params per window, report only
   unseen windows), `event_study(data, events, horizons)`,
   `summarize_events()`.
+- `portfolio.py`: `sleeve_returns({name: Result})`, `combine(returns, weights, rebalance, band, cost_bps, cash_rate, dd_brake)` -> `Result`: a fund holding several strategies as sub-accounts.
 - `strategies/indicators.py`: `rsi`, `month_ends`.
 
 ## Standalone simulators (not `Strategy` subclasses)

@@ -28,6 +28,7 @@ prices, short crypto history), not forecasts.
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
+| [$5k fund playbook](https://claude.ai/artifact/XiZm64bF9cMya8pQ7uUcrK) | `portfolio.py` | `run_fund_plan.py`, `fund_signals.py` |
 | [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 | [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
@@ -347,6 +348,19 @@ only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
 market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
 after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
 (2021-25) overlays moved Sharpe by under 0.1 either way. No edge.
+
+**$5,000 fund plan.** Every keeper re-run on one footing (2026-10-22):
+UPRO vol target 16.8%/-27% (2009-26, SPY 14.6%/-34%), BTC+ETH ensemble trend
+27.9%/-32% at 0.4% fees (2018-26), pension month-end 13.7%/-47% (2002-26),
+multi-asset trend only 3.3-3.9%/yr without BTC in its universe (the 6.9%
+needed BTC) but +28% in 2008 and +5% in 2022. Combined as one fund (30% UPRO
+vol target, 35% trend at 1x, 15% pension, 20% crypto; quarterly reset or
+10-point drift band) it made 15.2%/yr vs SPY 15.3% from Nov 2018 with a -16%
+vs -34% worst drawdown (Sharpe 1.00 vs 0.69); 2022-26 9.2% vs 11.8%, same
+Sharpe. Without crypto it trails SPY (10.7%). Automatic drawdown brakes cost
+up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, ETF breakout
+meta-filter, Kalshi range iron fly, Iran->oil, WSB fade, Kalshi S&P catch-up)
+stay on paper until live logs keep half their edge.
 
 **Crypto pairs trading.** BTC/ETH z-score mean reversion loses even at 7 bp
 futures fees (median Sharpe -0.65 in 2018-23, -0.11 in 2024+): the ETH/BTC
