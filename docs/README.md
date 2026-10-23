@@ -29,8 +29,20 @@ prices, short crypto history), not forecasts.
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
+| [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 
 ## Summaries
+
+**Alpha hunt.** 20 pre-registered hypotheses with kill rules, aimed at
+capacity-limited and structural edges. One passed: the Treasury auction cycle
+(TLT cheapens -38 bp per cycle in the 5 days before 10y/30y auctions, t -2.9,
+negative in every period including the Jul 2024+ holdout; a TLT/TBF sleeve made
+9.8%/yr vs TLT 2.3%). It is paper-only. Killed: Kalshi passive maker quotes
+(adverse selection, -2.8c/contract), CEF discounts, Kalshi weather vs NWP
+(market forecasts better), spin-offs and PEAD (survivorship; no free delisted
+prices), contract awards, micro-cap QVM, January rebound, pre-FOMC/OPEX/holiday
+overlays, bond month-end, VRP-gated SVXY, country reversal, duration timing,
+factor-ETF momentum, and the Polymarket -> Kalshi lead. Tender offers were untestable.
 
 **Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
 politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M

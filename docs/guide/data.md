@@ -34,6 +34,10 @@ first call.
 | `memecoins.py` | `load_calls`, `load_launches` | HF pump.fun datasets |
 | `trump_posts.py` | `load_posts`, `daily_counts(posts,index,pattern)`, `covered` | GitHub archives |
 | `gov_stakes.py` | `stake_events(index)` | hand-built table |
+| `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
+| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions |
+| `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
+| `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
 | `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
@@ -47,6 +51,7 @@ first call.
 | `event-markets/` | Non-financial Kalshi + Polymarket: `nf_markets.parquet` (441k Kalshi markets with `cat`), `pm_nf_markets.parquet` (10k Polymarket markets >$1M), `raw/nf_trades_*.parquet` (131M Kalshi prints) and `raw/pm_nf_fills.parquet` (145M fills with side, 2024+), `xvenue_*` (1,104 Kalshi/Polymarket matched games), `xv2_*` (5,640 matched pairs across 9 market families with prints, fills and results), result parquet files, `scripts/` |
 | `shortterm-combo/` | hourly SPY/QQQ panels, Kalshi 30-min implied closes, walk-forward and holdout results |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
+| `alpha-hunt/` | alpha hunt outputs: `kalshi_maker_output.txt`/`kalshi_maker_agg.parquet`, `treasury_auctions.parquet`, `sue.parquet` (SUE from SEC Financial Statement Data Sets 2009-2026), `pead_events.parquet`, `gov_award_events.parquet` (HF ZipLime/us-government-contracts), spin-off tables, `scripts/` |
 | `sentiment-research/results/` | mood index and sentiment overlay result CSVs from `run_sentiment_overlays.py` |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
@@ -55,6 +60,7 @@ Polymarket: HF `SII-WANGZJ/Polymarket_data`.
 ## Network from the cloud environment
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
+No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.

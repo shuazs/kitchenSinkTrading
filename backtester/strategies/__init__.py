@@ -3,10 +3,12 @@ from .basis import BasisCarry
 from .benchmark import BuyAndHold
 from .breakout import Breakout
 from .carry import FXCarry
+from .cef_discount import CEFDiscount
 from .crypto import CrossSectionalMomentum, EnsembleTrend, Sleeves, VolTargetBreakout
 from .dual_momentum import DualMomentum
 from .earnings import EarningsPremium
 from .events import EventHold
+from .fomc_overlay import CalendarOverlay, opex_days, PreFOMCOverlay
 from .fundamental_allocator import FundamentalAllocator
 from .hedge_fund_clone import best_ideas, HedgeFundClone
 from .insider import classify_insiders, cluster_signals, InsiderCluster
@@ -31,6 +33,8 @@ __all__ = [
     "BasisCarry",
     "Breakout",
     "BuyAndHold",
+    "CalendarOverlay",
+    "CEFDiscount",
     "CreditSpreads",
     "CrossSectionalMomentum",
     "DualMomentum",
@@ -46,6 +50,7 @@ __all__ = [
     "MultiAssetTrend",
     "PensionRebalance",
     "PostRiskOverlay",
+    "PreFOMCOverlay",
     "RiskParity",
     "RSIMeanReversion",
     "SameMonthSeasonality",

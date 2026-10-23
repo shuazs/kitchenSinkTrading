@@ -15,11 +15,17 @@ Each has one example script and one test file. Verdicts are final unless noted.
 | `pairs.py` | `kalshi_fee`, `half_life`, `rolling_hedge`, `zscore`, `asset_leg_trades`, `fade_contract_spread` | prediction market vs asset as pairs | costs exceed edge |
 | `jump_trades.py` | `jump_events`, `jump_trades`, `summarize`, `grid` | trade asset after a prediction-market jump (hourly) | Iran -> oil is the one lead (see strategies.md) |
 | `event_markets.py` | `kalshi_category`, `taker_prints`, `calibration`, `exclusive_events`, `bracket_arb`, `arb_episodes`, `cross_arb`, `snapshot_quotes`, `favourite_bets`, `first_entries`, `bankroll`, `lead_follow`, `name_tokens`, `poly_subject`, `match_by_name`, `POLY_US_SPORTS` | non-financial Kalshi/Polymarket (sports, politics, weather, culture): taker calibration, longshot/favourite rules, jumps, sum-to-$1 and two-venue arbitrage, Kalshi -> Polymarket lead | takers lose 1-3c/contract everywhere; arbs 0.5-2c taken by bots in <1s; candidate: follow Kalshi on Polymarket sports when last prices differ 5c+ (60s late, 60min hold +5.6c/share, t 7, 1,943 trades), Polymarket fee 0 assumed, paper-trade first. Across 5,640 matched pairs the lead holds for live events (US games +5.2c, soccer +7.8c, UFC, esports) and not for Fed, futures, elections or awards. Net of the Polymarket US sports taker fee (5%·p(1-p)) US games +3.6c (t 7), soccer +6.4c |
+| `kalshi_maker.py` | `orders`, `quote_reference`, `maker_fills(prints,k,latency_s,through)`, `settle`, `summarize`, `maker_fee` | passive Kalshi quotes at last print ±k, 2 s latency, trade-through or trade-at fills, held to settlement | no edge: -2.8c/contract holdout (through), -1.3c (first in queue); long-tail markets -7 to -15c |
+| `weather_brackets.py` | `load_rows`, `brier`, `edge_trades`, `taker_fee` | Kalshi temperature brackets vs 7-model NWP consensus (HF openthomas replay, Aug-Oct 2026) | no edge: market Brier 0.122 vs model 0.163; -3 to -4c/contract every month |
+| `spinoffs.py` | `child_events`, `dead_fate`, `survivorship_bound` | Form 10-12B spin-offs, buy day 21, hold 6-12 months vs IWM, dead children added back | survivors +19.5%/yr holdout; with 208 dead +7.8%, t 1.25: unproven |
+| `auction_cycle.py` | `cycles`, `window_mask`, `window_returns`, `simulate` | Treasury 10y/30y auction cycle (Lou-Yan-Zhang): long bonds cheapen before auctions | **candidate**: TLT -38 bp/cycle, t -2.9, every period and window 3-7 days negative; see strategies.md |
 | `memecoin_calls.py` | `buy`, `sell`, `simulate_calls`, `bankroll` | following pump.fun calls on the bonding curve | loses in every realistic variant |
 
 Kalshi fee: `0.07 * p * (1-p)` per contract (taker), rounded up to the cent.
 Makers earn what takers lose (0.4-2c/contract by category, ~2c on mentions) before maker fees and queue position.
-Untested: passive (maker) Kalshi orders, which need a live order-book recorder.
+Passive (maker) quotes replayed from prints in `kalshi_maker.py` lose; a live order-book recorder would only matter for queue-first bots.
+
+Alpha hunt (2026-10-23, doc https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs): 20 hypotheses, one candidate (auction cycle). Also killed with scratch scripts only (`/mnt/project-files/alpha-hunt/scripts/`): small-cap PEAD, federal contract awards, micro-cap QVM, January rebound, Polymarket->Kalshi lead, bond month-end, vol target on other ETFs, VRP-gated SVXY, country-ETF reversal, duration timing, factor-ETF momentum.
 
 ## `ml/`
 

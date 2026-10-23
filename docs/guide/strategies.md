@@ -18,6 +18,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 | Pension month-end | `pension_rebalance.py` `PensionRebalance` | stock SPY, bond TLT, days 4, when_bonds_lead SSO | SPY +1.1% avg in last 4 days after bonds lead (t 3.1); SPY 11.1% -> 13.4%/yr | `run_pension_rebalance.py` |
 | Hedged S&P 100 momentum | `stock_momentum.py` `HedgedMomentum` | top_n 10, lookback 252, skip 21, hedge None/SH | 22%/yr unhedged vs 15.7% EW (survivor-biased); SH-hedged 4.3% | `run_hedged_momentum.py` |
 | ETF breakout + meta-label filter (candidate) | `ml/metalabel.py` `MetaFiltered` around `Breakout` | 20/10 on 32 ETFs, skip worse half | Sharpe 0.61 -> 0.76 walk-forward, 0.67 -> 1.43 holdout (Jul 2024+); paper-trade | `run_ml_research.py` |
+| Treasury auction cycle (candidate, paper only) | `auction_cycle.py` `simulate` (standalone, close-to-close) + `data/treasury_auctions.py` | out of TLT from the close 5 days before each 10y/30y auction cycle to the last auction close; optional TBF while out | TLT -38 bp/cycle in window (t -2.9, negative in 2008-16, 2017-24 and Jul 2024+ holdout); TLT/TBF sleeve 9.8%/-25% vs TLT 2.3%/-48%; 20% sleeve lifts Balanced fund Sharpe 1.04 -> 1.15 | `run_auction_cycle.py` |
 | Polymarket Iran -> oil (paper only) | `jump_trades.py` (not a Strategy) | jump >= 5 pts/hr, hold 3h | +0.66%/trade, 34 trades, t 2.4 | `run_iran_oil.py`, `watch_polymarket_iran.py` |
 
 ## Weak or mixed
@@ -58,6 +59,9 @@ Defaults shown are the class defaults, not necessarily the best run.
 | S&P 500 index changes | `events.py` `EventHold` + `data/sp500.py` | nothing tradeable from free data |
 | ML signal blend (ridge/LGBM/MLP/LSTM) | `signal_blend.py` `SignalBlend` + `ml/` | no model beats equal weight / ridge; Kalshi features don't help |
 | Regime switch, learning-to-rank | `ml/regime.py` `RegimeSwitch`, `ml/rank.py` `TopN` | trails 200d filter; ranking = survivor bias |
+| Closed-end fund discounts | `cef_discount.py` `CEFDiscount` (lookback 252, entry_z 1.5, exit_z 0.5, 10 slots) + `data/cef.py` | 261 CEFs: holdout (2019+) alpha 1.1%/yr vs equal-weight CEFs, 2.9% walk-forward; below the 3% bar |
+| Pre-FOMC drift overlay | `fomc_overlay.py` `PreFOMCOverlay` (base, add 0.5) + `data/fomc.py` | SPY pre-FOMC return = any 2 days since 2009; UPRO VT Sharpe -0.09 / 0.00 |
+| Calendar overlays (OPEX, holidays) | `fomc_overlay.py` `CalendarOverlay` (per-day multiplier), `opex_days` | OPEX week up / week after down: Sharpe -0.07/-0.10; pre-holiday x1.5: +0.015/0.00 |
 | Benchmark | `benchmark.py` `BuyAndHold` | — |
 
 Intraday, Kalshi, 0DTE, pairs and meme-coin results are in
