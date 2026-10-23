@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in claude.ai (private
+The research behind this repo lives in twenty-six project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -27,81 +27,19 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
-| [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
-| [Copying Congress trades](https://claude.ai/artifact/B1FjpeyPjgr3z8uheNiMVK) | `data/congress.py`, `strategies/events.py` (`EventHold`) | `run_congress_trades.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
-| [$5k fund playbook](https://claude.ai/artifact/XiZm64bF9cMya8pQ7uUcrK) | `portfolio.py` | `run_fund_plan.py`, `fund_signals.py` |
+| Kalshi S&P range vs VIX1D for selling 0DTE (no write-up; summary below) | `kalshi_vol.py` | `run_kalshi_vol.py` |
 | [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
+| [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
+| [Copying Congress trades](https://claude.ai/artifact/B1FjpeyPjgr3z8uheNiMVK) | `data/congress.py`, `strategies/events.py` (`EventHold`) | `run_congress_trades.py` |
+| [$5k fund playbook](https://claude.ai/artifact/XiZm64bF9cMya8pQ7uUcrK) | `portfolio.py` | `run_fund_plan.py`, `fund_signals.py` |
+| [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
+| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 
 ## Summaries
-
-**Alpha hunt.** 20 pre-registered hypotheses with kill rules, aimed at
-capacity-limited and structural edges. One passed: the Treasury auction cycle
-(TLT cheapens -38 bp per cycle in the 5 days before 10y/30y auctions, t -2.9,
-negative in every period including the Jul 2024+ holdout; a TLT/TBF sleeve made
-9.8%/yr vs TLT 2.3%). It is paper-only. Killed: Kalshi passive maker quotes
-(adverse selection, -2.8c/contract), CEF discounts, Kalshi weather vs NWP
-(market forecasts better), spin-offs and PEAD (survivorship; no free delisted
-prices), contract awards, micro-cap QVM, January rebound, pre-FOMC/OPEX/holiday
-overlays, bond month-end, VRP-gated SVXY, country reversal, duration timing,
-factor-ETF momentum, and the Polymarket -> Kalshi lead. Tender offers were untestable.
-| [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
-| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
-
-## Summaries
-
-**Signal combination search.** Every strategy turned into a daily 0/1
-signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
-trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
-target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
-inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
-timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
-PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
-Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
-holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
-drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
-15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
-diversification across sleeves is the only robust result, same as the $5k
-fund plan.
-
-**Alpha hunt batch 3 (scheduled flows).** Nine event windows in liquid ETFs
-and BTC with placebos: GSCI roll (USO-USL), Russell reconstitution, 2/5/7y,
-3y and 20y auction cycles, corporate tax and coupon dates, CME BTC expiry,
-MSCI rebalances, VIX expiry and quarter-end window dressing. All killed: most
-were real before about 2016 and have decayed or flip in the holdout; the
-Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
-month-ends, and the EEM day after MSCI rebalances is a generic month-end
-effect. The auction cycle stays the only candidate.
-
-**Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
-politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
-Polymarket fills on 10k non-financial markets over $1M. Takers lose 1.4-2.6c
-per contract after fees in every category; makers earn 0.6-2c of it.
-Favourite/longshot entry rules, pre-game favourites on Polymarket and
-momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
-arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
-multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
-set, but both legs usually print within one second, so bots already take
-them. The candidate: Kalshi leads Polymarket on sports games. When last
-prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
-60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
-positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
-Polymarket's international book (no US persons), assumes no Polymarket fee,
-and covers only Apr 2025 to Jan 2026, so a log-only watcher comes first.
-Weather-vs-forecast was not testable (forecast archives blocked). A follow-up
-matched 5,640 Kalshi/Polymarket pairs across nine families (US games, soccer
-incl. draws, UFC, esports, tennis, championship futures, elections, awards,
-Fed decisions): the lead is a live-event effect (US games +5.2c, soccer
-+7.8c, UFC +32c on few trades, esports +7.6c per share at 60s late/60 min);
-Fed, futures, elections and awards show none, and there the venues sit within
-about 1.6c of each other. Flat $250 trades capped at printed size made ~$69k
-over Apr 2025-Jan 2026 with at most $1.6k tied up (upper bound).
-Josh can only trade Polymarket US, a separate book with no public history,
-whose sports takers pay 5%·p(1-p). Net of that fee the lead is still +3.6c
-(US games) and +6.4c (soccer) per share, ~$57k on the same flat trades.
 
 **Research shortlist.** Nine candidates for a small, risk-tolerant account,
 ranked by evidence: leveraged-ETF 200-day trend filter, crypto N-day-high
@@ -297,6 +235,33 @@ not overpriced afterwards (15 of 16 cells within 2 standard errors), taker
 flow stayed about 50/50, and 240 fade/follow variants looked like the
 random-time control; maker variants lost to adverse selection. No edge.
 
+**Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
+politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
+Polymarket fills on 10k non-financial markets over $1M. Takers lose 1.4-2.6c
+per contract after fees in every category; makers earn 0.6-2c of it.
+Favourite/longshot entry rules, pre-game favourites on Polymarket and
+momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
+arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
+multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
+set, but both legs usually print within one second, so bots already take
+them. The candidate: Kalshi leads Polymarket on sports games. When last
+prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
+60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
+positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
+Polymarket's international book (no US persons), assumes no Polymarket fee,
+and covers only Apr 2025 to Jan 2026, so a log-only watcher comes first.
+Weather-vs-forecast was not testable (forecast archives blocked). A follow-up
+matched 5,640 Kalshi/Polymarket pairs across nine families (US games, soccer
+incl. draws, UFC, esports, tennis, championship futures, elections, awards,
+Fed decisions): the lead is a live-event effect (US games +5.2c, soccer
++7.8c, UFC +32c on few trades, esports +7.6c per share at 60s late/60 min);
+Fed, futures, elections and awards show none, and there the venues sit within
+about 1.6c of each other. Flat $250 trades capped at printed size made ~$69k
+over Apr 2025-Jan 2026 with at most $1.6k tied up (upper bound).
+Josh can only trade Polymarket US, a separate book with no public history,
+whose sports takers pay 5%·p(1-p). Net of that fee the lead is still +3.6c
+(US games) and +6.4c (soccer) per share, ~$57k on the same flat trades.
+
 **Intraday strategies on 1-minute data.** Free 1-minute S&P, Nasdaq, BTC and
 ETH bars (2021-2026) let the intraday rules run without Alpaca. 3,448 rule
 variants (noise area, opening range, VWAP trend and reversion, end-of-day
@@ -412,3 +377,37 @@ the long-only rotation trails buying BTC (14% vs 28%/yr since 2024). Rolling
 cointegration/distance pairs over 19 coins lose after costs (walk-forward
 -10%/yr, -77% DD). Intraday 5m-1h pairs earn 0-4 bp gross per round trip vs a
 14 bp futures round trip. No edge; US spot accounts can't short alts anyway.
+
+**Signal combination search.** Every strategy turned into a daily 0/1
+signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
+trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
+target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
+inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
+timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
+PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
+Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
+holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
+drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
+15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
+diversification across sleeves is the only robust result, same as the $5k
+fund plan.
+
+**Alpha hunt.** 20 pre-registered hypotheses with kill rules, aimed at
+capacity-limited and structural edges. One passed: the Treasury auction cycle
+(TLT cheapens -38 bp per cycle in the 5 days before 10y/30y auctions, t -2.9,
+negative in every period including the Jul 2024+ holdout; a TLT/TBF sleeve made
+9.8%/yr vs TLT 2.3%). It is paper-only. Killed: Kalshi passive maker quotes
+(adverse selection, -2.8c/contract), CEF discounts, Kalshi weather vs NWP
+(market forecasts better), spin-offs and PEAD (survivorship; no free delisted
+prices), contract awards, micro-cap QVM, January rebound, pre-FOMC/OPEX/holiday
+overlays, bond month-end, VRP-gated SVXY, country reversal, duration timing,
+factor-ETF momentum, and the Polymarket -> Kalshi lead. Tender offers were untestable.
+
+**Alpha hunt batch 3 (scheduled flows).** Nine event windows in liquid ETFs
+and BTC with placebos: GSCI roll (USO-USL), Russell reconstitution, 2/5/7y,
+3y and 20y auction cycles, corporate tax and coupon dates, CME BTC expiry,
+MSCI rebalances, VIX expiry and quarter-end window dressing. All killed: most
+were real before about 2016 and have decayed or flip in the holdout; the
+Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
+month-ends, and the EEM day after MSCI rebalances is a generic month-end
+effect. The auction cycle stays the only candidate.
