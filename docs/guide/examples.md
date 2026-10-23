@@ -90,6 +90,7 @@ verdicts are in [strategies.md](strategies.md).
 - `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_scheduled_flows.py`: alpha hunt batch 3, nine scheduled-flow event windows (roll, Russell, auctions, tax, BTC expiry, MSCI, coupons, VIX expiry, quarter-end) by period with placebos.
+- `run_alpha_batch5.py`: alpha hunt batch 5 (IG issuance from EDGAR form.idx, vol-control, MBS convexity, auction window on other ETFs, COT trend flip, Kalshi tennis/EFL) by period.
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
 - `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).
