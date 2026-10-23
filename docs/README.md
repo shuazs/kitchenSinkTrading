@@ -25,11 +25,55 @@ prices, short crypto history), not forecasts.
 | [Prediction markets as pairs trades](https://claude.ai/artifact/9zz3e8t7mY7g2Mmq8ZPL7F) | `pairs.py` | `run_prediction_market_pairs.py` |
 | [Trading Kalshi off stock moves](https://claude.ai/artifact/NE4wvaFAWDEu56vDUWotKi) | `kalshi_catchup.py` | `run_kalshi_catchup.py` |
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
+| [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
 | [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
+| [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
+| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 
 ## Summaries
+
+**Signal combination search.** Every strategy turned into a daily 0/1
+signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
+trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
+target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
+inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
+timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
+PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
+Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
+holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
+drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
+15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
+diversification across sleeves is the only robust result, same as the $5k
+fund plan.
+
+**Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
+politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
+Polymarket fills on 10k non-financial markets over $1M. Takers lose 1.4-2.6c
+per contract after fees in every category; makers earn 0.6-2c of it.
+Favourite/longshot entry rules, pre-game favourites on Polymarket and
+momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
+arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
+multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
+set, but both legs usually print within one second, so bots already take
+them. The candidate: Kalshi leads Polymarket on sports games. When last
+prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
+60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
+positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
+Polymarket's international book (no US persons), assumes no Polymarket fee,
+and covers only Apr 2025 to Jan 2026, so a log-only watcher comes first.
+Weather-vs-forecast was not testable (forecast archives blocked). A follow-up
+matched 5,640 Kalshi/Polymarket pairs across nine families (US games, soccer
+incl. draws, UFC, esports, tennis, championship futures, elections, awards,
+Fed decisions): the lead is a live-event effect (US games +5.2c, soccer
++7.8c, UFC +32c on few trades, esports +7.6c per share at 60s late/60 min);
+Fed, futures, elections and awards show none, and there the venues sit within
+about 1.6c of each other. Flat $250 trades capped at printed size made ~$69k
+over Apr 2025-Jan 2026 with at most $1.6k tied up (upper bound).
+Josh can only trade Polymarket US, a separate book with no public history,
+whose sports takers pay 5%·p(1-p). Net of that fee the lead is still +3.6c
+(US games) and +6.4c (soccer) per share, ~$57k on the same flat trades.
 
 **Research shortlist.** Nine candidates for a small, risk-tolerant account,
 ranked by evidence: leveraged-ETF 200-day trend filter, crypto N-day-high
@@ -288,3 +332,17 @@ or more, cover at the close. That made +1.8% per trade in 2021-22 and +2.2% in
 2023-25 (57-58% wins, t 1.6-2.0), with single squeezes of -60 to -70%. It
 needs borrow checks and paper trading (`backtester/news_sentiment.py`,
 `examples/run_news_sentiment.py`).
+
+**Sentiment strategies.** Literature review of survey and composite indices
+(Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
+social media and retail attention, and crypto sentiment: slow measures
+forecast years, fast text forecasts days but sits in small caps and decays as
+tools spread. Tests (surveys blocked, so a Fear & Greed style mood index was
+rebuilt from Yahoo): extreme fear precedes the best SPY month but with ~1.8x
+the volatility; no fear/greed, VIX-backwardation, credit, Michigan or crypto
+funding overlay beat UPRO vol target, multi-asset trend, BTC/ETH breakout or
+ensemble trend in both design and holdout. VIX > VIX3M exit helps plain SPY
+only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
+market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
+after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
+(2021-25) overlays moved Sharpe by under 0.1 either way. No edge.

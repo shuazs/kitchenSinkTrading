@@ -51,6 +51,7 @@ verdicts are in [strategies.md](strategies.md).
 
 ## Trump / events
 
+- `run_sentiment_overlays.py`: Market sentiment (mood index, VIX, credit, Michigan, crypto funding) as forecaster and overlay on the keepers; `[out_dir]` saves CSVs.
 - `run_trump_overlay.py`: Cut leverage after a burst of Trump posts on tariffs or markets.
 - `run_taco_dip.py`: The "TACO" trade: buy index ETFs after a tariff-scare selloff.
 - `run_gov_stakes.py`: Buy companies after the first report of a US government equity stake.
@@ -59,6 +60,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_signal_blend.py`: Can a neural net combine our signals better than a linear blend?.
 - `run_signal_blend_kalshi.py`: Do Kalshi prediction-market features help the signal combiner?.
+- `run_signal_combos.py`: Every strategy as a signal or sleeve, every subset combined (~3M trials), walk-forward + holdout + deflated Sharpe + PBO; writes CSVs to `/mnt/project-files/signal-combos/` (~15 min).
 - `run_ml_research.py`: Four machine-learning framings that use the repo's research as inputs, each tested walk-forward with costs on $5,000.
 
 ## Intraday
@@ -70,6 +72,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_iran_oil.py`: Polymarket Iran-war odds as a leading signal for crude oil.
 - `watch_polymarket_iran.py`: Paper-trade the Iran-to-oil rule live.
+- `watch_kalshi_polymarket_us.py`: Log Kalshi and Polymarket US game books side by side, no orders, on Josh's machine; `--once` lists pairs, `--report` replays the Kalshi -> Polymarket rule net of the US fee.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
@@ -77,6 +80,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
 - `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
 - `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
+- `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
 Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
