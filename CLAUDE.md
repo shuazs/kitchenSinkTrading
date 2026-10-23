@@ -16,6 +16,7 @@ need to change or debug them. Read only the doc your task needs:
 | Data loaders, env vars, shared datasets in `/mnt/project-files`, blocked hosts | [docs/guide/data.md](docs/guide/data.md) |
 | What each `examples/*.py` script runs | [docs/guide/examples.md](docs/guide/examples.md) |
 | Running and writing tests | [docs/guide/testing.md](docs/guide/testing.md) |
+| Pass rules for calling a strategy out-of-sample robust | [docs/guide/protocol.md](docs/guide/protocol.md) |
 
 Full research write-ups and summaries: [docs/README.md](docs/README.md).
 Before starting a new idea, check `strategies.md` and `research-modules.md`:

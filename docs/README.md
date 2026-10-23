@@ -38,6 +38,7 @@ prices, short crypto history), not forecasts.
 | Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
+| [Alpha loop batch 4: validation protocol and re-checks](https://claude.ai/artifact/Tjc51YbWCBjm7Km1TK5LH7) | `event_markets.lead_follow(settle=)`, `docs/guide/protocol.md` | `run_alpha_batch4.py`, `run_kalshi_mentions_no.py` |
 
 ## Summaries
 
@@ -244,7 +245,7 @@ momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
 arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
 multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
 set, but both legs usually print within one second, so bots already take
-them. The candidate: Kalshi leads Polymarket on sports games. When last
+them. The candidate (retracted in batch 4: an exit-selection artifact, -2.3c/share with a causal exit): Kalshi leads Polymarket on sports games. When last
 prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
 60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
 positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
@@ -366,7 +367,7 @@ vol target, 35% trend at 1x, 15% pension, 20% crypto; quarterly reset or
 10-point drift band) it made 15.2%/yr vs SPY 15.3% from Nov 2018 with a -16%
 vs -34% worst drawdown (Sharpe 1.00 vs 0.69); 2022-26 9.2% vs 11.8%, same
 Sharpe. Without crypto it trails SPY (10.7%). Automatic drawdown brakes cost
-up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, ETF breakout
+up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, since retracted; ETF breakout
 meta-filter, Kalshi range iron fly, Iran->oil, WSB fade, Kalshi S&P catch-up)
 stay on paper until live logs keep half their edge.
 
@@ -411,3 +412,15 @@ were real before about 2016 and have decayed or flip in the holdout; the
 Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
 month-ends, and the EEM day after MSCI rebalances is a generic month-end
 effect. The auction cycle stays the only candidate.
+
+**Alpha loop batch 4 (protocol re-checks).** Every candidate re-run under one
+set of pass rules (`docs/guide/protocol.md`). The Treasury auction cycle
+passes: negative in every bond ETF, window and sub-period, at the 0.1th
+percentile of random windows. Near misses to paper-trade: Kalshi mention
+markets bought on the No side at 20-80c (+3.6c/contract after fees, no
+untouched holdout) and the ETF meta-label filter (fragile, trails
+equal-weight buy-and-hold). Retracted: the Kalshi -> Polymarket sports lead,
+an exit-selection artifact (-2.3c/share with a causal exit). Failed: WSB
+fade, TIPS auctions, TGA and net-liquidity timing, put-write via XYLD,
+macro-day and FOMC-week overlays, GLD overnight, levered low-vol, crypto
+perp-discount reversal and positioning/OI overlays.

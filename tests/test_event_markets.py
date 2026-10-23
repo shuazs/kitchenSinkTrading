@@ -116,6 +116,15 @@ def test_lead_follow_known_answer_and_latency():
     assert r2["ret"].iloc[0] == pytest.approx(0.52 - 0.58)
 
 
+def test_lead_follow_settles_trades_without_exit_print():
+    lead = pd.DataFrame({"time": [ts(100)], "yes": [0.60]})
+    fol = pd.DataFrame({"time": [ts(90), ts(95), ts(105)], "yes": [0.50, 0.49, 0.52],
+                        "taker_side": ["yes", "no", "yes"], "size": 10.0})  # no bid print after the hold
+    assert lead_follow(lead, fol, 0.05, "2s", "5min").empty  # old behaviour: the trade is dropped
+    r = lead_follow(lead, fol, 0.05, "2s", "5min", settle=0.0)
+    assert len(r) == 1 and r["ret"].iloc[0] == pytest.approx(-0.52)
+
+
 def test_first_entries_and_bankroll():
     tr = pd.DataFrame({"ticker": ["E-A"] * 3, "count": [100, 100, 100], "yes_price": [50, 70, 75],
                        "taker_side": ["yes"] * 3, "created_time": [ts(0), ts(60), ts(120)]})

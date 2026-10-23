@@ -89,6 +89,8 @@ verdicts are in [strategies.md](strategies.md).
 - `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
 - `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
+- `run_alpha_batch4.py`: alpha hunt batch 4 daily/crypto tests (put-write, macro days, FOMC weeks, GLD overnight, levered low-vol, perp-discount reversal).
+- `run_kalshi_mentions_no.py`: Kalshi mention markets, No-taker net by bucket/year/series from `event-markets/ev_agg.parquet` (forward-test candidate).
 - `run_scheduled_flows.py`: alpha hunt batch 3, nine scheduled-flow event windows (roll, Russell, auctions, tax, BTC expiry, MSCI, coupons, VIX expiry, quarter-end) by period with placebos.
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
