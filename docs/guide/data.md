@@ -64,6 +64,8 @@ first call.
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
+HF `linxy/USDT-M_Perpetual_Futures` daily klines and funding for all ~530 live Binance perps (2020+, delisted coins missing) are aggregated into `linxy/all_1d.parquet` and `all_funding_daily.parquet` by `examples/run_alpha_batch7.py` (~15 min first run). FRED `RB**BIS` are BIS real effective exchange rates (the OECD `CPALTT01*` CPI series are gone from FRED).
+
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment
