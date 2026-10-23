@@ -27,7 +27,11 @@ prices, short crypto history), not forecasts.
 | Kalshi crowd bias after big moves (no write-up; results in [PR #18](https://github.com/shuazs/kitchenSinkTrading/pull/18)) | `kalshi_crowd.py` | `run_kalshi_crowd.py` |
 | [Non-financial prediction markets](https://claude.ai/artifact/S3h1yCUVXdGTDbXTrCRm6K) | `event_markets.py`, `data/kalshi_hf.py`, `data/polymarket.py` (`side`) | `run_event_markets.py` |
 | [Intraday strategies on 1-minute data](https://claude.ai/artifact/Vker1MLqEfUTXXELHms2UL) | `intraday_lab.py`, `intraday.py`, `data/minute_mirrors.py` | `run_intraday_strategies.py`, `run_intraday_momentum.py` |
+| [Futures positioning (COT) from Hugging Face](https://claude.ai/artifact/4aQNsdoBdyCqsAVsywUPKk) | `strategies/cot_positioning.py`, `data/cot.py` | `run_cot_positioning.py` |
+| [Copying Congress trades](https://claude.ai/artifact/B1FjpeyPjgr3z8uheNiMVK) | `data/congress.py`, `strategies/events.py` (`EventHold`) | `run_congress_trades.py` |
 | Long-term fundamental portfolio manager (no write-up; results in the PR and below) | `strategies/fundamental_allocator.py`, `data/fundamentals.py`, `data/fred.py` (`unemployment_rate`) | `run_fundamental_allocator.py` |
+| [$5k fund playbook](https://claude.ai/artifact/XiZm64bF9cMya8pQ7uUcrK) | `portfolio.py` | `run_fund_plan.py`, `fund_signals.py` |
+| [Trading off FinBERT news and Reddit sentiment](https://claude.ai/artifact/8ENP71Kn66HMJra878J8cH) | `news_sentiment.py`, `data/news_mirrors.py`, `data/sentiment.py` | `run_news_sentiment.py` |
 | [Sentiment strategies: literature review and tests on our keepers](https://claude.ai/artifact/Ph7f95qxwcbCxpmbqQ2GLW) | `sentiment_overlay.py`, `data/sentiment_indices.py` | `run_sentiment_overlays.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 
@@ -43,6 +47,24 @@ negative in every period including the Jul 2024+ holdout; a TLT/TBF sleeve made
 prices), contract awards, micro-cap QVM, January rebound, pre-FOMC/OPEX/holiday
 overlays, bond month-end, VRP-gated SVXY, country reversal, duration timing,
 factor-ETF momentum, and the Polymarket -> Kalshi lead. Tender offers were untestable.
+| [Crypto pairs trading](https://claude.ai/artifact/25jMx1tG5YpQwAzxrKfqcW) | `crypto_pairs.py` | `run_crypto_pairs.py` |
+| Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
+
+## Summaries
+
+**Signal combination search.** Every strategy turned into a daily 0/1
+signal or a $5k sleeve, then every subset combined: 785,508 SPY timing
+trials (15 signals x AND/OR/majority/share x SPY/SSO/UPRO, flat or 20% vol
+target), 3,962 BTC/ETH timing trials, 2.2M sleeve mixes (equal or
+inverse-vol). Picked half-yearly walk-forward, Jul 2024+ held out. SPY
+timing: walk-forward pick Sharpe -0.04 vs SPY 0.71, deflated Sharpe 0.02,
+PBO 0.69. BTC/ETH: in-sample best (Sharpe 1.55) gives -0.23 in the holdout.
+Sleeves without crypto (2012+): searched pick 0.81 walk-forward / 0.62
+holdout, but holding all 16 sleeves equal-weight does better (0.88 / 0.75,
+drawdowns -21% / -14% vs SPY -34% / -19%) at lower return (13% vs SPY
+15-17%). Verdict: searching combinations finds luck (PBO 0.7-0.9); naive
+diversification across sleeves is the only robust result, same as the $5k
+fund plan.
 
 **Non-financial prediction markets.** 131M Kalshi prints on 441k sports,
 politics, weather, culture and "mentions" markets (2021 to Jan 2026) and 145M
@@ -316,6 +338,19 @@ risk per fly). Option prices are modelled, so this needs real 0DTE quotes or
 paper trading before any money (`backtester/kalshi_vol.py`,
 `examples/run_kalshi_vol.py`).
 
+**FinBERT news and Reddit sentiment.** FinBERT on 282k Benzinga headlines
+(2009-2020) finds a real but small effect: stocks with very positive pre-open
+news beat very negative ones by 0.19% open-to-close (t 3.9, holdout too). Most
+of the news is already in the opening gap, and two legs of costs eat the rest,
+so it's no edge at $5k. Daily news mood and Reddit mood (4.0M posts from
+r/wallstreetbets & co., 2021-2025) don't predict SPY or BTC, and trading Kalshi
+S&P/BTC "closes above" contracts on them loses 0.3-9.5 cents per contract after
+fees. One candidate: short the stock at the open when its WSB mentions jump 10x
+or more, cover at the close. That made +1.8% per trade in 2021-22 and +2.2% in
+2023-25 (57-58% wins, t 1.6-2.0), with single squeezes of -60 to -70%. It
+needs borrow checks and paper trading (`backtester/news_sentiment.py`,
+`examples/run_news_sentiment.py`).
+
 **Sentiment strategies.** Literature review of survey and composite indices
 (Baker-Wurgler, AAII, aligned index), VIX/options, news text and LLM scores,
 social media and retail attention, and crypto sentiment: slow measures
@@ -329,3 +364,41 @@ only. Mood at entry doesn't sort ETF breakout trades. The FinBERT Benzinga
 market news mood (2009-Jun 2020) mostly echoes yesterday's return; trimming
 after upbeat news weeks added only 0.02-0.05 Sharpe. Reddit mood
 (2021-25) overlays moved Sharpe by under 0.1 either way. No edge.
+
+**Futures positioning (COT).** Survey of Hugging Face finance data found
+CFTC Commitments of Traders with real publication times (2010-2026) as the
+best new source. Literature: Kang-Rouwenhorst-Tang (fade weekly speculator
+flow), Basu-Miffre (hedging pressure), practitioner COT index. On 20 futures
+ETFs the KRT reversal is there before costs (Sharpe 0.41) but turns over 72x
+a year and loses after costs; hedging pressure has the wrong sign since 2010;
+siding with commercials at extremes is positive in every period but only
+~1%/yr over T-bills and needs shorts. No edge.
+
+**Copying Congress trades.** STOCK Act periodic reports (HF
+`ZipLime/congress-trading`, 2014-2026), bought the day after filing (median
+28 days after the trade). Matches the post-2012 papers: copying all purchases
+trails SPY and Democrats' buys lag since 2020. $50k+ purchases beat SPY since
+2020 but only through ~10 mega-cap tech names and flip sign with the holding
+period; 3+ member cluster buys gain ~0.5% per 3 months, too small to trade;
+Pelosi's 67 disclosed buys say nothing. No edge.
+
+**$5,000 fund plan.** Every keeper re-run on one footing (2026-10-22):
+UPRO vol target 16.8%/-27% (2009-26, SPY 14.6%/-34%), BTC+ETH ensemble trend
+27.9%/-32% at 0.4% fees (2018-26), pension month-end 13.7%/-47% (2002-26),
+multi-asset trend only 3.3-3.9%/yr without BTC in its universe (the 6.9%
+needed BTC) but +28% in 2008 and +5% in 2022. Combined as one fund (30% UPRO
+vol target, 35% trend at 1x, 15% pension, 20% crypto; quarterly reset or
+10-point drift band) it made 15.2%/yr vs SPY 15.3% from Nov 2018 with a -16%
+vs -34% worst drawdown (Sharpe 1.00 vs 0.69); 2022-26 9.2% vs 11.8%, same
+Sharpe. Without crypto it trails SPY (10.7%). Automatic drawdown brakes cost
+up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, ETF breakout
+meta-filter, Kalshi range iron fly, Iran->oil, WSB fade, Kalshi S&P catch-up)
+stay on paper until live logs keep half their edge.
+
+**Crypto pairs trading.** BTC/ETH z-score mean reversion loses even at 7 bp
+futures fees (median Sharpe -0.65 in 2018-23, -0.11 in 2024+): the ETH/BTC
+ratio trends. Ratio momentum is positive in design but fades after 2024, and
+the long-only rotation trails buying BTC (14% vs 28%/yr since 2024). Rolling
+cointegration/distance pairs over 19 coins lose after costs (walk-forward
+-10%/yr, -77% DD). Intraday 5m-1h pairs earn 0-4 bp gross per round trip vs a
+14 bp futures round trip. No edge; US spot accounts can't short alts anyway.

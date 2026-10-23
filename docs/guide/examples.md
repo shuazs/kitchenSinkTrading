@@ -25,6 +25,8 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_vol_target.py`: Volatility-targeted UPRO vs buy and hold and the 200-day trend filter.
 - `run_vix_term_structure.py`: Short volatility (SVXY) only while VIX is below 3-month VIX, on real data.
+- `run_congress_trades.py`: Congress purchase disclosures: event study and $5k copy portfolios by subset (all, $50k+, clusters, party, leaders, fast filers); `[out_dir]` saves CSVs.
+- `run_cot_positioning.py`: CFTC COT signals (flow reversal, hedging pressure, commercial index) on 20 futures ETFs: periods, walk-forward, cost sensitivity.
 - `run_sector_rotation.py`: Sector SPDR momentum rotation vs SPY, on real data.
 - `run_turn_of_month.py`: Turn-of-month on SPY, QQQ and 3x ETFs vs buy and hold, on real data.
 - `run_seasonality.py`: Same-calendar-month seasonality on sector and country ETFs vs SPY and the momentum sector rotation, on real data.
@@ -43,6 +45,11 @@ verdicts are in [strategies.md](strategies.md).
 - `run_basis_carry.py`: Crypto cash-and-carry (long spot, short the CME front month) on $5,000.
 - `run_fundamental_allocator.py`: Long-term fundamental portfolio manager (S&P 500 picks on SEC fundamentals + intl + small caps, macro switch) vs SPY: design, holdout, walk-forward, survivorship check, big-tech (QQQ) tilts. Needs `SEC_USER_AGENT`.
 
+## Fund
+
+- `run_fund_plan.py`: Re-runs the keepers and combines them into the $5,000 fund (Balanced / Growth) with rebalancing and drawdown-brake variants; `[out_dir]` saves equity CSVs.
+- `fund_signals.py`: Today's dollar target per symbol for the fund plan (`[equity] [balanced|growth]`), no orders.
+
 ## Crypto
 
 - `run_crypto_strategies.py`: Crypto momentum basket, volatility-targeted breakout and a capped meme coin sleeve, against the plain BTC+ETH breakout and buy and hold.
@@ -60,6 +67,7 @@ verdicts are in [strategies.md](strategies.md).
 
 - `run_signal_blend.py`: Can a neural net combine our signals better than a linear blend?.
 - `run_signal_blend_kalshi.py`: Do Kalshi prediction-market features help the signal combiner?.
+- `run_signal_combos.py`: Every strategy as a signal or sleeve, every subset combined (~3M trials), walk-forward + holdout + deflated Sharpe + PBO; writes CSVs to `/mnt/project-files/signal-combos/` (~15 min).
 - `run_ml_research.py`: Four machine-learning framings that use the repo's research as inputs, each tested walk-forward with costs on $5,000.
 
 ## Intraday
@@ -74,9 +82,12 @@ verdicts are in [strategies.md](strategies.md).
 - `watch_kalshi_polymarket_us.py`: Log Kalshi and Polymarket US game books side by side, no orders, on Josh's machine; `--once` lists pairs, `--report` replays the Kalshi -> Polymarket rule net of the US fee.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
+- `run_crypto_pairs.py`: Crypto pairs: BTC/ETH daily, 19-coin rolling pairs + walk-forward, intraday 5m/15m/1h; writes CSVs to `crypto-pairs/results/`.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
+- `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
+- `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
@@ -86,6 +97,6 @@ verdicts are in [strategies.md](strategies.md).
 - `run_fomc_overlay.py`: Pre-FOMC drift event study and UPRO VT overlay.
 - `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
 
-Notes: `watch_polymarket_iran.py` is log-only and runs on Josh's machine
+Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and runs on Josh's machine
 (`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.
