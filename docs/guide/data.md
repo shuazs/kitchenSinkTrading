@@ -64,6 +64,7 @@ first call.
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
+EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable and finds filings by phrase (batch 8 uses it for CEF rights offerings; after 2020 fund prospectus supplements are 424B*, not 497). Kalshi combo (KXMVE*) markets and trades from the TrevorJS mirror are cached in `alpha_batch8/` by `run_alpha_batch8.py`, read by HTTP range requests (row groups only).
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment
