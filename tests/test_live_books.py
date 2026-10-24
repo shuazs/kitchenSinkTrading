@@ -37,3 +37,18 @@ def test_gap_followthrough_fee_and_direction():
     assert row["p_in"] == 0.57 and row["p_out"] == 0.58
     assert abs(row["ret"] - (0.01 - 0.05 * (0.57 * 0.43 + 0.58 * 0.42))) < 1e-12
     assert abs(row["toward"] - 0.09) < 1e-12
+
+
+def test_near_miss_rules_and_paper_pnl():
+    from backtester.data.live_books import market_top, paper_entry, paper_pnl
+
+    assert market_top({"yes_bid": 30, "yes_ask": 33}) == (0.30, 0.33)
+    assert market_top({"yes_bid_dollars": "0.8500", "yes_ask_dollars": "0.8700"}) == (0.85, 0.87)
+    assert market_top({"yes_bid": 0, "yes_ask": 100}) == (None, None)  # empty book
+    assert paper_entry("mentions_no", 0.30, 0.33) == ("no", 0.70)  # NO costs 1 - YES bid
+    assert paper_entry("mentions_no", 0.85, 0.88) is None  # NO at 15c: outside 20-80c
+    assert paper_entry("atp_yes", 0.85, 0.87) == ("yes", 0.87)
+    assert paper_entry("atp_yes", 0.94, 0.96) is None
+    # 10 contracts at 70c: fee 0.07*10*0.7*0.3 = $0.147 -> $0.15, i.e. 1.5c per contract
+    assert abs(paper_pnl("no", 0.70, "no", 10) - (1 - 0.70 - 0.015)) < 1e-12
+    assert abs(paper_pnl("no", 0.70, "yes", 10) - (-0.70 - 0.015)) < 1e-12
