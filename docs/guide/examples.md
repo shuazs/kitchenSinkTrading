@@ -98,6 +98,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch7.py`: alpha hunt batch 7 (LETF reversal, commodity/country seasonality, momentum, skew, January windows, small-cap sector lag, FX value, Binance perps funding and listings) by period.
 - `run_alpha_batch8.py`: alpha hunt batch 8 (odd-lot tender offers, CEF activist 13D and rights offerings, MSCI factor ETFs, Deribit expiry, Kalshi combos) by period; needs `SEC_USER_AGENT`, first run fetches EDGAR filings and the Kalshi mirror (hours).
 - `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
+- `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
