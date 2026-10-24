@@ -16,6 +16,7 @@ need to change or debug them. Read only the doc your task needs:
 | Data loaders, env vars, shared datasets in `/mnt/project-files`, blocked hosts | [docs/guide/data.md](docs/guide/data.md) |
 | What each `examples/*.py` script runs | [docs/guide/examples.md](docs/guide/examples.md) |
 | Running and writing tests | [docs/guide/testing.md](docs/guide/testing.md) |
+| Candidates waiting on paper trading, their logs and graduation rule | [docs/guide/paper-trading.md](docs/guide/paper-trading.md) |
 
 Full research write-ups and summaries: [docs/README.md](docs/README.md).
 Before starting a new idea, check `strategies.md` and `research-modules.md`:
@@ -29,6 +30,7 @@ Update the guide in the same PR as the code:
   key params, headline result, verdict).
 - New module, loader, dataset or script: one line in the matching doc.
 - New research write-up: a row and a short summary in `docs/README.md`.
+- Anything that needs paper trading: a row in `paper-trading.md`.
 - Keep entries to one or two lines. Docs are an index, not a copy of the code.
 
 ## Conventions
