@@ -40,6 +40,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
 ## Summaries
@@ -436,3 +437,12 @@ calibrated than a spot-vol fair value, so takers lose 1-2c. Buying a stock
 the morning after a big drop when single-stock 2x LETFs must sell heavily
 earned +2.6% per trade from Jul 2024 to Jun 2025 but +0.5% since (near miss,
 paper-trade). EMLC carry and YieldMax roll weeks fail.
+
+**Alpha hunt batch 11 (ideas built on this repo's research).** Six ideas, none
+pass. On Polymarket, the Kalshi "buy No on mention markets" rule earns +3c
+pooled but only +1c net once trades are grouped by event, and it faded after
+mid-2025; the edge sits in No priced 20-40c (+6c net, holds in both halves),
+a post-hoc near miss to log on Kalshi. Tennis favourites show no bias. The
+Iran->oil jump rule does not carry over to Ukraine, Taiwan, shutdown or
+tariff markets. The January window is real only in commodities (re-confirmed,
+t 4.5), so it is probably index reweighting, not new-year flows.
