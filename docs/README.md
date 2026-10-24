@@ -41,6 +41,7 @@ prices, short crypto history), not forecasts.
 | [Alpha loop batch 4: validation protocol and re-checks](https://claude.ai/artifact/Tjc51YbWCBjm7Km1TK5LH7) | `event_markets.lead_follow(settle=)`, `docs/guide/protocol.md` | `run_alpha_batch4.py`, `run_kalshi_mentions_no.py` |
 | [Alpha hunt batch 5: supply flows and Kalshi favourites](https://claude.ai/artifact/5Yj2571r175Hk7zw5EiRVU) | `auction_cycle.py`, `data/cot.py` | `run_alpha_batch5.py` |
 | [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
+| [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
 
 ## Summaries
 
@@ -444,3 +445,11 @@ The commodity reweight runs the other way: prior-year winners beat losers on
 January business days 6-10 (+2.5% net, t 4.0 over 25 Januaries). It was found
 after the planned sign failed and has 2 holdout years, so it is a paper trade
 for January 2027.
+
+**Alpha hunt batch 7 (cross-sectional effects).** Eight hypotheses, none pass:
+LETF rebalancing reversal, same-month seasonality, commodity momentum and skew,
+crypto perps on funding, shorting coins after their first Binance perp listing
+(median -25% vs BTC in 30 days, but squeezes up to 31x make the short's mean ~0),
+small-cap sector lag and G10 FX value. Commodity momentum earns only in January,
+so the January days 6-10 window is a separate effect, and it holds on 23
+commodities (t 2.4).

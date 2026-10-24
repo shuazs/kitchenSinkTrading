@@ -94,6 +94,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_scheduled_flows.py`: alpha hunt batch 3, nine scheduled-flow event windows (roll, Russell, auctions, tax, BTC expiry, MSCI, coupons, VIX expiry, quarter-end) by period with placebos.
 - `run_alpha_batch5.py`: alpha hunt batch 5 (IG issuance from EDGAR form.idx, vol-control, MBS convexity, auction window on other ETFs, COT trend flip, Kalshi tennis/EFL) by period.
 - `run_alpha_batch6.py`: alpha hunt batch 6 (FX month-end, fallen angels, muni season, carry crash, commodity January, ex-US pension, earnings-season 8-K counts, SVXY spikes, dividend days) by period.
+- `run_alpha_batch7.py`: alpha hunt batch 7 (LETF reversal, commodity/country seasonality, momentum, skew, January windows, small-cap sector lag, FX value, Binance perps funding and listings) by period.
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
 - `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).
