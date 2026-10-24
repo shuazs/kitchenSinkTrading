@@ -80,9 +80,9 @@ def pm_selection() -> pd.DataFrame:
     return s
 
 
-def pm_fills(ids) -> pd.DataFrame:
+def pm_fills(ids, name: str = "fills_batch11") -> pd.DataFrame:
     """Fills since 2024 for the selected markets (one ~25-minute range-read pass over quant.parquet, cached)."""
-    path = cache_dir("polymarket") / "fills_batch11.parquet"
+    path = cache_dir("polymarket") / f"{name}.parquet"
     if not path.exists():
         ids = pa.array(sorted(ids))
         pf = pq.ParquetFile(HTTPFile(HF_REPO + "quant.parquet"))

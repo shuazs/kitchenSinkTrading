@@ -44,6 +44,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
@@ -488,3 +489,12 @@ Tennis favourites show no bias. The
 Iran->oil jump rule does not carry over to Ukraine, Taiwan, shutdown or
 tariff markets. The January window is real only in commodities (re-confirmed,
 t 4.5), so it is probably index reweighting, not new-year flows.
+
+**Alpha hunt batch 12 (last: near-miss re-tests).** Five tests with
+parameters fixed elsewhere; none pass and the loop ends at 1 of 5 (Treasury
+auction cycle). Kalshi mention markets give only +1.9c buying No at 20-40c
+once entries use real taker-No prices, and nothing in other "will X happen"
+families. The January commodity window shows up only in index members, which
+fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
+reversal is positive but not significant on 35 newer 2x names. Both stay on
+the paper-trading list.
