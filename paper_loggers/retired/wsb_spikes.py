@@ -1,8 +1,8 @@
 """Paper-trade the WSB mention-spike fade live. Logs signals; never places orders.
 
-    python examples/watch_wsb_spikes.py             # runs until Ctrl-C
-    python examples/watch_wsb_spikes.py --once      # one poll + whatever is due now, then exit (for cron)
-    python examples/watch_wsb_spikes.py --report    # print the paper results so far
+    python paper_loggers/retired/wsb_spikes.py             # runs until Ctrl-C
+    python paper_loggers/retired/wsb_spikes.py --once      # one poll + whatever is due now, then exit (for cron)
+    python paper_loggers/retired/wsb_spikes.py --report    # print the paper results so far
 
 Run it on your own computer: reddit.com is blocked from the project's cloud
 sandbox. Every `--interval` seconds it pulls new posts from r/wallstreetbets,

@@ -31,14 +31,10 @@ import yfinance as yf
 from scipy.stats import norm, t as tdist
 
 from backtester.data.cache import cache_dir
+from backtester.letf import LETF, down_z, pressure
 
 NARUTO = "https://huggingface.co/datasets/narutowindy/kalshiBTC15min"
 PAPY = "https://huggingface.co/datasets/papylove/kalshi-15m-data"
-LETF = {"TSLA": {"TSLL": 2, "TSLQ": -1, "TSLZ": -2, "TSLT": 2}, "NVDA": {"NVDL": 2, "NVDU": 2, "NVDX": 2, "NVD": -2, "NVDQ": -2},
-        "MSTR": {"MSTU": 2, "MSTX": 2, "SMST": -2, "MSTZ": -2}, "COIN": {"CONL": 2, "COIW": 2, "CONI": -2},
-        "PLTR": {"PLTU": 2, "PTIR": 2, "PLTD": -1}, "SMCI": {"SMCX": 2, "SMCL": 2}, "HOOD": {"HOOX": 2, "ROBN": 2},
-        "AMD": {"AMDL": 2, "AMUU": 2}, "AAPL": {"AAPU": 2, "AAPD": -1}, "AMZN": {"AMZU": 2, "AMZD": -1},
-        "META": {"METU": 2, "FBL": 2}, "GOOGL": {"GGLL": 2, "GGLS": -1}, "MSFT": {"MSFU": 2, "MSFD": -1}}
 CONTROL = "AFRM UPST ROKU DKNG SNOW U NET SHOP ZS TWLO RIVN LCID ENPH SQ CVNA RBLX DDOG MDB OKTA SOFI".split()
 MON = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(), 1)}
 
@@ -165,16 +161,12 @@ def letf_single_stock():
     spy_oc = c["SPY"].shift(-1) / o["SPY"].shift(-1) - 1
 
     def down_days(u):
-        r = c[u].pct_change()
-        z = r / r.rolling(60).std().shift(1)
         oc = c[u].shift(-1) / o[u].shift(-1) - 1 - spy_oc - 0.0005     # buy next open, sell its close, 5 bp
-        return z, oc
+        return down_z(c[u]), oc
     ev = []
-    for u, legs in LETF.items():
-        legs = {s: lv for s, lv in legs.items() if s in c and c[s].notna().sum() > 50}
-        dv = sum(abs(lv * (lv - 1)) * (c[s] * v[s]).rolling(20, min_periods=5).mean().shift(1).fillna(0) for s, lv in legs.items())
+    for u in LETF:
         z, oc = down_days(u)
-        e = pd.DataFrame({"z": z, "p": dv / (c[u] * v[u]).rolling(20).mean().shift(1), "oc": oc}).dropna()
+        e = pd.DataFrame({"z": z, "p": pressure(c, v, u), "oc": oc}).dropna()
         ev.append(e[(e.z < -2) & (e.index >= "2022-07-01")])
     E = pd.concat(ev).sort_index()
     for th in (0.0, 0.02, 0.05):

@@ -1,8 +1,8 @@
 """Forward-test two Kalshi rules on paper; never places orders.
 
-    python examples/watch_kalshi_near_misses.py --once     # list the markets each rule would buy now, then stop
-    python examples/watch_kalshi_near_misses.py            # poll every --interval minutes until Ctrl-C
-    python examples/watch_kalshi_near_misses.py --report   # score the paper trades that have settled
+    python paper_loggers/kalshi_near_misses.py --once     # list the markets each rule would buy now, then stop
+    python paper_loggers/kalshi_near_misses.py            # poll every --interval minutes until Ctrl-C
+    python paper_loggers/kalshi_near_misses.py --report   # score the paper trades that have settled
 
 Run it on your own computer: Kalshi's API is blocked from the project's cloud
 sandbox. The alpha loop (Oct 2026) found two rules that held up in backtest
@@ -33,6 +33,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+import _common  # noqa: F401  (loads keys.env)
 from backtester.data.cache import cache_dir
 from backtester.data.live_books import (NEAR_MISS_RULES, kalshi_market, kalshi_mention_series, kalshi_series_markets,
                                         market_top, paper_entry, paper_pnl)

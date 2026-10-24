@@ -1,8 +1,8 @@
 """Log Kalshi and Polymarket US game books side by side; never places orders.
 
-    python examples/watch_kalshi_polymarket_us.py --once     # list the paired games and their quotes, then stop
-    python examples/watch_kalshi_polymarket_us.py            # log every --interval seconds until Ctrl-C
-    python examples/watch_kalshi_polymarket_us.py --report   # replay the rule on the log, net of the 5% US fee
+    python paper_loggers/retired/kalshi_polymarket_us.py --once     # list the paired games and their quotes, then stop
+    python paper_loggers/retired/kalshi_polymarket_us.py            # log every --interval seconds until Ctrl-C
+    python paper_loggers/retired/kalshi_polymarket_us.py --report   # replay the rule on the log, net of the 5% US fee
 
 Run it on your own computer during NBA/NFL/NHL/MLB/soccer games: both APIs are
 blocked from the project's cloud sandbox. The backtest (PR #26, run_event_markets.py

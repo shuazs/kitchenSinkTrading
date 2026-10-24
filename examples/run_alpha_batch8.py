@@ -18,7 +18,6 @@ docs/guide/strategies.md can be re-checked (needs `SEC_USER_AGENT`):
   5-40c (Rule B), at the prices of real taker-No trades vs at the prices
   parlay buyers paid (what the quoting market makers earn).
 """
-import html
 import io
 import json
 import os
@@ -35,16 +34,12 @@ import yfinance as yf
 
 from backtester import event_windows as ew
 from backtester.data.cache import cache_dir
+from backtester.data.tender_offers import clean_text, final_price as tender_final_price, parse_offer
 
 SEC = "https://www.sec.gov/Archives/"
 HF = "https://huggingface.co/datasets/TrevorJS/kalshi-trades/resolve/main/"
 SP = [("2008", "2016"), ("2017", "2024-06"), ("2024-07", "2026")]
 FORMS = ("SC TO-I", "SC TO-I/A", "SC 13D")
-ODD_YES = (r"(?:first|priority)[^.]{0,250}(?:fewer than 100|less than 100|not more than 99|odd lot)|odd lots?[^.]{0,300}"
-           r"(?:will not be subject to proration|not subject to proration|without proration|without regard to proration|in full)")
-ODD_NO = (r"no (?:special consideration or )?priority will be given[^.]{0,60}odd|odd lots?[^.]{0,80}"
-          r"(?:subject to the same proration|will be subject to proration)|same proration terms|only tenders that are .?round lots")
-MON = "(january|february|march|april|may|june|july|august|september|october|november|december)"
 
 
 def ua() -> dict:
@@ -61,14 +56,10 @@ def periods(x: pd.Series, splits=SP, scale=100, unit="%") -> str:
                       for a, b in splits)
 
 
-def num(s: str) -> float:
-    return float(s.replace(",", "").rstrip("."))
-
-
 def text(path: str) -> str:
     r = requests.get(SEC + path, headers=ua(), timeout=60)
     time.sleep(0.12)
-    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", r.text[:3_000_000]))).lower()
+    return clean_text(r.text)
 
 
 def form_index(y: int, q: int) -> pd.DataFrame:
@@ -127,35 +118,8 @@ def unsplit(px: pd.DataFrame) -> pd.DataFrame:
     return px * sp[::-1].cumprod()[::-1].shift(-1).fillna(1.0)
 
 
-def parse_offer(t: str) -> dict:
-    rng = re.search(r"(?:not|no) (?:greater|more) than \$\s?([\d,]+\.?\d*)\s?(?:nor|or|and not) (?:less|lower) than \$\s?([\d,]+\.?\d*)", t)
-    rng2 = re.search(r"(?:price|prices) (?:of|between|ranging from) (?:not less than )?\$\s?([\d,]+\.?\d*) (?:and|to) \$\s?([\d,]+\.?\d*)", t)
-    lo = hi = None
-    if rng:
-        hi, lo = num(rng.group(1)), num(rng.group(2))
-    elif rng2:
-        lo, hi = sorted([num(rng2.group(1)), num(rng2.group(2))])
-    fx = re.search(r"(?:at|for) a (?:purchase )?price of \$\s?([\d,]+\.?\d*) per (?:share|common share)", t)
-    ex = re.search(r"expire[sd]? at[^.]{0,80}?" + MON + r" (\d{1,2}), (\d{4})", t)
-    return dict(dutch=bool(re.search(r"dutch auction", t)) or lo is not None, lo=lo, hi=hi,
-                fixed=num(fx.group(1)) if fx else None, odd=bool(re.search(ODD_YES, t)) and not re.search(ODD_NO, t),
-                other=bool(re.search(r"offer to (?:exchange|purchase)[^.]{0,80}(?:warrants|notes|debentures|preferred)", t[:20000])),
-                cad=bool(re.search(r"canadian dollars|cdn\s?\$", t[:200000])),
-                exp=" ".join(ex.groups()) if ex else None)
-
-
 def final_price(paths) -> tuple:
-    """(price in the final/preliminary results, terminated?) from SC TO-I/A texts."""
-    clear, term = None, False
-    for p in paths:
-        u = text(p)
-        if re.search(r"(?:has|have) (?:terminated|withdrawn) the (?:tender )?offer|offer (?:has been|was) (?:terminated|withdrawn)", u):
-            term = True
-        if re.search(r"final results|preliminary (?:count|results)|accepted for (?:purchase|payment)", u):
-            m = re.findall(r"purchase price of \$\s?([\d,]+\.?\d*)", u) or re.findall(r"at a price of \$\s?([\d,]+\.?\d*) per share", u)
-            if m:
-                clear = num(m[-1])
-    return clear, term
+    return tender_final_price(text(p) for p in paths)
 
 
 def odd_lot_tenders(f: pd.DataFrame, tk: pd.DataFrame, cefs: pd.DataFrame):
