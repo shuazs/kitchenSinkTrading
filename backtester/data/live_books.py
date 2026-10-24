@@ -14,7 +14,7 @@ backtest on logged quotes, after the Polymarket US taker fee.
 
 `NEAR_MISS_RULES`, `paper_entry` and `paper_pnl` hold the two Kalshi rules
 from the 2026-10 alpha loop that passed in backtest but need a forward test
-(examples/watch_kalshi_near_misses.py).
+(paper_loggers/kalshi_near_misses.py).
 
 Both hosts are blocked from the project's cloud sandbox; run this at home.
 The parsers and replay are pure functions so tests cover them offline.

@@ -17,7 +17,7 @@ need to change or debug them. Read only the doc your task needs:
 | What each `examples/*.py` script runs | [docs/guide/examples.md](docs/guide/examples.md) |
 | Running and writing tests | [docs/guide/testing.md](docs/guide/testing.md) |
 | Pass rules for calling a strategy out-of-sample robust | [docs/guide/protocol.md](docs/guide/protocol.md) |
-| Candidates waiting on paper trading, their logs and graduation rule | [docs/guide/paper-trading.md](docs/guide/paper-trading.md) |
+| Candidates waiting on paper trading, their loggers (`paper_loggers/`) and graduation rule | [docs/guide/paper-trading.md](docs/guide/paper-trading.md) |
 
 Full research write-ups and summaries: [docs/README.md](docs/README.md).
 Before starting a new idea, check `strategies.md` and `research-modules.md`:
@@ -31,7 +31,8 @@ Update the guide in the same PR as the code:
   key params, headline result, verdict).
 - New module, loader, dataset or script: one line in the matching doc.
 - New research write-up: a row and a short summary in `docs/README.md`.
-- Anything that needs paper trading: a row in `paper-trading.md`.
+- Anything that needs paper trading: a row in `paper-trading.md` and a
+  log-only logger in `paper_loggers/` (keys only via `keys.example.env`).
 - Keep entries to one or two lines. Docs are an index, not a copy of the code.
 
 ## Conventions
@@ -39,4 +40,4 @@ Update the guide in the same PR as the code:
 - $5,000 starting capital; realistic costs (`COSTS` presets); no look-ahead
   (signal at close t, trade at open t+1); report walk-forward or holdout
   results next to in-sample ones.
-- New work branches from `main`. `pytest` must pass (offline, ~6 s).
+- New work branches from `main`. `pytest` must pass (offline, ~25 s).

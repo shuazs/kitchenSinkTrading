@@ -32,10 +32,11 @@ import pyarrow.parquet as pq
 import yfinance as yf
 
 sys.path.insert(0, str(Path(__file__).parent))
-from run_alpha_batch10 import LETF, tstat  # noqa: E402
+from run_alpha_batch10 import tstat  # noqa: E402
 from run_alpha_batch11 import pm_fills  # noqa: E402
 
 from backtester.data.cache import cache_dir  # noqa: E402
+from backtester.letf import LETF, NEW_LETF  # noqa: E402
 from backtester.data.fred import load_series  # noqa: E402
 from backtester.data.polymarket import load_markets  # noqa: E402
 from backtester.event_markets import taker_prints  # noqa: E402
@@ -47,12 +48,6 @@ FAM = {"posts_count": (r"tweet|post|truth social", r"at least|or more|\d+\s*\+")
        "anytime_scorer": (r"anytime|to score a|score a (td|touchdown|goal)|scores? (a )?(td|touchdown|goal)", None),
        "rain_snow": (r"\brain\b|\bsnow\b|snowfall|precipitation", None)}
 EXCL = r"between|less than|both teams|snowboard|snow white|\d+-\d+"
-NEW_LETF = {"AVGO": "AVGU AVGX AVL", "NFLX": "NFXL NFLU", "RDDT": "RDTL RDTX", "IONQ": "IONX IONL", "RGTI": "RGTX RGTU",
-            "OKLO": "OKLL OKLX", "SMR": "SMU SMUP", "CRWV": "CRWL CWVX CORW", "MU": "MUU", "ARM": "ARMG", "BABA": "BABX",
-            "LLY": "LLYX", "UNH": "UNHG", "SOFI": "SOFX", "ASTS": "ASTX", "QBTS": "QBTX", "APP": "APPX", "CRCL": "CRCA",
-            "HIMS": "HIMZ", "NBIS": "NBIL", "RIVN": "RVNL", "UBER": "UBRL", "BA": "BOEU", "AFRM": "AFRU", "SHOP": "SHPU",
-            "NET": "NETX", "CRWD": "CRWU", "PANW": "PALU", "ORCL": "ORCX", "SNOW": "SNOU", "INTC": "LINT", "DJT": "DJTU",
-            "ACHR": "ACHX", "RKLB": "RKLX", "SOUN": "SOUX", "U": "UXX", "LCID": "LCDL", "CVNA": "CVNX", "BMNR": "BMNU", "SBET": "SBTU"}
 HALVES = (("before Jul 2025", None, "2025-07-01"), ("Jul 2025+", "2025-07-01", None))
 
 

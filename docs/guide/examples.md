@@ -55,6 +55,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_crypto_strategies.py`: Crypto momentum basket, volatility-targeted breakout and a capped meme coin sleeve, against the plain BTC+ETH breakout and buy and hold.
 - `run_ensemble_trend.py`: Ensemble Donchian trend on a rotating top-N crypto universe vs BTC and the single-lookback breakouts, on real data.
 - `run_memecoin_calls.py`: Would following public pump.fun meme coin calls make money?.
+- `run_crypto_pairs.py`: Crypto pairs: BTC/ETH daily, 19-coin rolling pairs + walk-forward, intraday 5m/15m/1h; writes CSVs to `crypto-pairs/results/`.
 
 ## Trump / events
 
@@ -78,37 +79,38 @@ verdicts are in [strategies.md](strategies.md).
 ## Prediction markets
 
 - `run_iran_oil.py`: Polymarket Iran-war odds as a leading signal for crude oil.
-- `watch_polymarket_iran.py`: Paper-trade the Iran-to-oil rule live.
-- `watch_kalshi_near_misses.py`: log-only paper forward test of the alpha-loop Kalshi near misses (mentions NO at 20-80c, ATP YES at 80-95c) on Josh's machine; `--once` lists current entries, `--report` scores settled trades.
-- `watch_kalshi_polymarket_us.py`: Log Kalshi and Polymarket US game books side by side, no orders, on Josh's machine; `--once` lists pairs, `--report` replays the Kalshi -> Polymarket rule net of the US fee.
 - `run_shortterm_combo.py`: Combine short-horizon signals for SPY/QQQ and test them as 0DTE option trades.
 - `run_kalshi_minute_leadlag.py`: Do Kalshi's hourly S&P / Nasdaq / BTC ladders lead the underlying by minutes, and is that enough to trade 0DTE options?.
-- `run_crypto_pairs.py`: Crypto pairs: BTC/ETH daily, 19-coin rolling pairs + walk-forward, intraday 5m/15m/1h; writes CSVs to `crypto-pairs/results/`.
 - `run_prediction_market_pairs.py`: Prediction markets vs the asset they track, traded as pairs.
 - `run_kalshi_catchup.py`: Buy Kalshi hourly index/crypto contracts after a sharp move in the underlying.
 - `run_kalshi_crowd.py`: Kalshi crowd bias after big moves: calibration, taker lean and fade/follow backtests.
 - `run_news_sentiment.py`: FinBERT stock-news buckets, WSB mention-spike fade, Reddit mood -> Kalshi S&P/BTC (reads `/mnt/project-files/finbert-sentiment/`).
-- `watch_wsb_spikes.py`: log-only live WSB mention-spike fade (paper shorts at the open, Alpaca borrow check); runs on Josh's machine.
 - `run_event_markets.py`: Non-financial Kalshi/Polymarket markets: taker calibration, sum-to-$1 and two-venue arbitrage, following Kalshi on Polymarket sports; `--families` for the per-market-family tables.
-- `run_alpha_batch4.py`: alpha hunt batch 4 daily/crypto tests (put-write, macro days, FOMC weeks, GLD overnight, levered low-vol, perp-discount reversal).
-- `run_kalshi_mentions_no.py`: Kalshi mention markets, No-taker net by bucket/year/series from `event-markets/ev_agg.parquet` (forward-test candidate).
-- `run_scheduled_flows.py`: alpha hunt batch 3, nine scheduled-flow event windows (roll, Russell, auctions, tax, BTC expiry, MSCI, coupons, VIX expiry, quarter-end) by period with placebos.
-- `run_alpha_batch5.py`: alpha hunt batch 5 (IG issuance from EDGAR form.idx, vol-control, MBS convexity, auction window on other ETFs, COT trend flip, Kalshi tennis/EFL) by period.
-- `run_alpha_batch6.py`: alpha hunt batch 6 (FX month-end, fallen angels, muni season, carry crash, commodity January, ex-US pension, earnings-season 8-K counts, SVXY spikes, dividend days) by period.
-- `run_alpha_batch7.py`: alpha hunt batch 7 (LETF reversal, commodity/country seasonality, momentum, skew, January windows, small-cap sector lag, FX value, Binance perps funding and listings) by period.
-- `run_alpha_batch8.py`: alpha hunt batch 8 (odd-lot tender offers, CEF activist 13D and rights offerings, MSCI factor ETFs, Deribit expiry, Kalshi combos) by period; needs `SEC_USER_AGENT`, first run fetches EDGAR filings and the Kalshi mirror (hours).
-- `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
-- `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
-- `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
-- `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
+- `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
+
+## Alpha hunt (batches 1-12)
+
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
 - `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).
 - `run_weather_brackets.py`: Kalshi temperature brackets vs NWP consensus (HF replay rows).
 - `run_spinoffs.py`: Spin-off event study with the dead-children survivorship bound (needs `SEC_USER_AGENT`).
 - `run_fomc_overlay.py`: Pre-FOMC drift event study and UPRO VT overlay.
-- `run_kalshi_vol.py`: Sell XSP 0DTE iron flies when Kalshi's S&P range is narrow vs VIX1D (modelled option prices).
+- `run_scheduled_flows.py`: alpha hunt batch 3, nine scheduled-flow event windows (roll, Russell, auctions, tax, BTC expiry, MSCI, coupons, VIX expiry, quarter-end) by period with placebos.
+- `run_alpha_batch4.py`: alpha hunt batch 4 daily/crypto tests (put-write, macro days, FOMC weeks, GLD overnight, levered low-vol, perp-discount reversal).
+- `run_kalshi_mentions_no.py`: Kalshi mention markets, No-taker net by bucket/year/series from `event-markets/ev_agg.parquet` (forward-test candidate).
+- `run_alpha_batch5.py`: alpha hunt batch 5 (IG issuance from EDGAR form.idx, vol-control, MBS convexity, auction window on other ETFs, COT trend flip, Kalshi tennis/EFL) by period.
+- `run_alpha_batch6.py`: alpha hunt batch 6 (FX month-end, fallen angels, muni season, carry crash, commodity January, ex-US pension, earnings-season 8-K counts, SVXY spikes, dividend days) by period.
+- `run_alpha_batch7.py`: alpha hunt batch 7 (LETF reversal, commodity/country seasonality, momentum, skew, January windows, small-cap sector lag, FX value, Binance perps funding and listings) by period.
+- `run_alpha_batch8.py`: alpha hunt batch 8 (odd-lot tender offers, CEF activist 13D and rights offerings, MSCI factor ETFs, Deribit expiry, Kalshi combos) by period; needs `SEC_USER_AGENT`, first run fetches EDGAR filings and the Kalshi mirror (hours).
+- `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
+- `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
+- `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
+- `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
-Notes: `watch_polymarket_iran.py` and `watch_wsb_spikes.py` are log-only and run on Josh's machine
-(`pip install -e ".[polymarket]"`); `run_signal_blend*.py` and `run_ml_research.py`
+## Paper loggers
+
+Live, log-only forward tests are in `paper_loggers/`, not here: see [paper_loggers/README.md](../../paper_loggers/README.md) and [paper-trading.md](paper-trading.md).
+
+Notes: `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.

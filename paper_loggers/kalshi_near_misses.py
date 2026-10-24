@@ -21,6 +21,12 @@ settles the market. After about three months, `--report` gives the net cents
 per contract and an event-clustered t-stat; the rule counts as confirmed if it
 keeps at least half its backtest edge (protocol.md P4).
 
+Each paper buy also records the market's open time and how many minutes after
+it the entry came: batches 11-12 found the mentions edge comes mostly from the
+first hour of trading, and `--report` splits on it. Paper fills are at the ask
+of the side bought (a print on the other side would understate the cost by
+the spread).
+
 Logs in ~/.cache/kitchensink/kalshi_near_misses/: trades.csv (one row per paper
 buy) and quotes.csv (every in-band quote, for checking spreads later).
 """
@@ -41,7 +47,7 @@ from backtester.data.live_books import (NEAR_MISS_RULES, kalshi_market, kalshi_m
 DIR = cache_dir("kalshi_near_misses")
 TRADES, QUOTES = DIR / "trades.csv", DIR / "quotes.csv"
 TRADE_FIELDS = ["entry_time", "rule", "series", "event_ticker", "ticker", "title", "side", "price", "contracts",
-                "close_time", "result", "net", "settled_time"]
+                "open_time", "mins_since_open", "close_time", "result", "net", "settled_time"]
 QUOTE_FIELDS = ["time", "rule", "ticker", "yes_bid", "yes_ask", "volume"]
 # Largest mentions series in the Kalshi history (2021 to Jan 2026); used when the /series lookup fails.
 MENTION_SERIES = ["KXNFLMENTION", "KXTRUMPMENTION", "KXTRUMPMENTIONB", "KXNBAMENTION", "KXMAMDANIMENTION",
@@ -84,9 +90,12 @@ def scan(series: dict[str, list[str]], trades: pd.DataFrame, contracts: int, onc
                     continue
                 side, price = hit
                 taken.add((rule, m["ticker"]))
+                opened = pd.to_datetime(m.get("open_time"), utc=True, errors="coerce")
+                age = round((pd.Timestamp(now) - opened).total_seconds() / 60) if pd.notna(opened) else np.nan
                 new.append({"entry_time": now, "rule": rule, "series": s, "event_ticker": m.get("event_ticker"),
                             "ticker": m["ticker"], "title": m.get("title") or m.get("yes_sub_title"), "side": side,
-                            "price": price, "contracts": contracts, "close_time": m.get("close_time"),
+                            "price": price, "contracts": contracts, "open_time": m.get("open_time"),
+                            "mins_since_open": age, "close_time": m.get("close_time"),
                             "result": "", "net": np.nan, "settled_time": ""})
                 print(f"{now[:19]} {rule:<11} paper buy {contracts} {side.upper()} {m['ticker']} at {price:.2f}")
     if not once and quotes:
@@ -126,6 +135,11 @@ def report() -> None:
         need = bars[rule] / 2
         print(f"{rule:<11} {len(g):>4} trades, {len(ev):>4} events, net {100 * g['net'].mean():+.2f}c/contract, "
               f"event t {tstat:.2f}; backtest {bars[rule]:+.1f}c, confirmed if >= {need:+.1f}c over 200+ events")
+        age = pd.to_numeric(g["mins_since_open"], errors="coerce")
+        for lab, m in (("  entered in the market's first hour", age <= 60), ("  entered later", age > 60)):
+            if m.any():  # batch 11-12: the mentions edge sits mostly in the first hour of trading
+                print(f"{lab:<38} {m.sum():>4} trades, net {100 * g.loc[m, 'net'].mean():+.2f}c, "
+                      f"mean No/Yes price paid {g.loc[m, 'price'].astype(float).mean():.2f}")
 
 
 def main() -> None:
