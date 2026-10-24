@@ -40,6 +40,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 | [Alpha loop batch 4: validation protocol and re-checks](https://claude.ai/artifact/Tjc51YbWCBjm7Km1TK5LH7) | `event_markets.lead_follow(settle=)`, `docs/guide/protocol.md` | `run_alpha_batch4.py`, `run_kalshi_mentions_no.py` |
 | [Alpha hunt batch 5: supply flows and Kalshi favourites](https://claude.ai/artifact/5Yj2571r175Hk7zw5EiRVU) | `auction_cycle.py`, `data/cot.py` | `run_alpha_batch5.py` |
+| [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
 
 ## Summaries
 
@@ -434,3 +435,12 @@ cycle again; vol-control, MBS convexity, the auction window on XLU/VNQ/ITB
 and quarter-end bills all fail. Kalshi mention No (holdout +3.4c, t 5.7) and
 tennis favourites Yes 80-95c (+2.6c, t 6.4) stay NEAR: the buckets were found
 on the holdout years and the fit samples are tiny, so they need a forward log.
+
+**Alpha hunt batch 6 (forced flows outside Treasuries).** Nine daily-data
+hypotheses (FX month-end hedging, fallen angels, muni season, carry-crash
+reversal, commodity January reweight, ex-US pension rebalancing, earnings-season
+leverage, VIX ETP rebalancing, dividend reinvestment), none passed as written.
+The commodity reweight runs the other way: prior-year winners beat losers on
+January business days 6-10 (+2.5% net, t 4.0 over 25 Januaries). It was found
+after the planned sign failed and has 2 holdout years, so it is a paper trade
+for January 2027.

@@ -64,6 +64,9 @@ first call.
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
+
+HF `siddharthmb/stocks-dividends` (ex-dates and amounts, no pay dates) is cached in `hf_dividends/` by `examples/run_alpha_batch6.py`, which also caches daily S&P 500 8-K counts from EDGAR form.idx in `edgar_forms/`.
+
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment
