@@ -1,7 +1,7 @@
 """Paper-trade the Iran-to-oil rule live. Logs signals; never places orders.
 
-    python examples/watch_polymarket_iran.py            # runs until Ctrl-C
-    python examples/watch_polymarket_iran.py --once     # one snapshot, prints the markets it watches
+    python paper_loggers/polymarket_iran_oil.py            # runs until Ctrl-C
+    python paper_loggers/polymarket_iran_oil.py --once     # one snapshot, prints the markets it watches
 
 Run it on your own computer: Polymarket's API is blocked from the project's
 cloud sandbox. Every `--interval` seconds it snapshots the open Polymarket
@@ -25,6 +25,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
+import _common  # noqa: F401  (loads keys.env)
 from backtester.data.cache import cache_dir
 from backtester.data.polymarket import iran_sign, live_markets, snapshot_change
 

@@ -1,6 +1,6 @@
 # Research write-ups
 
-The research behind this repo lives in twenty-six project docs on claude.ai (private
+The research behind this repo lives in project docs on claude.ai (private
 to the project owner). This page links them, says which code each one drove,
 and keeps a short summary so the main conclusions survive here too. Results
 are backtests with the caveats in each doc (survivorship bias, modeled option
@@ -19,7 +19,7 @@ prices, short crypto history), not forecasts.
 | [Trump-driven trading strategies](https://claude.ai/artifact/66WWbb1fHzF8kY1mnLSzhR) | `strategies/trump.py`, `data/trump_posts.py`, `data/gov_stakes.py` | `run_trump_overlay.py`, `run_taco_dip.py`, `run_gov_stakes.py` |
 | [Neural nets for combining our signals](https://claude.ai/artifact/PAQWQ3c7znrpmPXXzSE65J) | `ml/` (features, splits, models, contest), `strategies/signal_blend.py` | `run_signal_blend.py` |
 | [Machine learning on the repo's research signals](https://claude.ai/artifact/73kpBbdn17TCsHkBjvNuNv) | `ml/labels.py`, `metalabel.py`, `regime.py`, `vol_forecast.py`, `rank.py` | `run_ml_research.py` |
-| [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `watch_polymarket_iran.py` |
+| [Prediction markets as leading signals](https://claude.ai/artifact/ANDHSBxUprwff7eo4XFGde) | `jump_trades.py`, `data/polymarket.py`, `data/yahoo.py` (`load_hourly`) | `run_iran_oil.py`, `paper_loggers/polymarket_iran_oil.py` |
 | [Short-term signal combination for 0DTE](https://claude.ai/artifact/VWco2QLDqaWA6dSAzNKMWc) | `shortterm.py` | `run_shortterm_combo.py` |
 | [Kalshi minute signals for 0DTE](https://claude.ai/artifact/UEKZrhbdbKtC5f59sVmHig) | `kalshi_minute.py`, `data/minute_mirrors.py` | `run_kalshi_minute_leadlag.py` |
 | [Prediction markets as pairs trades](https://claude.ai/artifact/9zz3e8t7mY7g2Mmq8ZPL7F) | `pairs.py` | `run_prediction_market_pairs.py` |
@@ -38,6 +38,15 @@ prices, short crypto history), not forecasts.
 | Signal combination search (no write-up; results in the PR and below) | `combo_search.py` | `run_signal_combos.py` |
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
+| [Alpha loop batch 4: validation protocol and re-checks](https://claude.ai/artifact/Tjc51YbWCBjm7Km1TK5LH7) | `event_markets.lead_follow(settle=)`, `docs/guide/protocol.md` | `run_alpha_batch4.py`, `run_kalshi_mentions_no.py` |
+| [Alpha hunt batch 5: supply flows and Kalshi favourites](https://claude.ai/artifact/5Yj2571r175Hk7zw5EiRVU) | `auction_cycle.py`, `data/cot.py` | `run_alpha_batch5.py` |
+| [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
+| [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
+| [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
+| [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
+| [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
+| [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
 ## Summaries
 
@@ -185,7 +194,7 @@ going the jump's way for 3 hours, +0.66% per trade after costs over 34 trades
 (t 2.4, 65% hits). The grid of thresholds and holds is positive almost
 everywhere but rarely significant, entering an hour late halves it, and half
 the trades come from the June 2025 war, so it is being paper traded with
-`watch_polymarket_iran.py` rather than run with money. Jumps while oil was
+`paper_loggers/polymarket_iran_oil.py` rather than run with money. Jumps while oil was
 closed were already in the reopening price (+1.6% gap).
 
 **Short-term signal combination for 0DTE.** Hourly SPY/QQQ panel (Nov 2023
@@ -244,7 +253,7 @@ momentum/reversion after 10c+ hourly jumps all lose after costs. Sum-to-$1
 arbitrage (Kalshi team A + team B, temperature brackets, Polymarket
 multi-outcome events) and Kalshi-vs-Polymarket arbitrage exist at 0.5-2c per
 set, but both legs usually print within one second, so bots already take
-them. The candidate: Kalshi leads Polymarket on sports games. When last
+them. The candidate (retracted in batch 4: an exit-selection artifact, -2.3c/share with a causal exit): Kalshi leads Polymarket on sports games. When last
 prices differ by 5c+, trading Polymarket toward Kalshi 60s late and holding
 60 min made +5.6c/share (t 7.2, 1,943 trades over 1,009 games, 9 of 10 months
 positive; $5k to ~$34k at 5% stakes capped at printed size). It needs
@@ -366,7 +375,7 @@ vol target, 35% trend at 1x, 15% pension, 20% crypto; quarterly reset or
 10-point drift band) it made 15.2%/yr vs SPY 15.3% from Nov 2018 with a -16%
 vs -34% worst drawdown (Sharpe 1.00 vs 0.69); 2022-26 9.2% vs 11.8%, same
 Sharpe. Without crypto it trails SPY (10.7%). Automatic drawdown brakes cost
-up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, ETF breakout
+up to 2.2 pts/yr. Six candidates (Kalshi->Polymarket US games, since retracted; ETF breakout
 meta-filter, Kalshi range iron fly, Iran->oil, WSB fade, Kalshi S&P catch-up)
 stay on paper until live logs keep half their edge.
 
@@ -411,3 +420,81 @@ were real before about 2016 and have decayed or flip in the holdout; the
 Russell swing (+103 bp/yr, t 2.3) is no bigger than the same swing at other
 month-ends, and the EEM day after MSCI rebalances is a generic month-end
 effect. The auction cycle stays the only candidate.
+
+**Alpha loop batch 4 (protocol re-checks).** Every candidate re-run under one
+set of pass rules (`docs/guide/protocol.md`). The Treasury auction cycle
+passes: negative in every bond ETF, window and sub-period, at the 0.1th
+percentile of random windows. Near misses to paper-trade: Kalshi mention
+markets bought on the No side at 20-80c (+3.6c/contract after fees, no
+untouched holdout) and the ETF meta-label filter (fragile, trails
+equal-weight buy-and-hold). Retracted: the Kalshi -> Polymarket sports lead,
+an exit-selection artifact (-2.3c/share with a causal exit). Failed: WSB
+fade, TIPS auctions, TGA and net-liquidity timing, put-write via XYLD,
+macro-day and FOMC-week overlays, GLD overnight, levered low-vol, crypto
+perp-discount reversal and positioning/OI overlays.
+
+**Alpha hunt batch 5 (supply flows, positioning, Kalshi favourites).** Twelve
+hypotheses, no new pass. Heavy IG bond issuance (EDGAR FWP counts) only
+"hurts" TLT when it overlaps a 10y/30y auction window, so it is the auction
+cycle again; vol-control, MBS convexity, the auction window on XLU/VNQ/ITB
+(correlation ~0 with TLT, no edge), a COT-crowded CTA trend flip, Japan April
+and quarter-end bills all fail. Kalshi mention No (holdout +3.4c, t 5.7) and
+tennis favourites Yes 80-95c (+2.6c, t 6.4) stay NEAR: the buckets were found
+on the holdout years and the fit samples are tiny, so they need a forward log.
+
+**Alpha hunt batch 6 (forced flows outside Treasuries).** Nine daily-data
+hypotheses (FX month-end hedging, fallen angels, muni season, carry-crash
+reversal, commodity January reweight, ex-US pension rebalancing, earnings-season
+leverage, VIX ETP rebalancing, dividend reinvestment), none passed as written.
+The commodity reweight runs the other way: prior-year winners beat losers on
+January business days 6-10 (+2.5% net, t 4.0 over 25 Januaries). It was found
+after the planned sign failed and has 2 holdout years, so it is a paper trade
+for January 2027.
+
+**Alpha hunt batch 7 (cross-sectional effects).** Eight hypotheses, none pass:
+LETF rebalancing reversal, same-month seasonality, commodity momentum and skew,
+crypto perps on funding, shorting coins after their first Binance perp listing
+(median -25% vs BTC in 30 days, but squeezes up to 31x make the short's mean ~0),
+small-cap sector lag and G10 FX value. Commodity momentum earns only in January,
+so the January days 6-10 window is a separate effect, and it holds on 23
+commodities (t 2.4).
+
+**Alpha hunt batch 8 (corporate actions, fund events, Kalshi combos).** Nine
+hypotheses, none pass. Near misses: fixed-price odd-lot tender offers (+6-8% per
+event, no losers, but ~1 a year) and shorting a CEF during its rights offering
+(-2% relative drift in 25 days, holdout t 2.8, mostly lost to borrow costs).
+Fund tender offers prorate odd lots, CEF activist 13Ds decayed after 2016, and
+Kalshi combo Yes buyers overpay but the RFQ market makers collect it: taker No
+loses 0.7c in the holdout.
+
+**Alpha hunt batch 9 (dividend, IPO and split events).** Seven long-only
+event ideas with thousands of events, none pass. The dividend run-up and the
+ex-dividend capture were real before 2017 and are gone or reversed since;
+initiations, raises and splits show no drift; CEFs whose discount widens on
+the ex-date keep falling; and stocks keep falling after IPO lockups expire
+(-5% in 20 days in the holdout), which only a short could use.
+
+**Alpha hunt batch 10 (Kalshi 15-min, single-stock LETFs, EM carry).** Six
+ideas, none pass. Kalshi's 15-minute BTC and alt-coin markets are better
+calibrated than a spot-vol fair value, so takers lose 1-2c. Buying a stock
+the morning after a big drop when single-stock 2x LETFs must sell heavily
+earned +2.6% per trade from Jul 2024 to Jun 2025 but +0.5% since (near miss,
+paper-trade). EMLC carry and YieldMax roll weeks fail.
+
+**Alpha hunt batch 11 (ideas built on this repo's research).** Six ideas, none
+pass. On Polymarket, the Kalshi "buy No on mention markets" rule earns
+nothing net once trades are grouped by event and it faded after mid-2025;
+No priced 20-40c keeps about +3c (t 1.7), too weak to log on its own.
+Tennis favourites show no bias. The
+Iran->oil jump rule does not carry over to Ukraine, Taiwan, shutdown or
+tariff markets. The January window is real only in commodities (re-confirmed,
+t 4.5), so it is probably index reweighting, not new-year flows.
+
+**Alpha hunt batch 12 (last: near-miss re-tests).** Five tests with
+parameters fixed elsewhere; none pass and the loop ends at 1 of 5 (Treasury
+auction cycle). Kalshi mention markets give only +1.9c buying No at 20-40c
+once entries use real taker-No prices, and nothing in other "will X happen"
+families. The January commodity window shows up only in index members, which
+fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
+reversal is positive but not significant on 35 newer 2x names. Both stay on
+the paper-trading list.

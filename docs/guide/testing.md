@@ -2,7 +2,7 @@
 
 ```bash
 pip install -e ".[dev]"   # add ,ml to run the skipped ML tests
-pytest -q                 # ~225 tests, ~25 s, fully offline
+pytest -q                 # ~235 tests, ~25 s, fully offline
 ```
 
 - Tests use `backtester.data.synthetic` random walks or small hand-built
@@ -18,7 +18,8 @@ pytest -q                 # ~225 tests, ~25 s, fully offline
   `test_kalshi_crowd.py`, `test_kalshi_minute.py`, `test_kalshi_vol.py`,
   `test_large_account.py`, `test_live_books.py`, `test_ml.py`,
   `test_ml_research.py`, `test_new_strategies.py`, `test_news_sentiment.py`,
-  `test_pairs.py`, `test_portfolio.py`, `test_prediction_markets.py`,
+  `test_pairs.py`, `test_paper_loggers.py` (rule logic of `paper_loggers/`),
+  `test_portfolio.py`, `test_prediction_markets.py`,
   `test_sentiment_overlay.py`, `test_shortterm.py`, `test_spreads.py`,
   `test_trump.py`, `test_wheel.py`.
 - For a new strategy, test at least: weights shape/index, no look-ahead

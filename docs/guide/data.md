@@ -9,6 +9,7 @@ first call.
 - `SEC_USER_AGENT="name email"`: required by every EDGAR call.
 - `KS_MINUTE_DIR`: folder of ready-made minute parquet files (default `/mnt/project-files/minute-data`).
 - `APCA_API_KEY_ID`, `APCA_API_SECRET_KEY`: optional Alpaca paper keys (minute bars from 2016).
+- Paper loggers read all of these from `paper_loggers/keys.env` (see `paper_loggers/keys.example.env`).
 
 ## Loaders
 
@@ -36,13 +37,14 @@ first call.
 | `trump_posts.py` | `load_posts`, `daily_counts(posts,index,pattern)`, `covered` | GitHub archives |
 | `gov_stakes.py` | `stake_events(index)` | hand-built table |
 | `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
-| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions |
+| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions (caches whole ~50 MB files; `examples/run_alpha_batch5.py` `form_counts` streams them and caches per-filer counts in `edgar_forms/`) |
 | `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
+| `tender_offers.py` | `parse_offer` (fixed/Dutch price, odd-lot priority, expiry), `final_price` (results amendment), `clean_text` | SC TO-I texts (callers fetch from EDGAR) |
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
-| `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
+| `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee), `kalshi_series_markets`, `market_top`, `NEAR_MISS_RULES`/`paper_entry`/`paper_pnl` (Kalshi forward-test rules) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
 ## Shared datasets (`/mnt/project-files/`, cloud threads only)
 
@@ -64,6 +66,17 @@ first call.
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).
 Polymarket: HF `SII-WANGZJ/Polymarket_data`.
+
+HF `siddharthmb/stocks-dividends` (ex-dates and amounts, no pay dates) is cached in `hf_dividends/` by `examples/run_alpha_batch6.py`, which also caches daily S&P 500 8-K counts from EDGAR form.idx in `edgar_forms/`.
+HF `linxy/USDT-M_Perpetual_Futures` daily klines and funding for all ~530 live Binance perps (2020+, delisted coins missing) are aggregated into `linxy/all_1d.parquet` and `all_funding_daily.parquet` by `examples/run_alpha_batch7.py` (~15 min first run). FRED `RB**BIS` are BIS real effective exchange rates (the OECD `CPALTT01*` CPI series are gone from FRED).
+
+EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable and finds filings by phrase (batch 8 uses it for CEF rights offerings; after 2020 fund prospectus supplements are 424B*, not 497). Kalshi combo (KXMVE*) markets and trades from the TrevorJS mirror are cached in `alpha_batch8/` by `run_alpha_batch8.py`, read by HTTP range requests (row groups only).
+HF `siddharthmb/stocks-dividends` `dividend.csv` (470k ex-dates, 10k symbols, to Jan 2026; ~30% of symbols have no Yahoo history) and EDGAR 424B4 dates (IPO prospectuses, cached `edgar_forms/424B4.csv`) feed `run_alpha_batch9.py`. Yahoo rate-limits (HTTP 429) when two big chunked downloads run at once; run them one at a time.
+Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
+
+Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).
+
+Kalshi 15-min markets: HF `narutowindy/kalshiBTC15min` (BTC ~1 s quotes + CF BRTI + Coinbase ticks, Jun 21-Oct 17 2026, one parquet per date) and `papylove/kalshi-15m-data` (1-min quotes with result/strike for BTC/ETH/SOL/XRP/DOGE/HYPE/ZEC/NEAR/metals + exchange minute bars for 13 coins, Jul-Oct 2026); `RooseveltHonaker/kalshi-trades-data` has 15-min trade prints only (no strikes or results, shards up to 37 GB). HF rate-limits bursts of downloads with a 429 page saved as the file; check for the `PAR1` magic bytes.
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment
@@ -72,4 +85,4 @@ Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingfac
 Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
-Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.
+Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).

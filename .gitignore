@@ -4,3 +4,8 @@ __pycache__/
 .venv/
 .env
 .env.*
+
+# filled-in paper logger keys (template: paper_loggers/keys.example.env)
+paper_loggers/keys.env
+*.env
+!*.example.env

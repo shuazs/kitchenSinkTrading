@@ -286,7 +286,8 @@ def favourite_bets(quotes: pd.DataFrame, yes_won: pd.Series, lo: float = 0.5, hi
 
 
 def lead_follow(lead: pd.DataFrame, follow: pd.DataFrame, threshold: float = 0.03, latency: str = "2s",
-                hold: str = "5min", fresh: str = "60s", rate: float = 0.0) -> pd.DataFrame:
+                hold: str = "5min", fresh: str = "60s", rate: float = 0.0,
+                settle: float | None = None) -> pd.DataFrame:
     """Trade the follower venue toward the leader when their prices for the same outcome disagree.
 
     lead: time, yes (last-trade YES price on the leading venue). follow: time,
@@ -296,6 +297,11 @@ def lead_follow(lead: pd.DataFrame, follow: pd.DataFrame, threshold: float = 0.0
     follower at its first ask print after `latency`, sell at the first bid
     print after `hold`; mirror image when the gap is <= -threshold. One trade
     at a time. ret is per contract after a Kalshi-style fee `rate` on both legs.
+
+    A trade with no exit-side print after `hold` is usually one whose market
+    ran to 0 or 1 against it. Without `settle` it is dropped, which inflates
+    the result (the alpha hunt found +4.5c turn into -2.3c); pass the
+    market's final YES value (1.0 or 0.0) to close such trades there instead.
     """
     tol = pd.Timedelta(fresh)
     f = follow.astype({"time": "datetime64[ns, UTC]"}).sort_values("time")
@@ -317,13 +323,19 @@ def lead_follow(lead: pd.DataFrame, follow: pd.DataFrame, threshold: float = 0.0
             break
         t_in, p_in, n = side_in["time"].iloc[i], side_in["yes"].iloc[i], side_in["size"].iloc[i]
         j = side_out["time"].searchsorted(t_in + hld)
-        if j >= len(side_out):
-            break
-        t_out, p_out = side_out["time"].iloc[j], side_out["yes"].iloc[j]
         sign = 1.0 if gap > 0 else -1.0
-        ret = sign * (p_out - p_in) - float(kalshi_fee(p_in, rate)) - float(kalshi_fee(p_out, rate))
+        if j < len(side_out):
+            t_out, p_out = side_out["time"].iloc[j], side_out["yes"].iloc[j]
+            exit_fee = float(kalshi_fee(p_out, rate))
+        elif settle is not None:
+            t_out, p_out, exit_fee = pd.NaT, float(settle), 0.0
+        else:
+            break
+        ret = sign * (p_out - p_in) - float(kalshi_fee(p_in, rate)) - exit_fee
         rows.append({"signal": t, "entry": t_in, "exit": t_out, "gap": gap, "p_in": p_in, "p_out": p_out,
                      "size": n, "ret": ret})
+        if pd.isna(t_out):
+            break
         busy_until = t_out
     return pd.DataFrame(rows, columns=["signal", "entry", "exit", "gap", "p_in", "p_out", "size", "ret"])
 
