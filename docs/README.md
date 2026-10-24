@@ -439,10 +439,10 @@ earned +2.6% per trade from Jul 2024 to Jun 2025 but +0.5% since (near miss,
 paper-trade). EMLC carry and YieldMax roll weeks fail.
 
 **Alpha hunt batch 11 (ideas built on this repo's research).** Six ideas, none
-pass. On Polymarket, the Kalshi "buy No on mention markets" rule earns +3c
-pooled but only +1c net once trades are grouped by event, and it faded after
-mid-2025; the edge sits in No priced 20-40c (+6c net, holds in both halves),
-a post-hoc near miss to log on Kalshi. Tennis favourites show no bias. The
+pass. On Polymarket, the Kalshi "buy No on mention markets" rule earns
+nothing net once trades are grouped by event and it faded after mid-2025;
+No priced 20-40c keeps about +3c (t 1.7), too weak to log on its own.
+Tennis favourites show no bias. The
 Iran->oil jump rule does not carry over to Ukraine, Taiwan, shutdown or
 tariff markets. The January window is real only in commodities (re-confirmed,
 t 4.5), so it is probably index reweighting, not new-year flows.

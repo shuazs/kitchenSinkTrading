@@ -111,7 +111,8 @@ def report(name: str, r: pd.DataFrame):
 
 def pm_near_misses(S: pd.DataFrame, F: pd.DataFrame):
     f = F[F.usd_amount >= 20].merge(S[["id", "grp", "y1", "question", "event_slug"]].dropna(subset=["y1"]), left_on="market_id", right_on="id")
-    m = f[(f.grp == "mention") & f.price.between(0.2, 0.8)].groupby("market_id").first().reset_index()
+    # entries are taker fills on the side we buy: side SELL = the taker sold YES at the bid, i.e. bought No at 1 - price
+    m = f[(f.grp == "mention") & f.price.between(0.2, 0.8) & (f.side == "SELL")].groupby("market_id").first().reset_index()
     m["px"], m["pnl"] = 1 - m.price, m.y1.rsub(1) - (1 - m.price)
     report("Polymarket mentions, buy No at YES 20-80c", m)
     trump = m.question.str.contains("Trump")
@@ -119,7 +120,8 @@ def pm_near_misses(S: pd.DataFrame, F: pd.DataFrame):
     report("  other speakers", m[~trump])
     for lo, hi in ((0.2, 0.4), (0.4, 0.6), (0.6, 0.8)):
         report(f"  No price {lo:.1f}-{hi:.1f}", m[m.px.between(lo, hi)])
-    t = f[(f.grp == "tennis") & (f.price.between(0.8, 0.95) | f.price.between(0.05, 0.2))].groupby("market_id").first().reset_index()
+    t = f[(f.grp == "tennis") & ((f.price.between(0.8, 0.95) & (f.side == "BUY")) | (f.price.between(0.05, 0.2) & (f.side == "SELL")))]
+    t = t.groupby("market_id").first().reset_index()
     fav = t.price >= 0.5
     t["px"] = np.where(fav, t.price, 1 - t.price)
     t["pnl"] = np.where(fav, t.y1, 1 - t.y1) - t.px
