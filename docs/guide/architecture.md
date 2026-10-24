@@ -25,6 +25,10 @@ Package `backtester/`; public API in `backtester/__init__.py`.
   `large_cap` 5+5, `small_cap` 40+20, `crypto` 0.4% fee + 10+10 bp.
 - `Result`: `equity, positions, weights, trades, costs, initial_capital,
   strategy`; `.stats(benchmark, rf)` -> `metrics.summary`.
+- Small-account realism: whole-share mode (`fractional=False`), minimum
+  trade size, cash checks so buys never overdraw, leverage cap, optional
+  shorting, interest on cash. Data is keyed to when it was public (EDGAR
+  filing date, news publication time).
 
 ## Analysis helpers
 
@@ -44,7 +48,14 @@ Short options and tick/minute-level work can't be expressed as daily weights,
 so these have their own loops: `strategies/wheel.py` (`Wheel`),
 `strategies/spreads.py` (`CreditSpreads`), `strategies/basis.py`
 (`BasisCarry`), and every module in [research-modules.md](research-modules.md).
-Options are priced with Black-Scholes off VIX (no free option history).
+Options are priced with Black-Scholes off VIX (no free option history);
+`CreditSpreads` adds the VIX term structure and a put skew fitted to real SPY
+quotes (`examples/fit_spy_skew.py`). The skew decides the spread results, so
+real chain data is the next check there.
+
+Day trading under $25,000: the SEC approved dropping the pattern-day-trader
+rule (effective 2026-06-04) but brokers have until October 2027, so until
+yours does, intraday rules mean a long-only cash account.
 
 ## Minimal example
 

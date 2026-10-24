@@ -9,6 +9,7 @@ first call.
 - `SEC_USER_AGENT="name email"`: required by every EDGAR call.
 - `KS_MINUTE_DIR`: folder of ready-made minute parquet files (default `/mnt/project-files/minute-data`).
 - `APCA_API_KEY_ID`, `APCA_API_SECRET_KEY`: optional Alpaca paper keys (minute bars from 2016).
+- Paper loggers read all of these from `paper_loggers/keys.env` (see `paper_loggers/keys.example.env`).
 
 ## Loaders
 
@@ -38,6 +39,7 @@ first call.
 | `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
 | `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions (caches whole ~50 MB files; `examples/run_alpha_batch5.py` `form_counts` streams them and caches per-filer counts in `edgar_forms/`) |
 | `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
+| `tender_offers.py` | `parse_offer` (fixed/Dutch price, odd-lot priority, expiry), `final_price` (results amendment), `clean_text` | SC TO-I texts (callers fetch from EDGAR) |
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
@@ -79,4 +81,4 @@ Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingfac
 Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
-Live watchers (e.g. `watch_polymarket_iran.py`) must run on Josh's machine.
+Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).
