@@ -12,6 +12,10 @@
 and side; `gap_followthrough` replays the Kalshi -> Polymarket rule from the
 backtest on logged quotes, after the Polymarket US taker fee.
 
+`NEAR_MISS_RULES`, `paper_entry` and `paper_pnl` hold the two Kalshi rules
+from the 2026-10 alpha loop that passed in backtest but need a forward test
+(examples/watch_kalshi_near_misses.py).
+
 Both hosts are blocked from the project's cloud sandbox; run this at home.
 The parsers and replay are pure functions so tests cover them offline.
 """
@@ -110,6 +114,71 @@ def poly_us_markets(max_pages: int = 20, page: int = 500) -> list[dict]:
         if len(ms) < page:
             break
     return out
+
+
+def kalshi_series_markets(series: str, status: str = "open") -> list[dict]:
+    """Every market of one Kalshi series, following the cursor."""
+    out, cursor = [], None
+    while True:
+        params = {"series_ticker": series, "status": status, "limit": 1000}
+        if cursor:
+            params["cursor"] = cursor
+        r = _get(f"{KALSHI}/markets", params)
+        out += r.get("markets", [])
+        cursor = r.get("cursor")
+        if not cursor or not r.get("markets"):
+            return out
+
+
+def kalshi_market(ticker: str) -> dict:
+    return _get(f"{KALSHI}/markets/{ticker}").get("market", {})
+
+
+def kalshi_mention_series() -> list[str]:
+    """Series tickers Kalshi lists under its Mentions category (empty if the endpoint fails)."""
+    try:
+        ss = _get(f"{KALSHI}/series", {"category": "Mentions"}).get("series", [])
+    except requests.RequestException:
+        return []
+    return [x["ticker"] for x in ss if x.get("ticker")]
+
+
+def market_top(m: dict) -> tuple[float | None, float | None]:
+    """Best YES bid and ask in dollars from a Kalshi market object (cents or the newer *_dollars fields)."""
+    def px(k):
+        v = m.get(f"{k}_dollars")
+        if v not in (None, ""):
+            return float(v)
+        v = m.get(k)
+        return None if v in (None, "") else v / 100
+    bid, ask = px("yes_bid"), px("yes_ask")
+    return (bid if bid else None), (ask if ask and ask < 1 else None)
+
+
+# Alpha-loop near misses (batch 4-5, /mnt/project-files/alpha-hunt/): taker entries, price = what the taker pays.
+# Mentions: buy NO at 20-80c (+3.4c/contract holdout, t 5.7). ATP men's matches: buy YES at 80-95c (+2.6c, t 6.4).
+NEAR_MISS_RULES = {
+    "mentions_no": {"side": "no", "lo": 0.20, "hi": 0.80},
+    "atp_yes": {"side": "yes", "lo": 0.80, "hi": 0.95, "series": ["KXATPMATCH", "KXATPCHALLENGERMATCH"]},
+}
+
+
+def paper_entry(rule: str, yes_bid: float | None, yes_ask: float | None) -> tuple[str, float] | None:
+    """(side, price) a taker would pay under `rule` at this quote, or None if the quote is outside its band."""
+    r = NEAR_MISS_RULES[rule]
+    if r["side"] == "yes":
+        price = yes_ask
+    else:
+        price = None if yes_bid is None else round(1 - yes_bid, 4)
+    if price is None or not r["lo"] <= price < r["hi"]:
+        return None
+    return r["side"], price
+
+
+def paper_pnl(side: str, price: float, result: str, contracts: int = 10, rate: float = 0.07) -> float:
+    """Net P&L per contract of a settled taker buy, with Kalshi's fee rounded up to the cent per order."""
+    fee = np.ceil(round(rate * contracts * price * (1 - price) * 100, 6)) / 100 / contracts
+    return float(result == side) - price - fee
 
 
 def kalshi_book(ticker: str) -> tuple[float | None, float | None]:
