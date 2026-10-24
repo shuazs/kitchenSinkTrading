@@ -39,6 +39,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 | [Alpha loop batch 4: validation protocol and re-checks](https://claude.ai/artifact/Tjc51YbWCBjm7Km1TK5LH7) | `event_markets.lead_follow(settle=)`, `docs/guide/protocol.md` | `run_alpha_batch4.py`, `run_kalshi_mentions_no.py` |
+| [Alpha hunt batch 5: supply flows and Kalshi favourites](https://claude.ai/artifact/5Yj2571r175Hk7zw5EiRVU) | `auction_cycle.py`, `data/cot.py` | `run_alpha_batch5.py` |
 
 ## Summaries
 
@@ -424,3 +425,12 @@ an exit-selection artifact (-2.3c/share with a causal exit). Failed: WSB
 fade, TIPS auctions, TGA and net-liquidity timing, put-write via XYLD,
 macro-day and FOMC-week overlays, GLD overnight, levered low-vol, crypto
 perp-discount reversal and positioning/OI overlays.
+
+**Alpha hunt batch 5 (supply flows, positioning, Kalshi favourites).** Twelve
+hypotheses, no new pass. Heavy IG bond issuance (EDGAR FWP counts) only
+"hurts" TLT when it overlaps a 10y/30y auction window, so it is the auction
+cycle again; vol-control, MBS convexity, the auction window on XLU/VNQ/ITB
+(correlation ~0 with TLT, no edge), a COT-crowded CTA trend flip, Japan April
+and quarter-end bills all fail. Kalshi mention No (holdout +3.4c, t 5.7) and
+tennis favourites Yes 80-95c (+2.6c, t 6.4) stay NEAR: the buckets were found
+on the holdout years and the fit samples are tiny, so they need a forward log.

@@ -36,7 +36,7 @@ first call.
 | `trump_posts.py` | `load_posts`, `daily_counts(posts,index,pattern)`, `covered` | GitHub archives |
 | `gov_stakes.py` | `stake_events(index)` | hand-built table |
 | `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
-| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions |
+| `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions (caches whole ~50 MB files; `examples/run_alpha_batch5.py` `form_counts` streams them and caches per-filer counts in `edgar_forms/`) |
 | `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
