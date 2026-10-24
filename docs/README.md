@@ -39,6 +39,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt: 20 hypotheses tested](https://claude.ai/artifact/PtWhQ465ANNZFY7WZCxKHs) (hypotheses from [Where alpha exists for a $5k retail trader](https://claude.ai/artifact/9f2SzkyGB3f5ENzBYXjfgD)) | `auction_cycle.py`, `kalshi_maker.py`, `weather_brackets.py`, `spinoffs.py`, `strategies/cef_discount.py`, `strategies/fomc_overlay.py`, `data/treasury_auctions.py`, `data/cef.py`, `data/edgar_forms.py`, `data/fomc.py` | `run_auction_cycle.py`, `run_kalshi_maker.py`, `run_cef_discount.py`, `run_weather_brackets.py`, `run_spinoffs.py`, `run_fomc_overlay.py` |
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
+| [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 
 ## Summaries
 
@@ -420,3 +421,10 @@ event, no losers, but ~1 a year) and shorting a CEF during its rights offering
 Fund tender offers prorate odd lots, CEF activist 13Ds decayed after 2016, and
 Kalshi combo Yes buyers overpay but the RFQ market makers collect it: taker No
 loses 0.7c in the holdout.
+
+**Alpha hunt batch 9 (dividend, IPO and split events).** Seven long-only
+event ideas with thousands of events, none pass. The dividend run-up and the
+ex-dividend capture were real before 2017 and are gone or reversed since;
+initiations, raises and splits show no drift; CEFs whose discount widens on
+the ex-date keep falling; and stocks keep falling after IPO lockups expire
+(-5% in 20 days in the holdout), which only a short could use.
