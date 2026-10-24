@@ -95,6 +95,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch5.py`: alpha hunt batch 5 (IG issuance from EDGAR form.idx, vol-control, MBS convexity, auction window on other ETFs, COT trend flip, Kalshi tennis/EFL) by period.
 - `run_alpha_batch6.py`: alpha hunt batch 6 (FX month-end, fallen angels, muni season, carry crash, commodity January, ex-US pension, earnings-season 8-K counts, SVXY spikes, dividend days) by period.
 - `run_alpha_batch7.py`: alpha hunt batch 7 (LETF reversal, commodity/country seasonality, momentum, skew, January windows, small-cap sector lag, FX value, Binance perps funding and listings) by period.
+- `run_alpha_batch8.py`: alpha hunt batch 8 (odd-lot tender offers, CEF activist 13D and rights offerings, MSCI factor ETFs, Deribit expiry, Kalshi combos) by period; needs `SEC_USER_AGENT`, first run fetches EDGAR filings and the Kalshi mirror (hours).
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
 - `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).

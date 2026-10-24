@@ -68,6 +68,7 @@ Polymarket: HF `SII-WANGZJ/Polymarket_data`.
 HF `siddharthmb/stocks-dividends` (ex-dates and amounts, no pay dates) is cached in `hf_dividends/` by `examples/run_alpha_batch6.py`, which also caches daily S&P 500 8-K counts from EDGAR form.idx in `edgar_forms/`.
 HF `linxy/USDT-M_Perpetual_Futures` daily klines and funding for all ~530 live Binance perps (2020+, delisted coins missing) are aggregated into `linxy/all_1d.parquet` and `all_funding_daily.parquet` by `examples/run_alpha_batch7.py` (~15 min first run). FRED `RB**BIS` are BIS real effective exchange rates (the OECD `CPALTT01*` CPI series are gone from FRED).
 
+EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable and finds filings by phrase (batch 8 uses it for CEF rights offerings; after 2020 fund prospectus supplements are 424B*, not 497). Kalshi combo (KXMVE*) markets and trades from the TrevorJS mirror are cached in `alpha_batch8/` by `run_alpha_batch8.py`, read by HTTP range requests (row groups only).
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment

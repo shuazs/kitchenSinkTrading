@@ -42,6 +42,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 5: supply flows and Kalshi favourites](https://claude.ai/artifact/5Yj2571r175Hk7zw5EiRVU) | `auction_cycle.py`, `data/cot.py` | `run_alpha_batch5.py` |
 | [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
 | [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
+| [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 
 ## Summaries
 
@@ -453,3 +454,11 @@ crypto perps on funding, shorting coins after their first Binance perp listing
 small-cap sector lag and G10 FX value. Commodity momentum earns only in January,
 so the January days 6-10 window is a separate effect, and it holds on 23
 commodities (t 2.4).
+
+**Alpha hunt batch 8 (corporate actions, fund events, Kalshi combos).** Nine
+hypotheses, none pass. Near misses: fixed-price odd-lot tender offers (+6-8% per
+event, no losers, but ~1 a year) and shorting a CEF during its rights offering
+(-2% relative drift in 25 days, holdout t 2.8, mostly lost to borrow costs).
+Fund tender offers prorate odd lots, CEF activist 13Ds decayed after 2016, and
+Kalshi combo Yes buyers overpay but the RFQ market makers collect it: taker No
+loses 0.7c in the holdout.
