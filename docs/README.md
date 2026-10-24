@@ -40,6 +40,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 3: scheduled and forced flows](https://claude.ai/artifact/GRfc2PDuhE4eaRMrP3c5VH) | `event_windows.py` | `run_scheduled_flows.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
 ## Summaries
 
@@ -428,3 +429,10 @@ ex-dividend capture were real before 2017 and are gone or reversed since;
 initiations, raises and splits show no drift; CEFs whose discount widens on
 the ex-date keep falling; and stocks keep falling after IPO lockups expire
 (-5% in 20 days in the holdout), which only a short could use.
+
+**Alpha hunt batch 10 (Kalshi 15-min, single-stock LETFs, EM carry).** Six
+ideas, none pass. Kalshi's 15-minute BTC and alt-coin markets are better
+calibrated than a spot-vol fair value, so takers lose 1-2c. Buying a stock
+the morning after a big drop when single-stock 2x LETFs must sell heavily
+earned +2.6% per trade from Jul 2024 to Jun 2025 but +0.5% since (near miss,
+paper-trade). EMLC carry and YieldMax roll weeks fail.
