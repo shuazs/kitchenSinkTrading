@@ -43,6 +43,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 6: forced flows outside Treasuries](https://claude.ai/artifact/HdYq9t52CdD71fPnCuP2VJ) | (standalone) | `run_alpha_batch6.py` |
 | [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
+| [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 
 ## Summaries
 
@@ -462,3 +463,10 @@ event, no losers, but ~1 a year) and shorting a CEF during its rights offering
 Fund tender offers prorate odd lots, CEF activist 13Ds decayed after 2016, and
 Kalshi combo Yes buyers overpay but the RFQ market makers collect it: taker No
 loses 0.7c in the holdout.
+
+**Alpha hunt batch 9 (dividend, IPO and split events).** Seven long-only
+event ideas with thousands of events, none pass. The dividend run-up and the
+ex-dividend capture were real before 2017 and are gone or reversed since;
+initiations, raises and splits show no drift; CEFs whose discount widens on
+the ex-date keep falling; and stocks keep falling after IPO lockups expire
+(-5% in 20 days in the holdout), which only a short could use.
