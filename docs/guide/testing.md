@@ -2,7 +2,7 @@
 
 ```bash
 pip install -e ".[dev]"   # add ,ml to run the skipped ML tests
-pytest -q                 # ~235 tests, ~25 s, fully offline
+pytest -q                 # ~210 tests (more with ml extras), ~20 s, offline; CI runs it on every push (.github/workflows/tests.yml)
 ```
 
 - Tests use `backtester.data.synthetic` random walks or small hand-built
