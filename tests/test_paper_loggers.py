@@ -81,3 +81,12 @@ def test_parse_fixed_odd_lot_offer():
          "the offer will expire at 12:00 midnight, new york city time, on december 4, 2026.")
     d = parse_offer(t)
     assert d["fixed"] == 12.5 and d["odd"] and not d["dutch"] and d["exp"] == "december 4 2026"
+
+
+def test_natgas_storage_schedule():
+    import natgas_storage_day
+
+    s = natgas_storage_day.schedule(pd.Timestamp("2025-11-24"))
+    row = s[s.report_date == "2025-11-26"].iloc[0]  # Thanksgiving week: Wednesday report
+    assert row.entry_date == pd.Timestamp("2025-11-25")
+    assert (s.report_date.dt.dayofweek.isin([2, 3])).all()

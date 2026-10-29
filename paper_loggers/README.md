@@ -24,6 +24,7 @@ cp paper_loggers/keys.example.env paper_loggers/keys.env
 | `odd_lot_tenders.py` | Odd-lot fixed-price tender offers | daily; needs `SEC_USER_AGENT` | 6 events at >= +3% |
 | `cef_rights_short.py` | CEF rights-offering short | daily; needs `SEC_USER_AGENT`; fill `borrow_pct` | 10 events at >= +1% net |
 | `letf_reversal.py` | Single-stock LETF rebalancing reversal | daily after 4pm ET | 40 trades at >= +0.5% vs SPY |
+| `natgas_storage_day.py` | Natural-gas storage-report-day short (UNG) | daily after 4pm ET; prints the MOC action for today | 26 reports at >= +15 bp net |
 | `kalshi_near_misses.py` | Kalshi mentions No 20-80c, ATP favourites Yes 80-95c | always on (polls every 15 min) | 200 events at half the backtest edge |
 | `polymarket_iran_oil.py` | Polymarket Iran odds -> oil (MCL) | always on (polls every minute) | 15 signals at >= +0.33% |
 | `kalshi_sp_catchup.py` | Kalshi S&P hourly after a sharp 2-minute move | always on in market hours (polls every 20 s) | 3 months at half the backtest P&L rate |

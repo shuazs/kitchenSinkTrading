@@ -41,6 +41,7 @@ first call.
 | `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
 | `tender_offers.py` | `parse_offer` (fixed/Dutch price, odd-lot priority, expiry), `final_price` (results amendment), `clean_text` | SC TO-I texts (callers fetch from EDGAR) |
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
+| `wasde.py` | `load_wasde()` (every WASDE table cell with its `release` date, Apr 2010 - Apr 2024; 133 MB CSV cached as parquet) | HF `syedzaidi-kiwi/US-Wasde` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
@@ -74,6 +75,8 @@ EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable 
 HF `siddharthmb/stocks-dividends` `dividend.csv` (470k ex-dates, 10k symbols, to Jan 2026; ~30% of symbols have no Yahoo history) and EDGAR 424B4 dates (IPO prospectuses, cached `edgar_forms/424B4.csv`) feed `run_alpha_batch9.py`. Yahoo rate-limits (HTTP 429) when two big chunked downloads run at once; run them one at a time.
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
+Commodity futures: Yahoo `XX=F` front-month series (2000+) are unadjusted (roll gaps on expiry days, e.g. RBOB's summer-grade April contract) and Yahoo serves no expired contracts (`CLZ25.NYM` empty), so there is no free term-structure history; use commodity ETFs for returns. HF `paperswithbacktest/Commodities-Daily-Price` is gated (paid); `FinzData/macro-commodities` mirrors FRED energy spot series. Yahoo `^SPGS**` sub-indices return today only.
+
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).
 
 Kalshi 15-min markets: HF `narutowindy/kalshiBTC15min` (BTC ~1 s quotes + CF BRTI + Coinbase ticks, Jun 21-Oct 17 2026, one parquet per date) and `papylove/kalshi-15m-data` (1-min quotes with result/strike for BTC/ETH/SOL/XRP/DOGE/HYPE/ZEC/NEAR/metals + exchange minute bars for 13 coins, Jul-Oct 2026); `RooseveltHonaker/kalshi-trades-data` has 15-min trade prints only (no strikes or results, shards up to 37 GB). HF rate-limits bursts of downloads with a 429 page saved as the file; check for the `PAR1` magic bytes.
@@ -82,7 +85,7 @@ Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-
 ## Network from the cloud environment
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org, eia.gov, usda.gov (quickstats, FAS), cmegroup.com, barchart, stooq, kaggle, NOAA,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).
