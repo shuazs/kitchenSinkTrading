@@ -236,6 +236,8 @@ def storage():
         print(f"  NG=F {a}..{z or 'now'}: report day {ev(x.reindex(rd))} | other days {ev(x[~x.index.isin(rd)])}")
     pre = nr.loc[:"2002-04-30"]
     print(f"  NG=F before May 2002 (AGA reported Wednesdays): Wed {ev(pre[pre.index.dayofweek == 2])} | Thu {ev(pre[pre.index.dayofweek == 3])}")
+    ttf = np.log(load_bars("TTF=F").close).diff()
+    print(f"  Dutch TTF gas (no EIA report) Thursdays {ev(ttf[ttf.index.dayofweek == 3])} vs other days {ev(ttf[ttf.index.dayofweek != 3])}")
     shifted = days[days.dayofweek == 2]
     print(f"  holiday-week Wednesday reports: UNG {ev(np.log(u.close).diff().reindex(shifted))} (too few to tell)")
     o, c = u.open, u.close
