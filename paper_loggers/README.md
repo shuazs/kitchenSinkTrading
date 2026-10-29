@@ -24,12 +24,13 @@ cp paper_loggers/keys.example.env paper_loggers/keys.env
 | `odd_lot_tenders.py` | Odd-lot fixed-price tender offers | daily; needs `SEC_USER_AGENT` | 6 events at >= +3% |
 | `cef_rights_short.py` | CEF rights-offering short | daily; needs `SEC_USER_AGENT`; fill `borrow_pct` | 10 events at >= +1% net |
 | `letf_reversal.py` | Single-stock LETF rebalancing reversal | daily after 4pm ET | 40 trades at >= +0.5% vs SPY |
+| `short_interest_surge.py` | Short-interest surge short | daily (acts twice a month; HF data, no key) | 12 periods at <= -1.4% net of borrow |
 | `kalshi_near_misses.py` | Kalshi mentions No 20-80c, ATP favourites Yes 80-95c | always on (polls every 15 min) | 200 events at half the backtest edge |
 | `polymarket_iran_oil.py` | Polymarket Iran odds -> oil (MCL) | always on (polls every minute) | 15 signals at >= +0.33% |
 | `kalshi_sp_catchup.py` | Kalshi S&P hourly after a sharp 2-minute move | always on in market hours (polls every 20 s) | 3 months at half the backtest P&L rate |
 | `kalshi_fx_catchup.py` | Kalshi hourly EUR/USD and USD/JPY vs live FX | always on 08:00-17:00 ET weekdays (polls every 30 s) | 3 months at >= +2.4c per contract |
 
-`run_daily.py` runs the six daily loggers in one go (`--report` prints all
+`run_daily.py` runs the seven daily loggers in one go (`--report` prints all
 their scorecards). Each logger also takes `--report`; the always-on ones take
 `--once` for a quick look. Example cron line (Mon-Fri 4:30pm New York time):
 

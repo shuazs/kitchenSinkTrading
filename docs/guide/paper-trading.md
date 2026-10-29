@@ -28,6 +28,7 @@ Pass rules for the backtests are in [protocol.md](protocol.md).
 | Single-stock LETF rebalancing reversal | NEAR, post-hoc | After a day 2 sd or more down in a stock with 2x single-stock ETFs when LETF pressure (sum \|L(L-1)\| x LETF 20d $ volume / stock 20d $ volume) > 0.02, buy at the next open, sell at that close | `letf_reversal.py` (daily; every name in `backtester/letf.py` `ALL_LETF`, logs pressure) | +0.5% per trade vs SPY after costs | 40 trades (~1 year) | batch 10; note 4 |
 | Kalshi S&P hourly after a sharp 2-minute move | maybe-edge | Buy the KXINXU hourly contract in the direction of a 2.5-sigma 2-minute S&P move when the ask is 3c+ under fair value | `kalshi_sp_catchup.py` (always on in market hours; logs Yahoo data lag) | half of +$3k per 14 months, tiny fills | 3 months | PR #17 |
 | Kalshi hourly FX vs live FX | NEAR | In the last 60 min before a KXEURUSDH / KXUSDJPYH fixing, buy the side whose ask is 3c+ (after fee) under a lognormal fair value from live FX and 60-min vol | `kalshi_fx_catchup.py` (always on 08:00-17:00 ET weekdays; logs Yahoo FX lag) | +2.4c per contract | 3 months | this PR; note 6 |
+| Short-interest surge short | NEAR, 11 months | Short the top decile of FINRA short-interest change (NYSE/Nasdaq, ADV >= 300k, >= $5) from 10 business days after settlement to the next formation, vs the universe | `short_interest_surge.py` (daily; HF data, no key; fill `borrow_pct` for a few names) | <= -1.4% per period vs universe, net of borrow | 12 periods | this PR; note 7 |
 
 Notes from later batches:
 
@@ -63,6 +64,10 @@ Notes from later batches:
    Caution: the same rule on Kalshi's S&P 500 markets worked in 2022-23
    (+4.3c, t 2.7) and then failed its 2024 holdout (-0.1c), so the FX edge
    may also have closed; the live log decides.
+7. Short-interest surge: the whole effect sits in May-Sep 2026 (t -4.6);
+   Nov-Apr is -1.1% (t -1.0) and medians are only -0.7%, so a few crashes
+   drive it. These names are often hard to borrow, so log real borrow fees
+   before believing the short side; long-only use is just skipping them.
 
 ## Not yet on paper
 

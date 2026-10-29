@@ -558,6 +558,12 @@ The same rule on Kalshi's 2022-24 S&P 500 markets made +4.3c in 2022-23
 (t 2.7) but nothing in 2024 (-0.1c on 963 trades), so treat the FX result
 with care until the live log confirms it.
 
+**FINRA short interest.** Over Nov 2025 - Sep 2026 (the only free history),
+stocks whose short interest jumped most (top decile) lagged the rest by
+2.8% per half-month in May-Sep (t -4.6) but only 1.1% (t -1.0) before, with
+medians near -0.7%. Days to cover predicts nothing. NEAR: a paper logger
+tracks it, and borrow fees on these names still need checking.
+
 **S&P 500 index changes.** Shorting stocks just added to the S&P 500 for 20
 days after the effective date beat SPY by 2.2% in 2001-15 (t 2.4) but only
 0.3% since 2016; buying deleted stocks is about zero in both periods. The

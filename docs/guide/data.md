@@ -86,6 +86,8 @@ S&P 500 membership history 1996-2026 (github fja05680/sp500, raw.githubuserconte
 
 Kalshi 2022-24 S&P 500 / Nasdaq-100 markets (INX, INXD, INXU, INXW, NASDAQ100*) and 1.09M S&P prints: `/mnt/project-files/kalshi-index-old/`.
 
+FINRA short interest, all US listings, 23 settlements Oct 2025 - Sep 2026 (HF FinzData/finra-short-interest; cdn.finra.org is blocked) and yfinance opens/closes for ~4.6k names: `/mnt/project-files/short-interest/`. Yahoo rate-limits bulk downloads from the cloud: chunks of 50 with minutes of backoff.
+
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).

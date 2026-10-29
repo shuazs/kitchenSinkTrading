@@ -87,6 +87,18 @@ def test_kalshi_fx_best_quote():
     assert k.best_quote(ms, 1.1650, 0.0001, now)["side"] == "no"
 
 
+def test_short_interest_form(monkeypatch):
+    import short_interest_surge as k
+
+    monkeypatch.setattr(k, "today", lambda: pd.Timestamp("2026-10-30"))
+    si = pd.DataFrame({"settlement": pd.Timestamp("2026-09-30"), "symbol": [f"S{i}" for i in range(50)],
+                       "change_pct": range(50), "days_to_cover": 1.0})
+    b = k.form(si, pd.DataFrame(columns=k.B_FIELDS))
+    top = b[b.role == "top"]
+    assert len(top) == 5 and set(top.symbol) == {f"S{i}" for i in range(45, 50)} and (b.role == "sample").sum() == 45
+    assert k.form(si, b).equals(b)  # already formed
+
+
 def test_parse_fixed_odd_lot_offer():
     t = ("the company is offering to purchase up to 1,000,000 shares at a purchase price of $12.50 per share. "
          "shares tendered by any odd lot holder will not be subject to proration. "
