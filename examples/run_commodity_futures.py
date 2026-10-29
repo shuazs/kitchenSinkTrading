@@ -238,6 +238,9 @@ def storage():
     print(f"  NG=F before May 2002 (AGA reported Wednesdays): Wed {ev(pre[pre.index.dayofweek == 2])} | Thu {ev(pre[pre.index.dayofweek == 3])}")
     ttf = np.log(load_bars("TTF=F").close).diff()
     print(f"  Dutch TTF gas (no EIA report) Thursdays {ev(ttf[ttf.index.dayofweek == 3])} vs other days {ev(ttf[ttf.index.dayofweek != 3])}")
+    xle = np.log(load_bars("XLE").close).diff()
+    gas = pd.concat([(np.log(load_bars(s).close).diff() - xle).reindex(storage_report_days(xle.index)) for s in ["FCG", "EQT", "RRC", "AR", "CNX"]], axis=1).mean(axis=1)
+    print(f"  gas producers (FCG EQT RRC AR CNX) minus XLE on report days: design {ev(gas[:'2024-06'])} | holdout {ev(gas[HOLD:])}")
     shifted = days[days.dayofweek == 2]
     print(f"  holiday-week Wednesday reports: UNG {ev(np.log(u.close).diff().reindex(shifted))} (too few to tell)")
     o, c = u.open, u.close
