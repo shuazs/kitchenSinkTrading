@@ -6,7 +6,7 @@ in /mnt/project-files/commodity-futures/HYPOTHESES.md (rounds 5-6).
 E1-E3 macro release days (CPI, payrolls, PPI, retail sales, GDP advance and
 jobless claims; HF ZipLime/us-economic-events, 2010-2026) on TLT/IEF/GLD/SPY;
 S1 Halloween (Nov-Apr SPY, else BIL); S2 crypto weekends; S3 52-week-high
-nearness on 40 ETFs. Design to Jun 2024, holdout Jul 2024+. All fail.
+nearness on 40 ETFs; P1-P3 pre-report run-up reversal outside natural gas. Design to Jun 2024, holdout Jul 2024+. All fail.
 """
 import numpy as np
 import pandas as pd
@@ -103,6 +103,19 @@ def high_52w():
     print(f"  top 5 minus EW: design {sharpe(x[:'2024-06'])} | holdout {sharpe(x[HOLD:])}")
 
 
+def pre_report_reversal():
+    print("P1-P3 short on report day only after an up prior day (the storage-day filter elsewhere)")
+    rel = releases()
+    idx = load_bars("SPY").index
+    sets = [("USO", idx[idx.dayofweek == 2], "EIA petroleum Wed"), ("UGA", idx[idx.dayofweek == 2], "EIA petroleum Wed")]
+    sets += [(s, pd.DatetimeIndex(rel[rel.release_family == f].d.unique()), f) for f in ["CPI", "EMPLOYMENT"] for s in ["TLT", "SPY", "GLD"]]
+    for sym, days, label in sets:
+        r = np.log(load_bars(sym).close).diff()
+        d = pd.DatetimeIndex(sorted(days)).intersection(r.index)
+        up = -r.reindex(d)[r.shift(1).reindex(d) > 0]
+        print(f"  {label:18s} {sym}: {ev(up[:'2024-06'])} | {ev(up[HOLD:])}")
+
+
 if __name__ == "__main__":
-    for f in (macro_days, halloween, crypto_weekend, high_52w):
+    for f in (macro_days, halloween, crypto_weekend, high_52w, pre_report_reversal):
         f()
