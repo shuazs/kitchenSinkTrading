@@ -86,3 +86,4 @@ Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpac
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).
+HF `glopardo/sp500-earnings-transcripts` (20.7k S&P 500 call transcripts 2013Q2-2025Q1, `earnings_date` is date only, no BMO/AMC; current constituents so survivor-biased; 3 shards ~190 MB) -> features/events in `/mnt/project-files/earnings-calls/`. Other transcript sets: `kurry/sp500_earnings_transcripts` (1.8 GB), `Rogersurf/earnings-call-transcripts`, `jlh-ibm/earnings_call` (small).
