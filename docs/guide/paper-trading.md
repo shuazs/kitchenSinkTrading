@@ -25,6 +25,7 @@ Pass rules for the backtests are in [protocol.md](protocol.md).
 | Odd-lot fixed-price tender offers | NEAR | Buy 99 shares at the close after a company SC TO-I with odd-lot priority and a fixed price above the market (no Dutch auctions, no funds); tender everything at a broker with no tender fee | `odd_lot_tenders.py` (daily; EDGAR full-text search, needs `SEC_USER_AGENT`) | +3% per event after fees | 6 events | batch 8 |
 | CEF rights offering short | NEAR | Short a closed-end fund vs a CEF basket (PCEF live) for 25 trading days from the close after its rights-offering prospectus (497/424B*) | `cef_rights_short.py` (daily; fill in `borrow_pct`) | +1% per event net of spreads and borrow | 10 events | batch 8 |
 | Single-stock LETF rebalancing reversal | NEAR, post-hoc | After a day 2 sd or more down in a stock with 2x single-stock ETFs when LETF pressure (sum \|L(L-1)\| x LETF 20d $ volume / stock 20d $ volume) > 0.02, buy at the next open, sell at that close | `letf_reversal.py` (daily; every name in `backtester/letf.py` `ALL_LETF`, logs pressure) | +0.5% per trade vs SPY after costs | 40 trades (~1 year) | batch 10; note 4 |
+| Kalshi daily high already decided by METARs | NEAR (latency, post-hoc guards) | Buy the side of a Kalshi daily-high market (NY, CHI, MIA, AUS, PHIL, DEN, LAX) that two METAR reports since local-standard midnight already settle (+0.5 F margin) when its ask is 60-97c | `kalshi_weather_lock.py` (always on, polls every 60 s; aviationweather.gov METARs) | +2.3c per contract (half of +4.6c holdout) with no settled loss | 30 city-days | weather thread; note 5 |
 | Kalshi S&P hourly after a sharp 2-minute move | maybe-edge | Buy the KXINXU hourly contract in the direction of a 2.5-sigma 2-minute S&P move when the ask is 3c+ under fair value | `kalshi_sp_catchup.py` (always on in market hours; logs Yahoo data lag) | half of +$3k per 14 months, tiny fills | 3 months | PR #17 |
 
 Notes from later batches:
@@ -43,6 +44,11 @@ Notes from later batches:
 4. LETF reversal: top-decile pressure (>= 0.154) +1.3%/trade in the holdout
    but t 1.5 (batch 11), so `--report` scores > 0.02 and the top decile
    separately; batch 12: 35 newer 2x names +0.55%/trade (t 1.5, 169 events).
+5. Weather lock: mostly Chicago cold-front days where the high was set just
+   after midnight. Cheap prints come 0-60 min after the deciding report, so a
+   1-minute poll is enough; capacity is small (~$1k/yr if every printed
+   contract were ours). Risk: a bad sensor reading (NYC 2024-12-29, a 68 F report
+   the climate summary rejected); the two-report rule and 60c floor cover it.
 
 ## Not yet on paper
 

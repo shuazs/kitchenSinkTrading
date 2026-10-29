@@ -45,6 +45,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
+| [Weather-based trading edges](https://claude.ai/artifact/MjXc6gZ8oapkLUvwHu67pN) | `weather_trades.py`, `data/weather.py` | `run_weather.py`, `paper_loggers/kalshi_weather_lock.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
@@ -498,3 +499,13 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Weather-based trading edges (2026-10-29).** Twenty weather ideas built on
+NOAA data from AWS (GHCN actuals, GEFS forecasts 2020-2026, hourly METARs),
+none pass. Natural gas, grains, gas producers, power stocks, utilities,
+insurers and TTF all react to each new forecast run in the same session, and
+Kalshi monthly rain/snow markets already price the forecast. The one lead is
+speed on Kalshi daily-high markets: brackets two airport reports have already
+decided still print at 60-97c on about 1% of city-days (mostly Chicago
+cold-front days), and every such print won in 2021-2025 (+11c in-sample, +4.6c
+holdout, ~$1k a year at printed size). It is on the paper-trading list.
