@@ -60,6 +60,9 @@ Notes from later batches:
    30 s-10 min later +5.1c (t 2.8), Yes and No sides, both pairs, every year
    2022-24, a 2-hour window +5.5c (t 6.0); taking every last-hour print with
    no model loses 2c. Kalshi FX volume came back in Q4 2025 (3.4M contracts).
+   Caution: the same rule on Kalshi's S&P 500 markets worked in 2022-23
+   (+4.3c, t 2.7) and then failed its 2024 holdout (-0.1c), so the FX edge
+   may also have closed; the live log decides.
 
 ## Not yet on paper
 

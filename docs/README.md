@@ -554,6 +554,9 @@ same rule on 30-minute-old FX makes +0.8c. The pre-registered holdout (Oct
 2025 on) is unusable: the data mirror has almost no FX prints after mid-2024
 and most late ones are 50c prints on deep in-the-money strikes. NEAR: on the
 paper list with a live logger.
+The same rule on Kalshi's 2022-24 S&P 500 markets made +4.3c in 2022-23
+(t 2.7) but nothing in 2024 (-0.1c on 963 trades), so treat the FX result
+with care until the live log confirms it.
 
 **S&P 500 index changes.** Shorting stocks just added to the S&P 500 for 20
 days after the effective date beat SPY by 2.2% in 2001-15 (t 2.4) but only

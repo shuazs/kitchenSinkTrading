@@ -115,6 +115,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_kalshi_gas_nowcast.py`: Kalshi weekly GAS markets vs an RBOB-futures nowcast of the EIA retail price (reads `/mnt/project-files/kalshi-gas/`).
 - `run_kalshi_tnote_nowcast.py`: Kalshi daily 10-year yield buckets vs a ZN=F hourly nowcast (reads `/mnt/project-files/kalshi-tnote/`).
 - `run_kalshi_fx_catchup.py`: Kalshi EUR/USD and USD/JPY contracts vs a lognormal fair value from OANDA 1-minute FX (reads `/mnt/project-files/kalshi-fx/`).
+- `run_kalshi_index_catchup.py`: the FX fair-value rule on Kalshi's 2022-24 S&P 500 markets vs SPX 1-minute bars (reads `/mnt/project-files/kalshi-index-old/`).
 - `run_sp500_index_changes.py`: S&P 500 deletions / additions after the effective date vs SPY and MDY (reads `/mnt/project-files/sp500-changes/`).
 - `run_russell_recon.py`: IWC / IWM / SPY spreads around the June Russell reconstitution day (yfinance).
 - `run_btc_cme_gap.py`: BTC "CME gap fill" (Friday 17:00 ET vs Sunday 18:00 ET reopen) with a Saturday placebo, Binance 1-min bars.
