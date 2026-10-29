@@ -76,6 +76,8 @@ Kalshi mention markets and their 4.3M prints, snapshots, model outputs, Trump Tr
 
 Kalshi markets that settle on one scheduled US release (CPI and core, MoM/YoY, components, payrolls, U3, GDP, core PCE, jobless claims; 4,113 markets, strike parsed from `yes_sub_title`) and their 443k prints, Jul 2021 - Jan 2026: `/mnt/project-files/kalshi-macro/` (README, HYPOTHESES.md). Markets close at 08:25-08:30 ET on release day; some unsettled ones carry far-future placeholder close times.
 
+Kalshi chart markets (Spotify daily/weekly by country, Netflix, App Store, Billboard; 29k markets, 425k prints) cut from `event-markets/`: `/mnt/project-files/kalshi-charts/`.
+
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).

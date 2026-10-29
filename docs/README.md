@@ -532,3 +532,8 @@ behaves the same, so there is no CME effect to trade.
 and 3x bear ETF (six pairs) earns their volatility decay, but at a 5%/yr
 borrow per leg it nets only +2.4%/yr (Sharpe 0.24) before Jul 2024 and about
 zero since, with -18% drawdowns; at 10% borrow it loses.
+
+**Kalshi chart markets (Spotify, Netflix, App Store, Billboard #1).**
+Yesterday's #1 keeps the top spot 71% of the time, but the market knows: when
+it is contested, buying it loses 10-14c a contract and fading it is about
+even after the spread.
