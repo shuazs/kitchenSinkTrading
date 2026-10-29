@@ -108,6 +108,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_mention_models.py`: compares mention-market models on the Nov 2025-Jan 2026 holdout after fees (price, buy-No rule, history, transformer, Trump word-rate, LoRA LLM sim); `run_mention_transformer.py` fine-tunes MiniLM walk-forward (CPU, ~1 h); `mention_trump_corpus.py` builds Truth Social / interview word counts; `mention_llm_sim.py train|sim [--base]` trains the LoRA Trump LLM and samples speeches (CPU, ~75 min per pass).
 - `run_kalshi_surprise_drift.py`: CPI / jobs surprise vs the Kalshi ladder's implied median -> TLT/SPY open->close and next-day drift (H5-H7).
+- `run_letf_pair_decay.py`: short both legs of six 3x bull/bear ETF pairs (volatility decay), monthly/weekly rebalance, borrow 5-10%/yr (yfinance).
 - `run_btc_cme_gap.py`: BTC "CME gap fill" (Friday 17:00 ET vs Sunday 18:00 ET reopen) with a Saturday placebo, Binance 1-min bars.
 - `run_kalshi_macro_flow.py`: Kalshi order flow before CPI / jobs / GDP releases, pre-registered H1-H4 (reads `/mnt/project-files/kalshi-macro/`).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).

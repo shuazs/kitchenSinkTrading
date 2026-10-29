@@ -527,3 +527,8 @@ about 28 bp a day on TLT (t -2.1) and the next day is flat.
 Sunday reopen does get revisited 55-65% of the time, but betting on the fill
 loses in-sample (-90 bp a trade, t -1.7) and a fake gap measured from Saturday
 behaves the same, so there is no CME effect to trade.
+
+**Shorting both legs of 3x ETF pairs.** Shorting equal dollars of a 3x bull
+and 3x bear ETF (six pairs) earns their volatility decay, but at a 5%/yr
+borrow per leg it nets only +2.4%/yr (Sharpe 0.24) before Jul 2024 and about
+zero since, with -18% drawdowns; at 10% borrow it loses.
