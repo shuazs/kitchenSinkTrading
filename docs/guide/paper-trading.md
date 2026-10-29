@@ -49,7 +49,8 @@ Notes from later batches:
    Nov-Jan holdout (t 2.7), bottom half ~0, but within one event its picks beat
    its rejects by only 2-4c (t ~1), so it mostly picks events. Same setup gives
    the plain rule ~0 by event. Three seeds agree: top half +6.1 to +7.2c
-   Aug-Oct (t 1.5-3.1), +8.7 to +9.4c holdout (t 2.7-3.1), bottom half ~0.
+   Aug-Oct (t 1.5-3.1), +8.7 to +9.4c holdout (t 2.7-3.1), bottom half ~0. Entering 12 h after
+   listing instead of 6 h: top half +4.6c / +5.3c (t 0.5 / 2.0), bottom -2 / -3c.
 
 ## Not yet on paper
 
