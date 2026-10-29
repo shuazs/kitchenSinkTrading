@@ -107,6 +107,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_mention_models.py`: compares mention-market models on the Nov 2025-Jan 2026 holdout after fees (price, buy-No rule, history, transformer, Trump word-rate, LoRA LLM sim); `run_mention_transformer.py` fine-tunes MiniLM walk-forward (CPU, ~1 h); `mention_trump_corpus.py` builds Truth Social / interview word counts; `mention_llm_sim.py train|sim [--base]` trains the LoRA Trump LLM and samples speeches (CPU, ~75 min per pass).
+- `run_kalshi_macro_flow.py`: Kalshi order flow before CPI / jobs / GDP releases, pre-registered H1-H4 (reads `/mnt/project-files/kalshi-macro/`).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
 ## Paper loggers

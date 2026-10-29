@@ -45,6 +45,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 | Kalshi mention-market models: transformer, LoRA speech simulation (no write-up; summary below) | `mention_models.py` | `run_mention_models.py`, `run_mention_transformer.py`, `mention_llm_sim.py`, `mention_trump_corpus.py` |
+| Kalshi order flow around CPI / jobs releases (no write-up; summary below) | `kalshi_macro.py` | `run_kalshi_macro_flow.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
@@ -512,3 +513,10 @@ Trump LLM that samples speeches and counts words adds nothing over the word's
 own history, and no more than the plain LLM. A first pass that set the
 decision time as a share of the listing window looked better; `close_time`
 is the actual close, so that version leaned on the future.
+
+**Kalshi order flow around CPI and jobs releases.** Ten pre-registered
+variants on 376 CPI, payrolls, unemployment, GDP, PCE and claims releases
+(2022-2026, holdout from Jul 2025), entering at real taker prints in the last
+hour and holding to the number. Following the pre-release taker imbalance
+loses 6-12c a contract; fading it is about zero after fees; price drift into
+the release has no direction. No pass and nothing to paper-trade.
