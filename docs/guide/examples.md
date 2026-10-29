@@ -113,6 +113,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_btc_etf_pairs.py`: reversion between the six spot-bitcoin ETFs (yfinance closes).
 - `run_kalshi_mortgage_nowcast.py`: Kalshi FRM markets vs a 10-year-yield nowcast of Freddie Mac's weekly rate (FRED MORTGAGE30US, DGS10; reads `/mnt/project-files/kalshi-frm/`).
 - `run_kalshi_gas_nowcast.py`: Kalshi weekly GAS markets vs an RBOB-futures nowcast of the EIA retail price (reads `/mnt/project-files/kalshi-gas/`).
+- `run_kalshi_tnote_nowcast.py`: Kalshi daily 10-year yield buckets vs a ZN=F hourly nowcast (reads `/mnt/project-files/kalshi-tnote/`).
 - `run_btc_cme_gap.py`: BTC "CME gap fill" (Friday 17:00 ET vs Sunday 18:00 ET reopen) with a Saturday placebo, Binance 1-min bars.
 - `run_kalshi_macro_flow.py`: Kalshi order flow before CPI / jobs / GDP releases, pre-registered H1-H4 (reads `/mnt/project-files/kalshi-macro/`).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).

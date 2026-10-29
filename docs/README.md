@@ -543,4 +543,5 @@ with the 10-year Treasury yield, so a simple nowcast beat Kalshi's FRM
 prices: +6.6c a contract in-sample (t 2.1) and +11.8c on 11 holdout weeks.
 Kalshi stopped listing these markets in Feb 2024, so it is a NEAR with
 nothing to trade unless they come back. The same idea on Kalshi's weekly gas-price markets (an RBOB-futures nowcast
-of the retail price) gives only +1c on the 2023 holdout.
+of the retail price) gives only +1c on the 2023 holdout. Kalshi's daily 10-year yield markets would be easy to nowcast from note
+futures, but they barely trade in the last hours, so there is nothing to test.
