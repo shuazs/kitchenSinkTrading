@@ -1,4 +1,4 @@
-"""Fine-tuned text transformer for Kalshi mention markets (needs torch + transformers).
+"""Fine-tuned text transformer for Kalshi mention markets (pip install -e ".[mentions]").
 
 Input per market: "speaker | event title | word" through MiniLM, its [CLS]
 vector concatenated with numeric features (logit of the last price before
@@ -7,9 +7,13 @@ then a linear head. The head starts as a copy of the price, so the net
 learns a correction to the market rather than the price itself.
 
 Walk-forward: train on events that closed before each test month, test
-on Nov 2025, Dec 2025 and Jan 2026 (the holdout). Writes out-of-sample q to
-/mnt/project-files/mention-transformer/q_transformer.parquet; scoring is in
-run_mention_models.py.
+each month Aug 2025 - Jan 2026 (Nov-Jan is the holdout). Writes out-of-sample
+q to /mnt/project-files/mention-transformer/q_<tag>_<snap>.parquet; scoring
+is in run_mention_models.py. About 1 h on 4 CPU cores.
+
+Result (snapshot h6): worse log loss than the price (0.543 vs 0.519 holdout),
+but it ranks buy-No trades; the no-text control has better log loss and
+ranks worse.
 
     python examples/run_mention_transformer.py [--model sentence-transformers/all-MiniLM-L6-v2] [--text-only]
 """
@@ -111,7 +115,7 @@ def main():
     ap.add_argument("--snap", default="h6", help="snapshot file tag: h6 = 6 h after listing (causal)")
     ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument("--no-text", action="store_true", help="control: same net without the text encoder")
-    ap.add_argument("--tag", default="transformer")
+    ap.add_argument("--tag", default="tf")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--months", default=",".join(MONTHS), help="test-month boundaries, e.g. pre-holdout 2025-08-01,...,2025-11-01")
     a = ap.parse_args()

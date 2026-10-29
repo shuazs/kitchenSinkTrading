@@ -18,6 +18,13 @@ strike word shows up across the samples.
 This is the pre-speech version only: there are no timestamped live transcripts
 in reach, so re-simulating as the speech comes in can't be backtested here.
 
+Result (166 Trump events, 8 samples x 128 tokens, 100 LoRA steps on CPU): the
+sampled hit rate barely tracks outcomes (corr 0.06, same for the plain model),
+and adding it to price + word history leaves holdout log loss unchanged
+(0.517 LoRA, 0.516 plain, 0.517 history alone). Short samples rarely contain
+a given word (97% of markets get 0 hits); a real test needs GPU-length
+speeches and live transcripts.
+
     python examples/mention_llm_sim.py train
     python examples/mention_llm_sim.py sim [--base] [--n 12] [--tokens 200]
 """

@@ -2,11 +2,13 @@
 
 Data: Kalshi mention markets (HF TrevorJS/kalshi-trades via
 /mnt/project-files/event-markets/), Feb 2025 - Jan 2026. Each market is
-priced at t_s = 25% of the way from listing to the scheduled close (well
-before the speech or game for almost all events); entries are the first
-taker print of the side bought within 6 h after t_s, held to settlement,
-Kalshi taker fee 0.07 p (1-p). Walk-forward: models are refit on events that
-closed before each test month (Nov 2025, Dec 2025, Jan 2026 = holdout).
+priced at t_s = 6 h after its event was listed (snapshot "h6"; a market must
+have printed before t_s and still be open); entries are the first taker
+print of the side bought within 6 h after t_s, held to settlement, Kalshi
+taker fee 0.07 p (1-p). Walk-forward: models are refit on events that closed
+before each test month, Aug 2025 - Jan 2026; Nov-Jan is the holdout. (A first
+pass put t_s at 25% of the listing-to-close window; close_time is the actual
+close, so that leaned on the future and inflated the buy-No rule.)
 
 Models (all output P(Yes)):
 - price: the last print before t_s (the market itself)
@@ -20,6 +22,10 @@ Models (all output P(Yes)):
 Trade rule for every model, fixed before the holdout: take the side whose
 model edge after fee is > 3c. Bankroll: $5,000, 2% of equity per trade,
 <= 10% per event, capped at the printed size.
+
+Result: nothing prices these markets better than the market after fees
+(event-clustered t < 2.2 for every model on the holdout); the transformer's
+ranking of buy-No trades is the one lead (see `rank_no_trades`).
 
     python examples/run_mention_models.py [--snap h6]
 """
@@ -92,6 +98,26 @@ def report(name, s, q, rows):
     return t
 
 
+def rank_no_trades(s, q):
+    """Buy-No 20-80c trades split by the model's No edge: top vs bottom half
+    per period, and the top-minus-bottom gap inside the same event."""
+    r = s.assign(q=q.values)[s["no_ask"].between(0.2, 0.8) & q.notna().values].copy()
+    r["net"] = (1 - r["y"]) - r["no_ask"] - mm.fee(r["no_ask"])
+    r["e"] = (1 - r["q"]) - r["no_ask"]
+    r["period"] = np.where(r["ev_close"] < HOLD, "Aug-Oct", "Nov-Jan")
+    r["top"] = r.groupby("period")["e"].transform(lambda x: x > x.median())
+    out = r.groupby(["period", "top"]).apply(lambda g: pd.Series(mm.summary(g)))
+
+    def gap(g):
+        m = g["e"].median()
+        return g.loc[g["e"] > m, "net"].mean() - g.loc[g["e"] <= m, "net"].mean() if len(g) > 1 else np.nan
+
+    for per, g in r.groupby("period"):
+        d = g.groupby("event_ticker").apply(gap).dropna()
+        print(f"  {per}: within-event top-minus-bottom {d.mean() * 100:+.2f}c, t {d.mean() / d.std() * np.sqrt(len(d)):.2f}, {len(d)} events")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--snap", default="h6")
@@ -115,6 +141,11 @@ def main():
             report(lab, s, qt, rows)
     print(f"All mention markets, holdout Nov 2025 - Jan 2026 (edge > {THR * 100:.0f}c after fee)")
     print(pd.DataFrame(rows).to_string(index=False))
+    f = D + f"q_tf_{a.snap}.parquet"
+    if os.path.exists(f):
+        print("\nBuy-No 20-80c trades ranked by the transformer (walk-forward, both periods)")
+        qt = s[["ticker"]].merge(pd.read_parquet(f), on="ticker", how="left")["q"]
+        print(rank_no_trades(s, qt).to_string())
 
     tf = D + f"trump_feats_{a.snap}.parquet"
     if os.path.exists(tf):

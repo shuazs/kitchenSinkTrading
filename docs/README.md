@@ -44,6 +44,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| Kalshi mention-market models: transformer, LoRA speech simulation (no write-up; summary below) | `mention_models.py` | `run_mention_models.py`, `run_mention_transformer.py`, `mention_llm_sim.py`, `mention_trump_corpus.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
@@ -498,3 +499,16 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Kalshi mention markets: transformer and LLM models.** Six models that
+price "will X say word Y" markets 6 hours after listing, scored at real taker
+prints after fees, walk-forward Aug 2025 - Jan 2026 (Nov-Jan holdout). None
+prices the markets better than the market itself on a trade basis (every
+model's event-clustered t is under 2.2). A fine-tuned MiniLM that reads
+speaker, event and word ranks the old buy-No 20-80c trades: its top half made
++6.4c (Aug-Oct) and +8.7c (holdout) per contract and its bottom half nothing,
+but mostly by choosing events, so it stays a weak paper-trade filter. A LoRA
+Trump LLM that samples speeches and counts words adds nothing over the word's
+own history, and no more than the plain LLM. A first pass that set the
+decision time as a share of the listing window looked better; `close_time`
+is the actual close, so that version leaned on the future.
