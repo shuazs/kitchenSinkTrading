@@ -72,6 +72,22 @@ HF `linxy/USDT-M_Perpetual_Futures` daily klines and funding for all ~530 live B
 
 EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable and finds filings by phrase (batch 8 uses it for CEF rights offerings; after 2020 fund prospectus supplements are 424B*, not 497). Kalshi combo (KXMVE*) markets and trades from the TrevorJS mirror are cached in `alpha_batch8/` by `run_alpha_batch8.py`, read by HTTP range requests (row groups only).
 HF `siddharthmb/stocks-dividends` `dividend.csv` (470k ex-dates, 10k symbols, to Jan 2026; ~30% of symbols have no Yahoo history) and EDGAR 424B4 dates (IPO prospectuses, cached `edgar_forms/424B4.csv`) feed `run_alpha_batch9.py`. Yahoo rate-limits (HTTP 429) when two big chunked downloads run at once; run them one at a time.
+Kalshi mention markets and their 4.3M prints, snapshots, model outputs, Trump Truth Social posts (HF chrissoria/trump-truth-social, to Oct 2026) and interview answers (HF pookie3000/donald_trump_interviews), LoRA adapter and LLM samples: `/mnt/project-files/mention-transformer/`. Speech transcript sites (whitehouse.gov, rev.com, rollcall factba.se, presidency.ucsb.edu, c-span, youtube) are blocked from the cloud.
+
+Kalshi markets that settle on one scheduled US release (CPI and core, MoM/YoY, components, payrolls, U3, GDP, core PCE, jobless claims; 4,113 markets, strike parsed from `yes_sub_title`) and their 443k prints, Jul 2021 - Jan 2026: `/mnt/project-files/kalshi-macro/` (README, HYPOTHESES.md). Markets close at 08:25-08:30 ET on release day; some unsettled ones carry far-future placeholder close times.
+
+Kalshi chart markets (Spotify daily/weekly by country, Netflix, App Store, Billboard; 29k markets, 425k prints) cut from `event-markets/`: `/mnt/project-files/kalshi-charts/`.
+
+Kalshi 10-year yield markets (TNOTE/TNOTED/TNOTEW and KX versions, 2022-2026, 9.9k markets, 80k prints; thin since 2025) plus ZN=F hourly bars from Jun 2024: `/mnt/project-files/kalshi-tnote/`. Kalshi FRM and GAS markets with FRED PMMS / GASREGW and RBOB: `kalshi-frm/`, `kalshi-gas/`.
+
+Kalshi FX markets (EURUSD/USDJPY daily and hourly, old and KX series, 761k markets, 119k prints, Aug 2022 - Jan 2026; prints thin Aug 2024 - Sep 2025) plus OANDA 1-minute EUR/USD and USD/JPY bars (HF bunqi/OANDA_*): `/mnt/project-files/kalshi-fx/` (README there). OANDA's open at the fixing matches Kalshi's result 98.3% of the time.
+
+S&P 500 membership history 1996-2026 (github fja05680/sp500, raw.githubusercontent reachable; Wikipedia is blocked), derived add/delete events and yfinance prices for the 622 names Yahoo still has: `/mnt/project-files/sp500-changes/`.
+
+Kalshi 2022-24 S&P 500 / Nasdaq-100 markets (INX, INXD, INXU, INXW, NASDAQ100*) and 1.09M S&P prints: `/mnt/project-files/kalshi-index-old/`.
+
+FINRA short interest, all US listings, 23 settlements Oct 2025 - Sep 2026 (HF FinzData/finra-short-interest; cdn.finra.org is blocked) and yfinance opens/closes for ~4.6k names: `/mnt/project-files/short-interest/`. Yahoo rate-limits bulk downloads from the cloud: chunks of 50 with minutes of backoff.
+
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).

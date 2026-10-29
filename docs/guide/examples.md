@@ -106,6 +106,21 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
+- `run_mention_models.py`: compares mention-market models on the Nov 2025-Jan 2026 holdout after fees (price, buy-No rule, history, transformer, Trump word-rate, LoRA LLM sim); `run_mention_transformer.py` fine-tunes MiniLM walk-forward (CPU, ~1 h); `run_mention_embeddings.py` is the frozen-embedding + logistic variant (minutes); `mention_trump_corpus.py` builds Truth Social / interview word counts; `mention_llm_sim.py train|sim [--base]` trains the LoRA Trump LLM and samples speeches (CPU, ~75 min per pass).
+- `run_kalshi_surprise_drift.py`: CPI / jobs surprise vs the Kalshi ladder's implied median -> TLT/SPY open->close and next-day drift (H5-H7).
+- `run_letf_pair_decay.py`: short both legs of six 3x bull/bear ETF pairs (volatility decay), monthly/weekly rebalance, borrow 5-10%/yr (yfinance).
+- `run_kalshi_chart_incumbent.py`: Kalshi Spotify / Netflix / App Store / Billboard #1 markets, does the incumbent keep the top spot (reads `/mnt/project-files/kalshi-charts/`).
+- `run_btc_etf_pairs.py`: reversion between the six spot-bitcoin ETFs (yfinance closes).
+- `run_kalshi_mortgage_nowcast.py`: Kalshi FRM markets vs a 10-year-yield nowcast of Freddie Mac's weekly rate (FRED MORTGAGE30US, DGS10; reads `/mnt/project-files/kalshi-frm/`).
+- `run_kalshi_gas_nowcast.py`: Kalshi weekly GAS markets vs an RBOB-futures nowcast of the EIA retail price (reads `/mnt/project-files/kalshi-gas/`).
+- `run_kalshi_tnote_nowcast.py`: Kalshi daily 10-year yield buckets vs a ZN=F hourly nowcast (reads `/mnt/project-files/kalshi-tnote/`).
+- `run_kalshi_fx_catchup.py`: Kalshi EUR/USD and USD/JPY contracts vs a lognormal fair value from OANDA 1-minute FX (reads `/mnt/project-files/kalshi-fx/`).
+- `run_kalshi_index_catchup.py`: the FX fair-value rule on Kalshi's 2022-24 S&P 500 markets vs SPX 1-minute bars (reads `/mnt/project-files/kalshi-index-old/`).
+- `run_short_interest.py`: FINRA short-interest deciles (change %, days to cover) vs next half-month returns (reads `/mnt/project-files/short-interest/`).
+- `run_sp500_index_changes.py`: S&P 500 deletions / additions after the effective date vs SPY and MDY (reads `/mnt/project-files/sp500-changes/`).
+- `run_russell_recon.py`: IWC / IWM / SPY spreads around the June Russell reconstitution day (yfinance).
+- `run_btc_cme_gap.py`: BTC "CME gap fill" (Friday 17:00 ET vs Sunday 18:00 ET reopen) with a Saturday placebo, Binance 1-min bars.
+- `run_kalshi_macro_flow.py`: Kalshi order flow before CPI / jobs / GDP releases, pre-registered H1-H4 (reads `/mnt/project-files/kalshi-macro/`).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
 ## Paper loggers

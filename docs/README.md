@@ -44,6 +44,8 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 7: cross-sectional effects](https://claude.ai/artifact/NV9QRUG3EP2oFKzMBPcLC8) | (standalone) | `run_alpha_batch7.py` |
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
+| Kalshi mention-market models: transformer, LoRA speech simulation (no write-up; summary below) | `mention_models.py` | `run_mention_models.py`, `run_mention_transformer.py`, `mention_llm_sim.py`, `mention_trump_corpus.py` |
+| Kalshi order flow around CPI / jobs releases (no write-up; summary below) | `kalshi_macro.py` | `run_kalshi_macro_flow.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
@@ -498,3 +500,76 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Kalshi mention markets: transformer and LLM models.** Six models that
+price "will X say word Y" markets 6 hours after listing, scored at real taker
+prints after fees, walk-forward Aug 2025 - Jan 2026 (Nov-Jan holdout). None
+prices the markets better than the market itself on a trade basis (every
+model's event-clustered t is under 2.2). A fine-tuned MiniLM that reads
+speaker, event and word ranks the old buy-No 20-80c trades: its top half made
++6.4c (Aug-Oct) and +8.7c (holdout) per contract and its bottom half nothing,
+but mostly by choosing events, so it stays a weak paper-trade filter. A LoRA
+Trump LLM that samples speeches and counts words adds nothing over the word's
+own history, and no more than the plain LLM. A first pass that set the
+decision time as a share of the listing window looked better; `close_time`
+is the actual close, so that version leaned on the future.
+
+**Kalshi order flow around CPI and jobs releases.** Ten pre-registered
+variants on 376 CPI, payrolls, unemployment, GDP, PCE and claims releases
+(2022-2026, holdout from Jul 2025), entering at real taker prints in the last
+hour and holding to the number. Following the pre-release taker imbalance
+loses 6-12c a contract; fading it is about zero after fees; price drift into
+the release has no direction. No pass and nothing to paper-trade. Using the Kalshi ladder as the consensus, a hawkish surprise does not
+keep pushing bonds or stocks after the 09:30 open: trading with it loses
+about 28 bp a day on TLT (t -2.1) and the next day is flat.
+
+**BTC "CME gap fill".** The weekend gap between CME's Friday close and
+Sunday reopen does get revisited 55-65% of the time, but betting on the fill
+loses in-sample (-90 bp a trade, t -1.7) and a fake gap measured from Saturday
+behaves the same, so there is no CME effect to trade.
+
+**Shorting both legs of 3x ETF pairs.** Shorting equal dollars of a 3x bull
+and 3x bear ETF (six pairs) earns their volatility decay, but at a 5%/yr
+borrow per leg it nets only +2.4%/yr (Sharpe 0.24) before Jul 2024 and about
+zero since, with -18% drawdowns; at 10% borrow it loses.
+
+**Kalshi chart markets (Spotify, Netflix, App Store, Billboard #1).**
+Yesterday's #1 keeps the top spot 71% of the time, but the market knows: when
+it is contested, buying it loses 10-14c a contract and fading it is about
+even after the spread.
+
+**Kalshi mortgage-rate markets.** Freddie Mac's weekly 30-year rate moves
+with the 10-year Treasury yield, so a simple nowcast beat Kalshi's FRM
+prices: +6.6c a contract in-sample (t 2.1) and +11.8c on 11 holdout weeks.
+Kalshi stopped listing these markets in Feb 2024, so it is a NEAR with
+nothing to trade unless they come back. The same idea on Kalshi's weekly gas-price markets (an RBOB-futures nowcast
+of the retail price) gives only +1c on the 2023 holdout. Kalshi's daily 10-year yield markets would be easy to nowcast from note
+futures, but they barely trade in the last hours, so there is nothing to test.
+
+**Kalshi hourly FX (EUR/USD, USD/JPY) vs live FX.** Pricing each "above K"
+strike from the spot rate a minute earlier and its last hour of volatility
+beats Kalshi's last-hour prices: buying the cheap side at real taker prints
+made +4.9c a contract over 2022-24 (t 4.4, every year positive), while the
+same rule on 30-minute-old FX makes +0.8c. The pre-registered holdout (Oct
+2025 on) is unusable: the data mirror has almost no FX prints after mid-2024
+and most late ones are 50c prints on deep in-the-money strikes. NEAR: on the
+paper list with a live logger.
+The same rule on Kalshi's 2022-24 S&P 500 markets made +4.3c in 2022-23
+(t 2.7) but nothing in 2024 (-0.1c on 963 trades), so treat the FX result
+with care until the live log confirms it.
+
+**FINRA short interest.** Over Nov 2025 - Sep 2026 (the only free history),
+stocks whose short interest jumped most (top decile) lagged the rest by
+2.8% per half-month in May-Sep (t -4.6) but only 1.1% (t -1.0) before, with
+medians near -0.7%. Days to cover predicts nothing. NEAR: a paper logger
+tracks it, and borrow fees on these names still need checking.
+
+**S&P 500 index changes.** Shorting stocks just added to the S&P 500 for 20
+days after the effective date beat SPY by 2.2% in 2001-15 (t 2.4) but only
+0.3% since 2016; buying deleted stocks is about zero in both periods. The
+effect has been arbitraged away.
+
+**Russell reconstitution day.** At the ETF level nothing shows up: microcaps
+(where deleted names land) do not rebound against IWM after recon day, and
+the small-cap lag against SPY in the 10 days after recon (-1.3% in 2006-15)
+is gone since 2016.
