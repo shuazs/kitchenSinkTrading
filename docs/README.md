@@ -522,3 +522,8 @@ loses 6-12c a contract; fading it is about zero after fees; price drift into
 the release has no direction. No pass and nothing to paper-trade. Using the Kalshi ladder as the consensus, a hawkish surprise does not
 keep pushing bonds or stocks after the 09:30 open: trading with it loses
 about 28 bp a day on TLT (t -2.1) and the next day is flat.
+
+**BTC "CME gap fill".** The weekend gap between CME's Friday close and
+Sunday reopen does get revisited 55-65% of the time, but betting on the fill
+loses in-sample (-90 bp a trade, t -1.7) and a fake gap measured from Saturday
+behaves the same, so there is no CME effect to trade.
