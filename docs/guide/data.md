@@ -84,6 +84,8 @@ Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-
 
 Blocked for on-chain data (2026-10-29): DefiLlama, blockchain.info, mempool.space, CoinGecko, CoinMetrics API, Glassnode, Etherscan, Farside, Dune; `api.github.com` unauthenticated 403. HF `BlockDB/Stablecoin-Transfers-Ethereum-Cryptocurrency-Data` (USDC/USDT/DAI transfers 2017-11..2025-10, 83 GB) and `Chainticks/stablecoin-flows` (mint/burn, from 2026-05) exist.
 
+Public S3 buckets (`<bucket>.s3.amazonaws.com`) and GCS buckets are reachable (see `/mnt/project-files/unusual-data/sources.md`): `gdelt-open-data/events/YYYYMMDD.export.csv` daily 2013-04..2019-09-18 (35-70 MB, ~20 MB/s), aggregated by `examples/gdelt_aggregate.py` (~40 min, 4 threads).
+
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
 Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).

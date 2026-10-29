@@ -108,6 +108,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 - `run_onchain_batch1.py`, `run_onchain_batch1_placebo.py`, `run_onchain_batch2.py`, `run_onchain_batch3.py`, `run_onchain_batch4.py` (BTC ETF volume): on-chain edges (Coin Metrics features timing BTC/ETH; 10-coin cross-section by activity growth; crypto equities vs BTC overnight move). All no edge; see strategies.md.
+- `gdelt_aggregate.py`, `run_gdelt_batch5.py`: stream GDELT daily events into country x CAMEO aggregates, then test conflict/tone shocks vs oil, gold, SPY, country ETFs (no edge).
 
 ## Paper loggers
 
