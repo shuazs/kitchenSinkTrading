@@ -6,7 +6,8 @@ in /mnt/project-files/commodity-futures/HYPOTHESES.md (rounds 5-6).
 E1-E3 macro release days (CPI, payrolls, PPI, retail sales, GDP advance and
 jobless claims; HF ZipLime/us-economic-events, 2010-2026) on TLT/IEF/GLD/SPY;
 S1 Halloween (Nov-Apr SPY, else BIL); S2 crypto weekends; S3 52-week-high
-nearness on 40 ETFs; P1-P3 pre-report run-up reversal outside natural gas. Design to Jun 2024, holdout Jul 2024+. All fail.
+nearness on 40 ETFs; P1-P3 pre-report run-up reversal outside natural gas;
+K1 drift after 8-K non-reliance restatements. Design to Jun 2024, holdout Jul 2024+. All fail.
 """
 import numpy as np
 import pandas as pd
@@ -116,6 +117,72 @@ def pre_report_reversal():
         print(f"  {label:18s} {sym}: {ev(up[:'2024-06'])} | {ev(up[HOLD:])}")
 
 
+SEC8K = "https://huggingface.co/datasets/ZipLime/sec-8k-events/resolve/main/data/{}/part-00000.parquet"
+
+
+def restatements():
+    """K1: SEC 8-K Item 4.02 non-reliance filings (HF ZipLime/sec-8k-events, the second the SEC
+    accepted them). Survivor-only (today's CIK -> ticker map), which biases against a negative drift.
+    First run downloads ~1,100 tickers from Yahoo (~10 min)."""
+    import yfinance as yf
+
+    print("K1 8-K 4.02 restatements: stock minus SPY/IWM from the first open after acceptance")
+    d = cache_dir("sec8k")
+    for name in ("restatement_events", "entity_map"):
+        if not (d / f"{name}.parquet").exists():
+            (d / f"{name}.parquet").write_bytes(requests.get(SEC8K.format(name), timeout=300).content)
+    m = pd.read_parquet(d / "entity_map.parquet")
+    m = m[m.ticker.notna() & m.exchange.isin(["NYSE", "Nasdaq"])].drop_duplicates("cik")
+    ev_ = pd.read_parquet(d / "restatement_events.parquet")
+    ev_ = ev_[~ev_.is_amendment.astype(bool)].merge(m[["cik", "ticker"]], on="cik")
+    ev_["ticker"] = ev_.ticker.str.replace(".", "-", regex=False)
+    pxd = cache_dir("sec8k/px")
+    todo = [t for t in sorted(set(ev_.ticker)) if not (pxd / f"{t}.parquet").exists()]
+    for i in range(0, len(todo), 60):
+        ch = todo[i:i + 60]
+        raw = yf.download(ch, start="2004-01-01", auto_adjust=True, progress=False, group_by="ticker")
+        for t in ch:
+            try:
+                x = raw[t][["Open", "Close", "Volume"]].dropna()
+            except KeyError:
+                x = pd.DataFrame(columns=["Open", "Close", "Volume"])
+            x.columns = ["open", "close", "volume"]
+            x.to_parquet(pxd / f"{t}.parquet")
+    bm = {s: load_bars(s, start="2004-01-01") for s in ["SPY", "IWM"]}
+
+    def table(shift_days: int) -> pd.DataFrame:
+        rows, last = [], {}
+        for _, e in ev_.sort_values("knowledge_date").iterrows():
+            p = pd.read_parquet(pxd / f"{e.ticker}.parquet")
+            if len(p) < 300:
+                continue
+            p.index = pd.to_datetime(p.index).tz_localize(None)
+            kd = pd.Timestamp(e.knowledge_date).tz_convert("America/New_York").tz_localize(None) + pd.Timedelta(days=shift_days)
+            i = p.index.searchsorted(kd.normalize() if (kd.hour, kd.minute) < (9, 30) else kd.normalize() + pd.Timedelta(days=1))
+            if i < 21 or i + 61 >= len(p) or (e.ticker in last and (p.index[i] - last[e.ticker]).days < 120):
+                continue
+            last[e.ticker] = p.index[i]
+            pre = p.iloc[i - 21:i - 1]
+            row = {"date": p.index[i], "px": pre.close.iloc[-1], "dv": (pre.close * pre.volume).mean()}
+            for b, s in bm.items():
+                si = s.index.searchsorted(p.index[i])
+                if si + 60 < len(s):
+                    for h in (20, 60):
+                        row[f"{b}{h}"] = np.log(p.close.iloc[i + h - 1] / p.open.iloc[i]) - np.log(s.close.iloc[si + h - 1] / s.open.iloc[si])
+            rows.append(row)
+        x = pd.DataFrame(rows)
+        return x[(x.px > 5) & (x.dv > 2e6)]
+
+    def pct(x):
+        x = x.dropna()
+        return f"{x.mean():+.1%} t {x.mean() / x.std() * np.sqrt(len(x)):5.2f} n {len(x)}"
+
+    for name, shift in [("events", 0), ("placebo 1y earlier", -365)]:
+        x = table(shift)
+        des, hold = x[(x.date.dt.year != 2021) & (x.date < HOLD)], x[x.date >= HOLD]
+        print(f"  {name}: " + " | ".join(f"{c} {pct(des[c])} hold {pct(hold[c])}" for c in ["SPY20", "SPY60", "IWM20"]))
+
+
 if __name__ == "__main__":
-    for f in (macro_days, halloween, crypto_weekend, high_52w, pre_report_reversal):
+    for f in (macro_days, halloween, crypto_weekend, high_52w, pre_report_reversal, restatements):
         f()
