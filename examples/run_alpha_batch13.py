@@ -7,7 +7,7 @@ E1-E3 macro release days (CPI, payrolls, PPI, retail sales, GDP advance and
 jobless claims; HF ZipLime/us-economic-events, 2010-2026) on TLT/IEF/GLD/SPY;
 S1 Halloween (Nov-Apr SPY, else BIL); S2 crypto weekends; S3 52-week-high
 nearness on 40 ETFs; P1-P3 pre-report run-up reversal outside natural gas;
-K1 drift after 8-K non-reliance restatements. Design to Jun 2024, holdout Jul 2024+. All fail.
+K1 drift after 8-K non-reliance restatements; A1 Treasury auction strength. Design to Jun 2024, holdout Jul 2024+. All fail.
 """
 import numpy as np
 import pandas as pd
@@ -183,6 +183,27 @@ def restatements():
         print(f"  {name}: " + " | ".join(f"{c} {pct(des[c])} hold {pct(hold[c])}" for c in ["SPY20", "SPY60", "IWM20"]))
 
 
+def auction_strength():
+    """A1: 10y/30y bid-to-cover vs the trailing 6 same-tenor auctions -> TLT after the day-0 reaction."""
+    from backtester.data.treasury_auctions import LONG_TERMS, load_auctions
+
+    print("A1 Treasury auction strength (|z| > 1) -> TLT from next open, net 6 bp")
+    a = load_auctions()
+    a = a[a.term.astype(str).str.contains(LONG_TERMS)].dropna(subset=["bid_to_cover"]).sort_values("date")
+    a["grp"] = a.term.astype(str).str.extract(r"(\d+)-Year")[0].astype(int).map(lambda y: 10 if y <= 10 else 30)
+    a["z"] = a.groupby("grp").bid_to_cover.transform(lambda s: (s - s.rolling(6).mean().shift(1)) / s.rolling(6).std().shift(1))
+    t = load_bars("TLT", start="2008-01-01")
+    rows = []
+    for _, e in a[a.z.abs() > 1].iterrows():
+        if e.date in t.index and t.index.get_loc(e.date) + 6 < len(t):
+            i = t.index.get_loc(e.date)
+            rows.append({"date": e.date, "d1": np.sign(e.z) * np.log(t.close.iloc[i + 1] / t.open.iloc[i + 1]) - 6e-4,
+                         "d5": np.sign(e.z) * np.log(t.close.iloc[i + 5] / t.open.iloc[i + 1]) - 6e-4})
+    x = pd.DataFrame(rows).set_index("date")
+    for h in ("d1", "d5"):
+        print(f"  {h}: design {ev(x[h][:'2024-06'])} | holdout {ev(x[h][HOLD:])}")
+
+
 if __name__ == "__main__":
-    for f in (macro_days, halloween, crypto_weekend, high_52w, pre_report_reversal, restatements):
+    for f in (macro_days, halloween, crypto_weekend, high_52w, pre_report_reversal, restatements, auction_strength):
         f()
