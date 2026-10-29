@@ -537,3 +537,9 @@ zero since, with -18% drawdowns; at 10% borrow it loses.
 Yesterday's #1 keeps the top spot 71% of the time, but the market knows: when
 it is contested, buying it loses 10-14c a contract and fading it is about
 even after the spread.
+
+**Kalshi mortgage-rate markets.** Freddie Mac's weekly 30-year rate moves
+with the 10-year Treasury yield, so a simple nowcast beat Kalshi's FRM
+prices: +6.6c a contract in-sample (t 2.1) and +11.8c on 11 holdout weeks.
+Kalshi stopped listing these markets in Feb 2024, so it is a NEAR with
+nothing to trade unless they come back.
