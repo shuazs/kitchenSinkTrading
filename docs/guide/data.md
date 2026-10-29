@@ -82,6 +82,8 @@ Kalshi 10-year yield markets (TNOTE/TNOTED/TNOTEW and KX versions, 2022-2026, 9.
 
 Kalshi FX markets (EURUSD/USDJPY daily and hourly, old and KX series, 761k markets, 119k prints, Aug 2022 - Jan 2026; prints thin Aug 2024 - Sep 2025) plus OANDA 1-minute EUR/USD and USD/JPY bars (HF bunqi/OANDA_*): `/mnt/project-files/kalshi-fx/` (README there). OANDA's open at the fixing matches Kalshi's result 98.3% of the time.
 
+S&P 500 membership history 1996-2026 (github fja05680/sp500, raw.githubusercontent reachable; Wikipedia is blocked), derived add/delete events and yfinance prices for the 622 names Yahoo still has: `/mnt/project-files/sp500-changes/`.
+
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).

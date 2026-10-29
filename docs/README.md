@@ -554,3 +554,8 @@ same rule on 30-minute-old FX makes +0.8c. The pre-registered holdout (Oct
 2025 on) is unusable: the data mirror has almost no FX prints after mid-2024
 and most late ones are 50c prints on deep in-the-money strikes. NEAR: on the
 paper list with a live logger.
+
+**S&P 500 index changes.** Shorting stocks just added to the S&P 500 for 20
+days after the effective date beat SPY by 2.2% in 2001-15 (t 2.4) but only
+0.3% since 2016; buying deleted stocks is about zero in both periods. The
+effect has been arbitraged away.
