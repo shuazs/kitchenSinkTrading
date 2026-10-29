@@ -45,6 +45,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
+| Vol batch 1: index vol structure and single-stock option signals (summary below) | `data/options_iv.py` | `run_vol_batch1.py`, `run_options_iv.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
@@ -498,3 +499,27 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Vol batch 1 (options and volatility structure).** Cboe is blocked, so the
+index-vol side uses Yahoo's VIX, VIX9D/3M/6M, VVIX, SKEW, VXN, VXD, OVX, GVZ
+and the VIX ETPs; the single-stock side uses HF `gauss314/options-IV-SP500`
+(ATM and wing IV, call/put volume and open interest for ~900 liquid names,
+Oct 2019 - Jul 2023, survivors only). 612 rules "hold the target while an
+indicator's expanding percentile is above/below q, else BIL" on SPY, QQQ, IWM,
+TLT, GLD, USO and UPRO: 15% beat buy-and-hold in-sample, 30% in the holdout,
+and the best rule per target has a deflated Sharpe below 0.01. The one
+exception is event-style: buying SPY at the next open after the VIX closes
+more than 3 sd above its 20-day mean, 5-7 days (+1.0% to +1.2% vs +0.23% base,
+t 2.9-3.1, 56 events, holdout +2% on 10), but it fades to half at z 2.5 and
+disappears at z 3.5 (NEAR, on paper). SVXY bought at Monday's open and sold at
+the close earns +31 bp (t 3.0, 710 Mondays, +38 bp since Jul 2024, 3 of 4
+sub-periods) but includes the Feb 2018 Monday (-85%), and 10 bp costs leave
+Sharpe 0.5, so it is a 5%-of-account paper candidate at most. FOMC-window vol
+ETPs (pre-FOMC SVXY +108 bp t 3.0 flips to -58 bp in the holdout), a long-vol
+VIXM/VIXY hedge sleeve (costs 1-4 pts of CAGR for a smaller drawdown, Sharpe
++-0.02), the VXN/VIX growth-vs-index rotation and market-wide put/call,
+IV-HV and smile aggregates fail. In 28 single-stock signals (IV minus HV, IV
+change, IV rank, wing width, put/call volume and open interest, abnormal put
+or call volume, volume over open interest) x 5- and 21-day horizons, no decile
+spread has |t| above 2.1 and none keeps its sign across the 2019-21 fit and
+2022-23 test with t above 1 on both.

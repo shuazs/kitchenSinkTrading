@@ -12,7 +12,7 @@ import importlib
 import traceback
 
 DAILY = ["treasury_auction_cycle", "etf_breakout_meta", "commodity_january", "odd_lot_tenders", "cef_rights_short",
-         "letf_reversal"]
+         "letf_reversal", "vol_candidates"]
 
 
 def main() -> None:
