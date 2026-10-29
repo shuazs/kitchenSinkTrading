@@ -106,7 +106,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
-- `run_10k_text_change.py`, `run_8k_items.py`, `run_warn_layoffs.py`, `run_indeed_postings.py`: text/filing batch 2 (10-K carryover, 8-K items via EDGAR submissions JSON, WARN notices, Indeed Hiring Lab sector postings); see strategies.md.
+- `run_10k_text_change.py`, `run_8k_items.py`, `run_warn_layoffs.py`, `run_indeed_postings.py`, `run_hn_attention.py`: text/filing batch 2 (10-K carryover, 8-K items via EDGAR submissions JSON, WARN notices, Indeed Hiring Lab sector postings); see strategies.md.
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
 ## Paper loggers
