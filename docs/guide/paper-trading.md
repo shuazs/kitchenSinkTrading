@@ -55,7 +55,6 @@ Notes from later batches:
 - Kalshi S&P range vs VIX1D -> sell XSP 0DTE iron flies (`kalshi_vol.py`,
   research-modules.md): modelled option prices, so it needs real XSP quotes
   before a logger is worth building.
-
 - Kalshi 30-year mortgage-rate markets vs a Treasury nowcast (`run_kalshi_mortgage_nowcast.py`): NEAR (+6.6c in-sample t 2.1, +11.8c on 11 holdout weeks), but Kalshi has not listed FRM since Feb 2024; build a logger only if the series comes back.
 
 ## Retired (do not run)
