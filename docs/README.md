@@ -47,6 +47,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
+| Earnings-call text signals (no edge; tone change near-miss) | (standalone) | `run_earnings_call_text.py`, `run_earnings_call_backtest.py`, `run_earnings_call_tfidf.py` |
 
 ## Summaries
 

@@ -106,6 +106,9 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch9.py`: alpha hunt batch 9 (dividend run-up and capture, initiations, CEF ex-dates and January, IPO lockups, splits) by period; first run downloads ~8k symbols from Yahoo in chunks (~30 min).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
+- `run_earnings_call_text.py` / `run_earnings_call_backtest.py` / `run_earnings_call_tfidf.py`: earnings-call transcript text signals (lexical tone/hedge/guidance/evasion, change vs prior call, hashed TF-IDF ridge) on HF glopardo/sp500-earnings-transcripts; run `PYTHONPATH=. python examples/run_earnings_call_text.py features OUT shard...`, then backtest, then tfidf.
+- `run_10k_llm_tone.py`: LLM-scored 10-K topic tone (HF milosand1/sec-filings-tone `cells.parquet`) vs next 5/20/60-day excess return; IC by year and quintile spreads.
+- `run_form144.py`: Form 144 (insider sale notice) event study by plan / size / role / cluster / run-up; monthly-clustered t.
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
 ## Paper loggers
