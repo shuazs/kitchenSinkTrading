@@ -1,4 +1,4 @@
-"""Commodity futures study (2026-10-29): 25 pre-registered ideas on grains,
+"""Commodity futures study (2026-10-29): 26 pre-registered ideas on grains,
 energy and metals for a $5k account, plus the stress tests of the one lead.
 
     python examples/run_commodity_futures.py            # everything (~3 min after the first download)
@@ -293,6 +293,13 @@ def calendar():
         r = np.log(b.close).diff()
         pre = pd.Series({d: r.iloc[b.index.get_loc(d) - 4:b.index.get_loc(d)].sum() for d in rolls if b.index.get_loc(d) > 5})
         print(f"  {root}=F 4 days before the roll: design {ev(pre[:'2024-06'])} | holdout {ev(pre[HOLD:])}")
+    print("C26 commodity leveraged-ETF rebalancing: fade a > 2 sd day next open -> close, net 6 bp")
+    for sym in ["UNG", "USO", "SLV", "GLD"]:
+        b = load_bars(sym)
+        r = np.log(b.close).diff()
+        z = r / r.rolling(60).std().shift(1)
+        pnl = (-np.sign(z) * np.log(b.close / b.open).shift(-1))[z.abs() > 2] - 6e-4
+        print(f"  {sym}: design {ev(pnl[:'2024-06'])} | holdout {ev(pnl[HOLD:])}")
 
 
 SECTIONS = {"carry": carry, "basis": basis, "grains": grains, "wasde": wasde, "usda": usda, "energy": energy,
