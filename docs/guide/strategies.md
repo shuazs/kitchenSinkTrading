@@ -81,6 +81,7 @@ Defaults shown are the class defaults, not necessarily the best run.
 
 | Plan | Code | Result |
 | --- | --- | --- |
+| Vol batch 1 (`run_vol_batch1.py`, `run_options_iv.py`, standalone) | `data/options_iv.py` | 612 index-vol timing rules (VIX/9D/3M/6M ratios, VVIX, SKEW, VXN, VXD, OVX, GVZ, VIX minus realised): none beat buy-and-hold out of sample (best-per-target DSR < 0.01). NEAR (paper): SPY after VIX z20 > 3, 5-7d hold, +1.0-1.2% net (t 2.9-3.1, 56 events, holdout +2%) but z 2.5 and 3.5 neighbours weak; SVXY Monday open-to-close +31 bp (t 3.0; 2018 Volmageddon Monday -85%, Sharpe 0.5 after 10 bp). FAIL: FOMC-window vol ETPs (holdout flips), VIXM/VIXY hedge sleeve, VXN/VIX rotation, 28 single-stock IV signals (IV-HV, IV change/rank, wings, put/call, abnormal volume; no |t| > 2.1) and market-wide aggregates |
 | $5,000 fund: Balanced 30% UPRO vol target, 35% multi-asset trend (ETFs, 1x), 15% pension month-end, 20% BTC+ETH ensemble trend; Growth 40/20/10/30 | `portfolio.py` `sleeve_returns`, `combine` (quarterly + 10-pt band, optional drawdown brake) | Balanced 15.2%/-16% vs SPY 15.3%/-34% (Nov 2018-Oct 2026, Sharpe 1.00 vs 0.69); 2022-26 9.2%/-15% vs SPY 11.8%/-25% (same Sharpe); drawdown brakes cost 1-2 pts/yr; `run_fund_plan.py`, today's targets `fund_signals.py` |
 
 Intraday, Kalshi, 0DTE, pairs and meme-coin results are in

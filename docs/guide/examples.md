@@ -114,3 +114,6 @@ Live, log-only forward tests are in `paper_loggers/`, not here: see [paper_logge
 
 Notes: `run_signal_blend*.py` and `run_ml_research.py`
 need `.[ml]`; Kalshi scripts read the shared datasets in `/mnt/project-files/`.
+
+- `run_vol_batch1.py`: index-vol structure scan (612 timing rules), VIX spike buys, vol-ETP hedge sleeve, FOMC window, weekday effects in SVXY/VIXY, VXN/VIX rotation (`python examples/run_vol_batch1.py [scan|spikes|hedge|fomc|rotation|price_vs_vol|weekday]`).
+- `run_options_iv.py`: single-stock and ETF option signals (IV minus HV, IV change, wings, put/call, abnormal volume) as decile spreads, plus market-wide aggregates (`stocks|etfs|market`).

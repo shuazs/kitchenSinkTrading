@@ -43,6 +43,7 @@ first call.
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
+| `options_iv.py` | `load_iv()` (long frame: ATM and wing IV, call/put volume and OI, hv_20..200, VIX; ~3,900 tickers incl. ETFs, 2019-10-14 to 2023-07-28; hv outliers set to NaN) | HF `gauss314/options-IV-SP500` (520 MB CSV, cached as parquet; end-of-day, pools calls and puts so no put-skew) |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
 | `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee), `kalshi_series_markets`, `market_top`, `NEAR_MISS_RULES`/`paper_entry`/`paper_pnl` (Kalshi forward-test rules) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
@@ -82,7 +83,7 @@ Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-
 ## Network from the cloud environment
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
-Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
+Blocked: static.philippdubach.com (free SPY and 103-ticker option chains 2008-2025 on R2; ask Josh to allow it), treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).
