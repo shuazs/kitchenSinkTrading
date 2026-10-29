@@ -246,6 +246,13 @@ def storage():
     r = np.log(c).diff()[:"2024-06"]
     print("  placebo weekdays, short close->close (design): " + " | ".join(
         f"{d} {ev(-r[r.index.dayofweek == i] - 6e-4)}" for i, d in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (4, "Fri")]))
+    prev = np.log(c).diff().shift(1)
+    for name, f in [("after an up entry day", lambda x: prev.reindex(x.index) > 0), ("Nov-Mar (withdrawal season)", lambda x: x.index.month.isin([11, 12, 1, 2, 3]))]:
+        p_ = storage_day_returns(c, days)
+        print(f"  post-hoc filter {name:28s} design {ev(p_[:'2024-06'][f(p_[:'2024-06'])])} | holdout {ev(p_[HOLD:][f(p_[HOLD:])])}")
+    rr = np.log(c).diff()
+    print("  same up-day filter on other weekdays (design, short): " + " | ".join(
+        f"{d} {ev(-rr[(rr.index.dayofweek == i) & (rr.shift(1) > 0)][:'2024-06'] - 6e-4)}" for i, d in [(0, "Mon"), (1, "Tue"), (2, "Wed"), (4, "Fri")]))
     th = r.reindex(days).dropna()
     print(f"  median report day {th.median() * 1e4:.0f} bp vs {r[~r.index.isin(days)].median() * 1e4:.0f} bp; down {(th < 0).mean():.0%}")
     try:

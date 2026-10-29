@@ -11,7 +11,8 @@ Henry Hub over the same closes. Backtest 2007-Jun 2024 +30 bp per report net
 of 6 bp (t 2.8), holdout Jul 2024+ +26 bp. One row per report goes to
 ~/.cache/kitchensink/paper/natgas_storage/weeks.csv with UNG closes at
 entry and exit. Graduates after 26 reports if the short averages +15 bp or
-more net of 6 bp (half the backtest edge).
+more net of 6 bp (half the backtest edge). The report also scores the
+post-hoc variant that shorts only when UNG rose on the entry day.
 """
 import argparse
 
@@ -22,7 +23,7 @@ from _common import closes, log_dir, read_log, today, trading_days, tstat, write
 from backtester.commodities import storage_report_days
 
 LOG = log_dir("natgas_storage") / "weeks.csv"
-FIELDS = ["entry_date", "report_date", "ung_entry", "ung_exit", "net_bp"]
+FIELDS = ["entry_date", "report_date", "ung_prev", "ung_entry", "ung_exit", "net_bp"]
 COST_BP = 6.0
 BAR_BP = 15.0
 
@@ -46,6 +47,8 @@ def run() -> None:
         for col, d in (("ung_entry", r.entry_date), ("ung_exit", r.report_date)):
             if pd.isna(r[col]) and d in px.index:
                 log.at[i, col] = round(float(px[d]), 4)
+        if pd.isna(r.ung_prev) and r.entry_date in px.index and px.index.get_loc(r.entry_date) > 0:
+            log.at[i, "ung_prev"] = round(float(px.iloc[px.index.get_loc(r.entry_date) - 1]), 4)
         if pd.notna(log.at[i, "ung_entry"]) and pd.notna(log.at[i, "ung_exit"]) and pd.isna(r.net_bp):
             log.at[i, "net_bp"] = round(-np.log(float(log.at[i, "ung_exit"]) / float(log.at[i, "ung_entry"])) * 1e4 - COST_BP, 1)
     write_log(log, LOG)
@@ -64,9 +67,14 @@ def run() -> None:
 
 
 def report() -> None:
-    done = pd.to_numeric(read_log(LOG, FIELDS).net_bp, errors="coerce").dropna()
+    log = read_log(LOG, FIELDS)
+    net = pd.to_numeric(log.net_bp, errors="coerce")
+    up = pd.to_numeric(log.ung_entry, errors="coerce") > pd.to_numeric(log.ung_prev, errors="coerce")
+    done = net.dropna()
     print(f"{len(done)} finished reports: short UNG {done.mean():+.1f} bp net, t {tstat(done):.2f}; "
           f"graduates if >= {BAR_BP:+.0f} bp over 26+ reports")
+    sub = net[up].dropna()  # post-hoc variant: only when UNG rose on the entry day
+    print(f"  entry-day-up subset (post-hoc variant, backtest +65 bp net): {len(sub)} reports, {sub.mean():+.1f} bp, t {tstat(sub):.2f}")
 
 
 def main() -> None:
