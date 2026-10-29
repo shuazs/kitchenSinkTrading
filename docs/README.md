@@ -559,3 +559,8 @@ paper list with a live logger.
 days after the effective date beat SPY by 2.2% in 2001-15 (t 2.4) but only
 0.3% since 2016; buying deleted stocks is about zero in both periods. The
 effect has been arbitraged away.
+
+**Russell reconstitution day.** At the ETF level nothing shows up: microcaps
+(where deleted names land) do not rebound against IWM after recon day, and
+the small-cap lag against SPY in the 10 days after recon (-1.3% in 2006-15)
+is gone since 2016.
