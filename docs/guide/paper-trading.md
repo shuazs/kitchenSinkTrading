@@ -55,7 +55,11 @@ Notes from later batches:
 6. FX catch-up: +4.9c per contract 2022-24 (t 4.4) at real taker prints,
    placebo with 30-min-old FX +0.8c; 2.5c with a 5-10 min FX lag, so the
    logger's Yahoo lag matters. No clean holdout (the data mirror thins out
-   after mid-2024), which is why it is NEAR, not PASS.
+   after mid-2024), which is why it is NEAR, not PASS. Post-hoc checks
+   (kalshi-fx/robustness.txt) all hold: buying at the next same-side print
+   30 s-10 min later +5.1c (t 2.8), Yes and No sides, both pairs, every year
+   2022-24, a 2-hour window +5.5c (t 6.0); taking every last-hour print with
+   no model loses 2c. Kalshi FX volume came back in Q4 2025 (3.4M contracts).
 
 ## Not yet on paper
 
