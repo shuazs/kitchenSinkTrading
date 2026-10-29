@@ -43,6 +43,8 @@ first call.
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
+| `alt_data.py` | `wiki_top100`, `football`, `nfl_games`, `warn_notices`, `indeed_sectors`, `quakes`, `hn_daily` (range reads), `sovai(name)`, `sec_names`, `norm_company`, `first_in`, `new_moon_half`, `in_ramadan`, `pdufa_filings` / `pdufa_events` / `pdufa_dates` (8-K PDUFA target dates via EDGAR full-text search, 2005+), `cik_tickers`, `BIG_PHARMA` | HF `vtasca/wikipedia-pageviews`, `APProjects` WARN, `mnemoraorg` USGS, `open-index/hacker-news`, `sovai/*` (end 2024-05); GitHub `martj42`, `nflverse`, `hiring-lab`; SEC tickers |
+| `httpfile.py` | `HTTPFile(url)` (seekable range-request file for pyarrow) | any HTTP host |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
 | `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee), `kalshi_series_markets`, `market_top`, `NEAR_MISS_RULES`/`paper_entry`/`paper_pnl` (Kalshi forward-test rules) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
@@ -79,9 +81,12 @@ Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff mar
 Kalshi 15-min markets: HF `narutowindy/kalshiBTC15min` (BTC ~1 s quotes + CF BRTI + Coinbase ticks, Jun 21-Oct 17 2026, one parquet per date) and `papylove/kalshi-15m-data` (1-min quotes with result/strike for BTC/ETH/SOL/XRP/DOGE/HYPE/ZEC/NEAR/metals + exchange minute bars for 13 coins, Jul-Oct 2026); `RooseveltHonaker/kalshi-trades-data` has 15-min trade prints only (no strikes or results, shards up to 37 GB). HF rate-limits bursts of downloads with a 429 page saved as the file; check for the `PAR1` magic bytes.
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
+Unusual-data source survey (reachability, ranges, ideas): `/mnt/project-files/unusual-data/sources.md`. GDELT on S3 (`gdelt-open-data`) ends 2019-09.
+
 ## Network from the cloud environment
 
-Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
+Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com, public S3/GCS buckets.
+Also blocked: Wikimedia API, Google Trends, GDELT API, tsa.gov, openFDA, clinicaltrials.gov, USAspending, api.github.com.
 Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.

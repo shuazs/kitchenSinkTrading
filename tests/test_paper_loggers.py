@@ -81,3 +81,13 @@ def test_parse_fixed_odd_lot_offer():
          "the offer will expire at 12:00 midnight, new york city time, on december 4, 2026.")
     d = parse_offer(t)
     assert d["fixed"] == 12.5 and d["odd"] and not d["dutch"] and d["exp"] == "december 4 2026"
+
+
+def test_pdufa_schedule_and_dates():
+    import pdufa_decision_short as p
+    from backtester.data.alt_data import pdufa_dates
+
+    d0, entry, exit_ = p.schedule(pd.Timestamp("2027-02-28"))  # a Sunday
+    assert (d0, entry, exit_) == (pd.Timestamp("2027-03-01"), pd.Timestamp("2027-02-25"), pd.Timestamp("2027-03-02"))
+    txt = "assigned a PDUFA target action date of March 15, 2027. Revenue in December 1, 2026 was"
+    assert pdufa_dates(txt) == [pd.Timestamp("2027-03-15")]
