@@ -108,6 +108,10 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
 
+## Weather
+
+- `run_weather.py`: weather hypotheses (`actuals`, `revisions`, `grains`, `overseas`, `kalshi`, `hurricanes`); in-sample vs Jul 2024+ holdout.
+
 ## Paper loggers
 
 Live, log-only forward tests are in `paper_loggers/`, not here: see [paper_loggers/README.md](../../paper_loggers/README.md) and [paper-trading.md](paper-trading.md).

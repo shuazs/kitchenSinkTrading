@@ -21,7 +21,7 @@ pytest -q                 # ~210 tests (more with ml extras), ~20 s, offline; CI
   `test_pairs.py`, `test_paper_loggers.py` (rule logic of `paper_loggers/`),
   `test_portfolio.py`, `test_prediction_markets.py`,
   `test_sentiment_overlay.py`, `test_shortterm.py`, `test_spreads.py`,
-  `test_trump.py`, `test_wheel.py`.
+  `test_trump.py`, `test_weather.py`, `test_wheel.py`.
 - For a new strategy, test at least: weights shape/index, no look-ahead
   (signal at close t only affects trades from t+1), and one known-answer case
   with `CostModel(spread_bps=0, slippage_bps=0)`.
