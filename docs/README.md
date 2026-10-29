@@ -519,4 +519,6 @@ variants on 376 CPI, payrolls, unemployment, GDP, PCE and claims releases
 (2022-2026, holdout from Jul 2025), entering at real taker prints in the last
 hour and holding to the number. Following the pre-release taker imbalance
 loses 6-12c a contract; fading it is about zero after fees; price drift into
-the release has no direction. No pass and nothing to paper-trade.
+the release has no direction. No pass and nothing to paper-trade. Using the Kalshi ladder as the consensus, a hawkish surprise does not
+keep pushing bonds or stocks after the 09:30 open: trading with it loses
+about 28 bp a day on TLT (t -2.1) and the next day is flat.

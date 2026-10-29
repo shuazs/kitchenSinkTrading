@@ -73,3 +73,45 @@ def stats(t: pd.DataFrame) -> dict:
     e = t.groupby("event_ticker")["net"].mean()
     tt = e.mean() / e.std() * np.sqrt(len(e)) if len(e) > 2 and e.std() > 0 else np.nan
     return {"trades": len(t), "events": len(e), "net_c": round(t["net"].mean() * 100, 2), "t": round(float(tt), 2)}
+
+
+SURPRISE_SERIES = {"CPI": 1, "KXCPI": 1, "CPICORE": 1, "KXCPICORE": 1, "PAYROLLS": 1, "KXPAYROLLS": 1,
+                   "U3": -1, "KXU3": -1}  # sign: +1 = a higher number is hawkish
+
+
+def parse_strike(text: str) -> float:
+    """'Above 0.4%', '-100,000 or above', 'Above 500,000' -> number."""
+    import re
+
+    mt = re.search(r"-?[\d,]*\.?\d+", str(text))
+    return float(mt.group().replace(",", "")) if mt else np.nan
+
+
+def ladder_surprises(m: pd.DataFrame, prints: pd.DataFrame, window_h: float = 24.0) -> pd.DataFrame:
+    """Per release event of an "above X" ladder: Kalshi implied median (where
+    the last pre-release P(above) crosses 0.5), the settled value (midpoint of
+    the highest Yes strike and the lowest No strike) and the surprise in
+    strike steps, signed so that > 0 is hawkish (SURPRISE_SERIES)."""
+    m = m[m["series"].isin(list(SURPRISE_SERIES))].copy()
+    m["k"] = m["yes_sub_title"].map(parse_strike)
+    p = prints.merge(m[["ticker", "release"]], on="ticker")
+    hrs = (p["release"] - p["created_time"]).dt.total_seconds() / 3600
+    last = p[(hrs > 0) & (hrs < window_h)].sort_values("created_time").groupby("ticker")["yes_price"].last() / 100
+    m = m.join(last.rename("p_last"), on="ticker")
+    rows = []
+    for ev, g in m.dropna(subset=["k"]).groupby("event_ticker"):
+        g = g.sort_values("k")
+        step = np.median(np.diff(g["k"].unique())) if g["k"].nunique() > 1 else np.nan
+        yes, no = g.loc[g["y"] == 1, "k"], g.loc[g["y"] == 0, "k"]
+        if yes.empty or no.empty or not step:
+            continue
+        actual = (yes.max() + no.min()) / 2
+        q = g.dropna(subset=["p_last"])
+        if len(q) < 2:
+            continue
+        # P(above k) falls with k; interpolate the 0.5 crossing (clipped to the ladder)
+        implied = float(np.interp(0.5, q["p_last"].values[::-1], q["k"].values[::-1]))
+        rows.append({"event_ticker": ev, "series": g["series"].iloc[0], "release": g["release"].iloc[0],
+                     "implied": implied, "actual": actual, "step": step,
+                     "surprise": SURPRISE_SERIES[g["series"].iloc[0]] * (actual - implied) / step})
+    return pd.DataFrame(rows)

@@ -27,3 +27,16 @@ def test_flow_signals_and_take():
     t = km.take(s.reset_index(), pd.Series(["yes"]))
     assert np.isclose(t["net"].iloc[0], 1 - 0.5 - 0.07 * 0.25)
     assert km.stats(t)["trades"] == 1
+
+
+def test_ladder_surprise():
+    rel = R - pd.Timedelta(minutes=1)
+    m = pd.DataFrame({"ticker": [f"KXCPI-X-T{k}" for k in (2, 3, 4)], "event_ticker": ["KXCPI-X"] * 3,
+                      "series": ["KXCPI"] * 3, "yes_sub_title": ["Above 0.2%", "Above 0.3%", "Above 0.4%"],
+                      "result": ["yes", "yes", "no"], "close_time": [rel] * 3})
+    m = km.release_events(m)
+    p = pd.DataFrame({"ticker": list(m["ticker"]), "count": [1, 1, 1], "yes_price": [90, 50, 10],
+                      "taker_side": ["yes"] * 3, "created_time": [h(2)] * 3})
+    s = km.ladder_surprises(m, p).iloc[0]
+    assert np.isclose(s["implied"], 0.3) and np.isclose(s["actual"], 0.35) and np.isclose(s["surprise"], 0.5)
+    assert km.parse_strike("-100,000 or above") == -100000
