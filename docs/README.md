@@ -514,3 +514,15 @@ per Ramadan in-sample, t 2.4, but 2024-26 all negative). The published
 sports-sentiment effect (Edmans et al.) and lunar effect are gone, and
 earthquakes move country ETFs by nothing measurable.
 
+**Unusual data batch 4 (FDA dates, elections, holidays, films).** PDUFA
+target dates parsed from ~5,000 8-Ks (EDGAR full-text search, 2005-2026):
+the pre-registered run-up into the date (+3.7% vs XBI, t 3.0) faded to +1.8%
+after Jul 2024, but the decision itself is the finding: small and mid-cap
+drug makers fall 5.5% vs XBI from two days before the date to the day after
+(t 5.4, every sub-period; +4.6% in the holdout, t 2.3), big pharma not at
+all, and shifted dates show nothing. It was found as a diagnostic, so the
+holdout was seen, and shorting small biotechs (borrow, approval spikes) is
+untested: NEAR, paper logger `pdufa_decision_short.py`. Elections, the days
+before Lunar New Year / Golden Week / Diwali, and big film weekends for
+theatre stocks show no edge.
+

@@ -15,6 +15,11 @@ Batch 3: Indeed sector postings, WARN layoff notices, Hacker News crypto
 attention, M6.5+ earthquakes -> country ETFs; with --heavy also daily
 Wikipedia views for 3,711 tickers, CFPB complaints and lobbying jumps (SOVAI
 sets end 2024-05, so a late 2022+ test replaces the holdout; ~1 h of Yahoo).
+Batch 4: FDA PDUFA target dates from 8-K text (EDGAR full-text search):
+run-up into the date, and the short across the decision (NEAR, paper
+logger `paper_loggers/pdufa_decision_short.py`); national elections ->
+country ETFs, Asian holidays (Lunar New Year, Golden Week, Diwali), big film
+weekends -> theatre chains.
 
     python examples/run_nonfin_data.py [--heavy]    (needs SEC_USER_AGENT)
 """
@@ -287,6 +292,94 @@ def heavy():
     report("B3-H1 low minus high attention, weekly (gross)", pd.DataFrame(rows), holdout=late)
 
 
+DIWALI = ["2012-11-13", "2013-11-03", "2014-10-23", "2015-11-11", "2016-10-30", "2017-10-19", "2018-11-07",
+          "2019-10-27", "2020-11-14", "2021-11-04", "2022-10-24", "2023-11-12", "2024-11-01", "2025-10-21"]
+ELECTION_ETF = {"German": "EWG", "French": "EWQ", "Italian": "EWI", "Spanish": "EWP", "United_Kingdom": "EWU",
+                "Dutch": "EWN", "Swiss": "EWL", "Swedish": "EWD", "Austrian": "EWO", "Belgian": "EWK", "Danish": "EDEN",
+                "Norwegian": "ENOR", "Irish": "EIRL", "Greek": "GREK", "Polish": "EPOL", "Turkish": "TUR",
+                "Brazilian": "EWZ", "Mexican": "EWW", "Argentine": "ARGT", "Chilean": "ECH", "Peruvian": "EPU",
+                "Japanese": "EWJ", "South_Korean": "EWY", "Australian": "EWA", "South_African": "EZA",
+                "Indonesian": "EIDO", "Malaysian": "EWM", "Canadian": "EWC", "Indian": "INDA", "Taiwanese": "EWT",
+                "Thai": "THD", "Philippine": "EPHE", "New_Zealand": "ENZL", "Israeli": "EIS"}
+EM_ETF = {"TUR", "EWZ", "EWW", "ARGT", "ECH", "EPU", "EWY", "EZA", "EIDO", "EWM", "INDA", "EWT", "THD", "EPHE", "EPOL",
+          "GREK"}
+
+
+def pdufa_windows(ua):
+    """Per PDUFA event with a current ticker: run-up (open day -30 -> close day -2, long vs XBI) and decision
+    (close day -2 -> close day +1, short vs XBI), both net of 15 bp/side; day 0 = first trading day on/after
+    the PDUFA date; the date must be public >= 5 trading days before day 0."""
+    e = ad.pdufa_events(ad.pdufa_filings("2005-01-01", "2026-10-20", ua), ad.cik_tickers(ua)).dropna(subset=["ticker"])
+    e = e[e.pdufa <= "2026-10-20"]
+    px = Px(set(e.ticker) | {"SPY", "XBI"}, start="2005-01-01")
+    C, O, idx = px.C, px.O, px.idx
+    rows = []
+    for r in e.itertuples():
+        k, f = idx.searchsorted(r.pdufa), idx.searchsorted(r.first, side="right")
+        if r.ticker not in C or k + 1 >= len(idx) or k < 30 or k - f < 5:
+            continue
+        s, b = C[r.ticker], C["XBI"]
+        dec = -(s.iloc[k + 1] / s.iloc[k - 2] - 1) + (b.iloc[k + 1] / b.iloc[k - 2] - 1) - 0.003
+        run = (s.iloc[k - 2] / O[r.ticker].iloc[k - 30] - 1) - (b.iloc[k - 2] / O["XBI"].iloc[k - 30] - 1) - 0.003
+        rows.append(dict(d=idx[k - 2], ticker=r.ticker, lead=k - f, dec=dec, run=run, price=s.iloc[k - 2]))
+    return pd.DataFrame(rows).dropna(subset=["dec"]).drop_duplicates(["ticker", "d"])
+
+
+def batch4(px, w, ua):
+    print("\n== Batch 4")
+    P = pdufa_windows(ua)
+    small = P[~P.ticker.isin(ad.BIG_PHARMA) & (P.price >= 1)]
+    report("B4-H1 PDUFA run-up -30..-2 vs XBI", P[P.lead >= 35].rename(columns={"run": "r"}))
+    report("B4-H1b short across decision -2..+1 vs XBI", P.rename(columns={"dec": "r"}))
+    report("   small/mid biotech only", small.rename(columns={"dec": "r"}))
+    report("   big pharma only", P[P.ticker.isin(ad.BIG_PHARMA)].rename(columns={"dec": "r"}))
+
+    import re
+
+    pat = re.compile(r"^(\d{4})_(.+?)_(general|presidential|parliamentary|federal|legislative)_election$")
+    rows = []
+    for a, g in w.groupby("article"):
+        m = pat.match(a)
+        tk = ELECTION_ETF.get(m.group(2)) if m else None
+        d = g.loc[g.views.idxmax(), "d"] if tk else None  # peak attention = election day (+-1)
+        if tk and d.year == int(m.group(1)) and tk in px.C:
+            i = px.idx.searchsorted(d)
+            if 5 <= i < len(px.idx) - 5:
+                bm = "EEM" if tk in EM_ETF else "EFA"
+                c = px.C
+                rows.append(dict(d=d, tk=tk, r=(c[tk].iloc[i + 5] / c[tk].iloc[i - 5] - 1)
+                                 - (c[bm].iloc[i + 5] / c[bm].iloc[i - 5] - 1) - COST))
+    report("B4-H2 election -5..+5 vs EFA/EEM", ad.first_in(pd.DataFrame(rows), "tk", 60))
+
+    from lunardate import LunarDate
+
+    ev = [("MCHI", pd.Timestamp(LunarDate(y, 1, 1).to_solar_date()) - pd.Timedelta(days=1)) for y in range(2011, 2027)]
+    ev += [("MCHI", pd.Timestamp(f"{y}-10-01")) for y in range(2011, 2026)] + [("INDA", pd.Timestamp(d)) for d in DIWALI]
+    rows = []
+    for tk, start in ev:
+        j = px.idx.searchsorted(start) - 1  # last US close before the home market shuts
+        c = px.C
+        if j >= 3 and pd.notna(c[tk].iloc[j - 3]):
+            rows.append(dict(d=px.idx[j], tk=tk, r=(c[tk].iloc[j] / c[tk].iloc[j - 3] - 1)
+                             - (c["EEM"].iloc[j] / c["EEM"].iloc[j - 3] - 1) - COST))
+    H = pd.DataFrame(rows)
+    report("B4-H3 3 days before LNY/Golden Week/Diwali vs EEM", H)
+    report("   Diwali only (post hoc)", H[H.tk == "INDA"])
+
+    f = w[w.article.str.contains(r"_film\)")]
+    f = f[[str(d.year) in a or str(d.year - 1) in a for a, d in zip(f.article, f.d)]]
+    sat = f[f.d.dt.weekday == 5].groupby("d").size()
+    rows = []
+    for s in pd.date_range(w.d.min(), w.d.max(), freq="W-SAT"):
+        if pd.Timestamp("2020-03-01") <= s <= pd.Timestamp("2021-06-30"):
+            continue  # theatres shut
+        r = np.nanmean([px.fwd(t, s + pd.Timedelta(days=1), 5) for t in ("CNK", "IMAX")])
+        rows.append(dict(d=s, big=sat.get(s, 0) >= 2, r=r))
+    F = pd.DataFrame(rows)
+    report("B4-H4 theatres Mon-Fri after a 2+ film Saturday", F[F.big])
+    report("   other weeks", F[~F.big])
+
+
 def main():
     ua = os.environ.get("SEC_USER_AGENT", "kitchensink research research@example.com")
     w = ad.wiki_top100()
@@ -299,11 +392,13 @@ def main():
     hits = set(wiki_events(w, sp500_names, {**WIKI_EXTRA, **WIKI_WL}).ticker)
     tick = hits | set(ETF.values()) | set(QUAKE_ETF.values()) | set(WIKI_WL.values())
     tick |= {"SPY", "EFA", "EEM", "ITA", "USO", "XBI", "BA", "JETS", "DKNG", "PENN", "RSI", "FLUT", "BTC-USD",
-             "MRNA", "NVAX", "BNTX", "EBS", "SIGA"} | set(SECTOR_JOBS)
+             "MRNA", "NVAX", "BNTX", "EBS", "SIGA", "CNK", "IMAX", "EIS"} | set(SECTOR_JOBS)
+    tick |= set(ELECTION_ETF.values())
     px = Px(tick)
     batch1(px, w, sp500_names)
     batch2(px, w, sp500_names)
     batch3(px, sec)
+    batch4(px, w, ua)
     if "--heavy" in sys.argv:
         heavy()
 

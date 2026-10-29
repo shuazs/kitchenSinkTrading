@@ -134,6 +134,18 @@ def sec_names(user_agent: str, refresh: bool = False) -> dict:
     return out
 
 
+def cik_tickers(user_agent: str, refresh: bool = False) -> dict:
+    """CIK -> current ticker (common share preferred over preferreds / warrants)."""
+    import json
+
+    j = json.loads(_get("sec_tickers", refresh, headers={"User-Agent": user_agent}))
+    out: dict = {}
+    for cik, _, tk, _ in j["data"]:
+        if int(cik) not in out or ("-" in out[int(cik)] and "-" not in tk):
+            out[int(cik)] = tk
+    return out
+
+
 def first_in(events: pd.DataFrame, key: str, gap_days: int, date: str = "d") -> pd.DataFrame:
     """Keep rows whose `key` was not seen in the previous `gap_days` days (first row of each key kept)."""
     e = events.drop_duplicates([key, date]).sort_values(date)
@@ -217,3 +229,105 @@ def in_ramadan(dates: pd.DatetimeIndex) -> np.ndarray:
     from hijridate import Gregorian
 
     return np.array([Gregorian(d.year, d.month, d.day).to_hijri().month == 9 for d in dates])
+
+
+# --- FDA PDUFA target dates from 8-K text (EDGAR full-text search) ---
+_DATE = re.compile(r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+                   r"\s+(\d{1,2}),?\s+(20\d\d)")
+EFTS = "https://efts.sec.gov/LATEST/search-index"
+# Large drug makers: their PDUFA dates barely move the stock (batch 4), so the rules skip them.
+BIG_PHARMA = {"AMGN", "PFE", "MRK", "LLY", "BMY", "JNJ", "ABBV", "GILD", "REGN", "VRTX", "BIIB", "AZN", "NVS", "GSK",
+              "SNY", "NVO", "TAK", "ALNY", "INCY", "BMRN", "JAZZ", "UTHR", "NBIX", "ALKS", "EXEL", "IONS", "SRPT"}
+
+
+def pdufa_dates(text: str) -> list[pd.Timestamp]:
+    """Dates written within 250 characters after each 'PDUFA' in a filing's text."""
+    out = []
+    for m in re.finditer("PDUFA", text):
+        d = _DATE.search(text, m.start(), m.start() + 250)
+        if d:
+            out.append(pd.to_datetime(d.group(0).replace(",", ""), format="%B %d %Y", errors="coerce"))
+    return [d for d in out if pd.notna(d)]
+
+
+def _plain(html_text: str) -> str:
+    import html
+
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", html_text)))
+
+
+def pdufa_filings(start: str, end: str, user_agent: str, workers: int = 6) -> pd.DataFrame:
+    """One row per 8-K document mentioning PDUFA filed in [start, end]: id, cik, company, file_date, dates.
+
+    Documents already fetched are cached in alt_data/pdufa_hits.jsonl (2005-2026 is ~5,000 documents,
+    ~3 minutes at 6 threads)."""
+    import json
+    import threading
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    import requests
+
+    path = cache_dir("alt_data") / "pdufa_hits.jsonl"
+    seen = {json.loads(line)["id"] for line in path.open()} if path.exists() else set()
+    s = requests.Session()
+    s.headers["User-Agent"] = user_agent
+
+    def get(url, params=None):
+        for k in range(4):
+            try:
+                r = s.get(url, params=params, timeout=60)
+                if r.status_code == 200:
+                    return r
+            except requests.RequestException:
+                pass
+            time.sleep(2 * (k + 1))
+        return None
+
+    hits = []
+    for a, b in zip(pd.date_range(start, end, freq="6MS"), pd.date_range(start, end, freq="6MS")[1:].append(
+            pd.DatetimeIndex([pd.Timestamp(end) + pd.Timedelta(days=1)]))):
+        frm = 0
+        while True:
+            r = get(EFTS, {"q": "PDUFA", "forms": "8-K", "dateRange": "custom", "startdt": f"{a:%Y-%m-%d}",
+                           "enddt": f"{b - pd.Timedelta(days=1):%Y-%m-%d}", "from": frm})
+            if r is None:
+                break
+            hh = r.json()["hits"]["hits"]
+            hits += [h for h in hh if h["_id"] not in seen]
+            frm += len(hh)
+            if len(hh) < 100:
+                break
+    lock = threading.Lock()
+
+    def fetch(h):
+        src = h["_source"]
+        adsh, name = h["_id"].split(":", 1)
+        cik = int(src["ciks"][0])
+        r = get(f"https://www.sec.gov/Archives/edgar/data/{cik}/{adsh.replace('-', '')}/{name}")
+        if r is None:
+            return
+        dates = [f"{d:%Y-%m-%d}" for d in pdufa_dates(_plain(r.text))]
+        with lock, path.open("a") as f:
+            f.write(json.dumps({"id": h["_id"], "cik": cik, "company": src["display_names"][0],
+                                "file_date": src["file_date"], "dates": dates}) + "\n")
+
+    with ThreadPoolExecutor(workers) as ex:
+        list(ex.map(fetch, hits))
+    rows = [json.loads(line) for line in path.open()]
+    df = pd.DataFrame(rows)
+    df["file_date"] = pd.to_datetime(df.file_date)
+    return df[(df.file_date >= start) & (df.file_date <= end)]
+
+
+def pdufa_events(filings: pd.DataFrame, tickers: dict) -> pd.DataFrame:
+    """(cik, ticker, pdufa) with `first`, the earliest filing date that names it. Only dates after the
+    filing and within 500 days count (past PDUFA dates in a filing are history, not a target)."""
+    rows = []
+    for r in filings.itertuples():
+        for d in set(r.dates):
+            d = pd.Timestamp(d)
+            if r.file_date < d < r.file_date + pd.Timedelta(days=500):
+                rows.append((r.cik, tickers.get(r.cik), d, r.file_date))
+    e = pd.DataFrame(rows, columns=["cik", "ticker", "pdufa", "filed"])
+    return e.groupby(["cik", "ticker", "pdufa"], dropna=False).filed.min().rename("first").reset_index()
