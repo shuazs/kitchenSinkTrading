@@ -43,6 +43,7 @@ first call.
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
+| `coinmetrics.py` | `load_coin(coin)` (btc eth usdt usdc dai ltc bch doge xrp ada bnb trx link), `stablecoin_supply` | Coin Metrics community CSVs on raw.githubusercontent.com (daily to 2026-05-23; BTC/ETH have exchange flows, MVRV, active addresses, fees, hash rate; day t final only at its close) |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
 | `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee), `kalshi_series_markets`, `market_top`, `NEAR_MISS_RULES`/`paper_entry`/`paper_pnl` (Kalshi forward-test rules) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
@@ -80,6 +81,8 @@ Kalshi 15-min markets: HF `narutowindy/kalshiBTC15min` (BTC ~1 s quotes + CF BRT
 Other HF finance sources surveyed 2026-10-22 (untested): `ZipLime/us-government-contracts`, `Arimancy/cftc-cot-weekly` (COT legacy from 1986, no release times), `XOOMAR/sec-fails-to-deliver`; short-interest mirrors have no usable history.
 
 ## Network from the cloud environment
+
+Blocked for on-chain data (2026-10-29): DefiLlama, blockchain.info, mempool.space, CoinGecko, CoinMetrics API, Glassnode, Etherscan, Farside, Dune; `api.github.com` unauthenticated 403. HF `BlockDB/Stablecoin-Transfers-Ethereum-Cryptocurrency-Data` (USDC/USDT/DAI transfers 2017-11..2025-10, 83 GB) and `Chainticks/stablecoin-flows` (mint/burn, from 2026-05) exist.
 
 Reachable: Yahoo, FRED (was in maintenance 2026-10-21/22), SEC EDGAR, huggingface.co, PyPI, raw.githubusercontent.com.
 Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpaca, Polymarket and Kalshi live APIs, cboe.com, CNN, trumpstruth.org,

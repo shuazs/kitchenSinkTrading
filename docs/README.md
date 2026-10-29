@@ -45,6 +45,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 8: corporate actions, fund events, Kalshi combos](https://claude.ai/artifact/EX21hd3MPri9K6KS8hQNjP) | (standalone) | `run_alpha_batch8.py` |
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
+| On-chain edges batch 1-3 (no edge; summary in [strategies.md](guide/strategies.md), grids in `/mnt/project-files/onchain/`) | `data/coinmetrics.py` | `run_onchain_batch1.py`, `run_onchain_batch2.py`, `run_onchain_batch3.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
