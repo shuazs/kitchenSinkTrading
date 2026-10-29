@@ -46,6 +46,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 9: dividend, IPO and split events](https://claude.ai/artifact/PefFJxGYA3K3o31bapocXm) | (standalone) | `run_alpha_batch9.py` |
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
+| Unusual non-financial data (no write-up; results in `/mnt/project-files/nonfin-data/results.md` and below) | `data/alt_data.py`, `data/httpfile.py` | `run_nonfin_data.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
 
 ## Summaries
@@ -498,3 +499,18 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Unusual non-financial data.** 30 pre-registered variants on data the
+cloud can reach (HF, raw GitHub, SEC): Wikipedia daily top-100 attention
+(company, crypto and fear articles; wars -> defense/oil, outbreaks ->
+vaccine stocks, air crashes -> Boeing/airlines), daily Wikipedia views for
+3,711 tickers, national-team football losses -> country ETFs, NFL
+bettor-friendly weekends -> sportsbooks, Ramadan, lunar phase, DST Mondays,
+Indeed sector postings, WARN layoff notices, Hacker News crypto attention,
+CFPB complaints, lobbying jumps and M6.5+ earthquakes. None passes; none is
+near. The closest are Wikipedia attention spikes (stocks trail SPY by 1-2%
+over 5-20 days in every period, t -1.9 on 120 events) and Ramadan (+2.3%
+per Ramadan in-sample, t 2.4, but 2024-26 all negative). The published
+sports-sentiment effect (Edmans et al.) and lunar effect are gone, and
+earthquakes move country ETFs by nothing measurable.
+

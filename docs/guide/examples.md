@@ -107,6 +107,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_alpha_batch10.py`: alpha hunt batch 10 (Kalshi 15-min BTC and alt-coin fair value, near-expiry favourites, single-stock LETF reversal with control group, EMLC sleeve, YieldMax roll weeks).
 - `run_alpha_batch11.py`: alpha hunt batch 11 (Polymarket mentions/tennis replication of Kalshi near misses, Polymarket theme jumps -> ETFs, TDF rebalancing, January window cross-asset, BTC month-end, sharpened LETF reversal).
 - `run_alpha_batch12.py`: alpha hunt batch 12, the last (Kalshi mentions No 20-40c with taker-No prints, occurrence-market families on Kalshi and Polymarket, January window index members vs non-members and pre-2000, LETF reversal on newer 2x names).
+- `run_nonfin_data.py`: unusual non-financial data (Wikipedia top-100 attention, football, NFL lines, Ramadan, moon, DST, Indeed postings, WARN layoffs, Hacker News, earthquakes; `--heavy` adds SOVAI Wikipedia views, CFPB, lobbying with ~1 h of Yahoo downloads); needs `ephem`, `hijridate`.
 
 ## Paper loggers
 
