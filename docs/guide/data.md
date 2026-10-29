@@ -75,6 +75,8 @@ EDGAR full-text search (`efts.sec.gov/LATEST/search-index`, 2001+) is reachable 
 HF `siddharthmb/stocks-dividends` `dividend.csv` (470k ex-dates, 10k symbols, to Jan 2026; ~30% of symbols have no Yahoo history) and EDGAR 424B4 dates (IPO prospectuses, cached `edgar_forms/424B4.csv`) feed `run_alpha_batch9.py`. Yahoo rate-limits (HTTP 429) when two big chunked downloads run at once; run them one at a time.
 Polymarket fills for occurrence markets (appear/attend, anytime scorer, rain/snow, posts N+) since 2024: `/mnt/project-files/alpha-hunt/batch12/pm_fam_fills.parquet` (`run_alpha_batch12.py`). Score Kalshi/Polymarket entries only on taker prints of the side bought: a print on the other side understates the cost by the spread (+8.5c vs +1.9c on Kalshi mentions).
 
+HF `ZipLime/us-economic-events` `data/releases` has release dates/times (2010-2026) for CPI, payrolls, PPI, retail sales, GDP, claims, JOLTS, housing etc. and `data/events` the actuals (no consensus forecasts); `run_alpha_batch13.py` caches it in `econ/`.
+
 Commodity futures: Yahoo `XX=F` front-month series (2000+) are unadjusted (roll gaps on expiry days, e.g. RBOB's summer-grade April contract) and Yahoo serves no expired contracts (`CLZ25.NYM` empty), so there is no free term-structure history; use commodity ETFs for returns. HF `paperswithbacktest/Commodities-Daily-Price` is gated (paid); `FinzData/macro-commodities` mirrors FRED energy spot series. Yahoo `^SPGS**` sub-indices return today only.
 
 Polymarket fills for mention / tennis / Ukraine / Taiwan / shutdown / tariff markets since 2024 (24.9M rows, with taker side): `/mnt/project-files/alpha-hunt/batch11/pm_fills_b11.parquet`, or rebuilt by `run_alpha_batch11.py` `pm_fills` (~25 min of range reads, no fsspec needed).
