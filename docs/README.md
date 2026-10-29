@@ -47,6 +47,7 @@ prices, short crypto history), not forecasts.
 | [Alpha hunt batch 12 (last): near-miss re-tests](https://claude.ai/artifact/AWmWK4Z56RNuAyR8NWzcV8) | (standalone) | `run_alpha_batch12.py` |
 | [Alpha hunt batch 11: Polymarket replication, theme jumps, rebalancing flows](https://claude.ai/artifact/GaxmB69TGhe8DRZ2XgRb7H) | (standalone) | `run_alpha_batch11.py` |
 | [Alpha hunt batch 10: Kalshi 15-min markets, single-stock LETFs, EM carry](https://claude.ai/artifact/Nkad2Vkuf8fVVQqfDP1EEN) | (standalone) | `run_alpha_batch10.py` |
+| Commodity futures for a $5k account (write-up in `/mnt/project-files/commodity-futures/commodity-futures-writeup.md`; summary below) | `commodities.py`, `data/wasde.py` | `run_commodity_futures.py`, `paper_loggers/natgas_storage_day.py` |
 
 ## Summaries
 
@@ -498,3 +499,14 @@ families. The January commodity window shows up only in index members, which
 fits the index-reweight story, but at t 2.4 and not before 2000. The LETF
 reversal is positive but not significant on 35 newer 2x names. Both stay on
 the paper-trading list.
+
+**Commodity futures (2026-10-29).** 25 pre-registered ideas on grains,
+energy and metals, traded with single-commodity ETFs (no free
+expired-contract history exists, so carry is a realised-roll proxy). 24
+fail: carry, energy basis, grain weather premium, WASDE and USDA report
+drift, gasoline spring (a summer-grade roll artifact on RB=F), roll-window
+spreads, ratio pairs, reversal, trend, vol spikes, lead-lag. NEAR: short
+natural gas from the close before each EIA storage report to the report-day
+close, +30 bp per report net 2007-Jun 2024 (t 2.8), +26 bp in the holdout,
+seen on report days in every era since 2002 and on the AGA's Wednesdays
+before; paper-traded by `natgas_storage_day.py`.

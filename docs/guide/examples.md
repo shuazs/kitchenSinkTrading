@@ -43,7 +43,7 @@ verdicts are in [strategies.md](strategies.md).
 - `run_index_changes.py`: S&P 500 additions and deletions: the index-rebalancing trade event desks run, and what is left of it for a small account.
 - `run_fx_carry.py`: G10 + MXN currency carry on a $5,000 account, as micro FX futures would trade it.
 - `run_basis_carry.py`: Crypto cash-and-carry (long spot, short the CME front month) on $5,000.
-- `run_commodity_futures.py`: 20 commodity futures ideas (carry, energy basis, grain seasonals, WASDE/USDA days, ratio pairs, trend, vol) and the natural-gas storage-day stress tests; `[section ...]` runs part of it.
+- `run_commodity_futures.py`: 25 commodity futures ideas (carry, energy basis, grain seasonals, WASDE/USDA days, ratio pairs, trend, vol, lead-lag, calendar) and the natural-gas storage-day stress tests; `[section ...]` runs part of it.
 - `run_fundamental_allocator.py`: Long-term fundamental portfolio manager (S&P 500 picks on SEC fundamentals + intl + small caps, macro switch) vs SPY: design, holdout, walk-forward, survivorship check, big-tech (QQQ) tilts. Needs `SEC_USER_AGENT`.
 
 ## Fund

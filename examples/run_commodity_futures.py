@@ -1,8 +1,8 @@
-"""Commodity futures study (2026-10-29): 20 pre-registered ideas on grains,
+"""Commodity futures study (2026-10-29): 25 pre-registered ideas on grains,
 energy and metals for a $5k account, plus the stress tests of the one lead.
 
     python examples/run_commodity_futures.py            # everything (~3 min after the first download)
-    python examples/run_commodity_futures.py storage    # one section: carry basis grains wasde usda energy pairs misc storage
+    python examples/run_commodity_futures.py storage    # one section: carry basis grains wasde usda energy pairs misc calendar storage
 
 Design data ends 2024-06-30; Jul 2024+ is the holdout (docs/guide/protocol.md).
 Returns are commodity ETFs, open-to-open with the weight decided at the prior
@@ -261,8 +261,33 @@ def storage():
         print(f"  hourly check skipped: {e}")
 
 
+def calendar():
+    print("C21-C25 EIA petroleum Wednesday, turn of month, lead-lag, front-month expiry pressure")
+    for sym in ["UGA", "HO=F", "USO"]:
+        r = np.log(load_bars(sym).close).diff()
+        w = r[r.index.dayofweek == 2]
+        print(f"  {sym} Wednesday design {ev(w[:'2024-06'])} | holdout {ev(w[HOLD:])}")
+    for sym in ["DBC", "GSG"]:
+        r = np.log(load_bars(sym).close).diff()
+        m = r.index.to_period("M")
+        tom = (r.groupby(m).cumcount(ascending=False) == 0) | (r.groupby(m).cumcount() <= 2)
+        print(f"  {sym} last + first 3 days of month design {ev(r[tom][:'2024-06'])} | holdout {ev(r[tom][HOLD:])}")
+    for lead, lag in [("USO", "UGA"), ("USO", "CANE"), ("GLD", "GDX"), ("SLV", "SIL"), ("CORN", "SOYB")]:
+        P = np.log(panel([lead, lag])).diff().dropna()
+        pnl = np.sign(P[lead]).shift(1) * P[lag] - 8e-4
+        print(f"  {lead} today -> {lag} tomorrow, net 8 bp: design {ev(pnl[:'2024-06'])} | holdout {ev(pnl[HOLD:])}")
+    for root in ["CL", "NG"]:
+        b = load_bars(root + "=F").loc["2010":]
+        v = b.volume.replace(0, np.nan).ffill()
+        jump = (v / v.shift(1) > 2.0) & (v.shift(1) < 0.7 * v.rolling(20).median().shift(1))
+        rolls = b.index[jump & ~jump.shift(1, fill_value=False).rolling(10).max().astype(bool)]
+        r = np.log(b.close).diff()
+        pre = pd.Series({d: r.iloc[b.index.get_loc(d) - 4:b.index.get_loc(d)].sum() for d in rolls if b.index.get_loc(d) > 5})
+        print(f"  {root}=F 4 days before the roll: design {ev(pre[:'2024-06'])} | holdout {ev(pre[HOLD:])}")
+
+
 SECTIONS = {"carry": carry, "basis": basis, "grains": grains, "wasde": wasde, "usda": usda, "energy": energy,
-            "pairs": pairs, "misc": misc, "storage": storage}
+            "pairs": pairs, "misc": misc, "calendar": calendar, "storage": storage}
 
 if __name__ == "__main__":
     for name in sys.argv[1:] or SECTIONS:
