@@ -48,7 +48,8 @@ Notes from later batches:
    taker prints): top half +6.4c Aug-Oct 2025 (event t 1.5) and +8.7c on the
    Nov-Jan holdout (t 2.7), bottom half ~0, but within one event its picks beat
    its rejects by only 2-4c (t ~1), so it mostly picks events. Same setup gives
-   the plain rule ~0 by event.
+   the plain rule ~0 by event. Three seeds agree: top half +6.1 to +7.2c
+   Aug-Oct (t 1.5-3.1), +8.7 to +9.4c holdout (t 2.7-3.1), bottom half ~0.
 
 ## Not yet on paper
 
