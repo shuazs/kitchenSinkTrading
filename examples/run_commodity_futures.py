@@ -1,4 +1,4 @@
-"""Commodity futures study (2026-10-29): 26 pre-registered ideas on grains,
+"""Commodity futures study (2026-10-29): 27 pre-registered ideas on grains,
 energy and metals for a $5k account, plus the stress tests of the one lead.
 
     python examples/run_commodity_futures.py            # everything (~3 min after the first download)
@@ -296,6 +296,16 @@ def calendar():
         r = np.log(b.close).diff()
         pre = pd.Series({d: r.iloc[b.index.get_loc(d) - 4:b.index.get_loc(d)].sum() for d in rolls if b.index.get_loc(d) > 5})
         print(f"  {root}=F 4 days before the roll: design {ev(pre[:'2024-06'])} | holdout {ev(pre[HOLD:])}")
+    print("C27 China closed (Lunar New Year eve..+6 days, Golden Week Oct 1-7): GLD+SLV+HG basket per window, net 8 bp")
+    cny = pd.to_datetime("2007-02-18 2008-02-07 2009-01-26 2010-02-14 2011-02-03 2012-01-23 2013-02-10 2014-01-31 2015-02-19 "
+                         "2016-02-08 2017-01-28 2018-02-16 2019-02-05 2020-01-25 2021-02-12 2022-02-01 2023-01-22 2024-02-10 "
+                         "2025-01-29 2026-02-17".split())
+    b = pd.DataFrame({s: np.log(load_bars(s).close).diff() for s in ["GLD", "SLV", "HG=F"]}).loc["2006-05":].mean(axis=1)
+    wins = [(d - pd.Timedelta(days=1), d + pd.Timedelta(days=6)) for d in cny] + [
+        (pd.Timestamp(f"{y}-10-01"), pd.Timestamp(f"{y}-10-07")) for y in range(2006, 2026)]
+    w = pd.Series({b[(b.index >= x) & (b.index <= z)].index[0]: b[(b.index >= x) & (b.index <= z)].sum() - 8e-4
+                   for x, z in wins if ((b.index >= x) & (b.index <= z)).sum() >= 3}).sort_index()
+    print(f"  per window: design {ev(w[:'2024-06'])} | holdout {ev(w[HOLD:])} (pre-registered as negative)")
     print("C26 commodity leveraged-ETF rebalancing: fade a > 2 sd day next open -> close, net 6 bp")
     for sym in ["UNG", "USO", "SLV", "GLD"]:
         b = load_bars(sym)
