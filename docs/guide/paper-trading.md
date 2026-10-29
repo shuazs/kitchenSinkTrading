@@ -27,6 +27,7 @@ Pass rules for the backtests are in [protocol.md](protocol.md).
 | CEF rights offering short | NEAR | Short a closed-end fund vs a CEF basket (PCEF live) for 25 trading days from the close after its rights-offering prospectus (497/424B*) | `cef_rights_short.py` (daily; fill in `borrow_pct`) | +1% per event net of spreads and borrow | 10 events | batch 8 |
 | Single-stock LETF rebalancing reversal | NEAR, post-hoc | After a day 2 sd or more down in a stock with 2x single-stock ETFs when LETF pressure (sum \|L(L-1)\| x LETF 20d $ volume / stock 20d $ volume) > 0.02, buy at the next open, sell at that close | `letf_reversal.py` (daily; every name in `backtester/letf.py` `ALL_LETF`, logs pressure) | +0.5% per trade vs SPY after costs | 40 trades (~1 year) | batch 10; note 4 |
 | Kalshi S&P hourly after a sharp 2-minute move | maybe-edge | Buy the KXINXU hourly contract in the direction of a 2.5-sigma 2-minute S&P move when the ask is 3c+ under fair value | `kalshi_sp_catchup.py` (always on in market hours; logs Yahoo data lag) | half of +$3k per 14 months, tiny fills | 3 months | PR #17 |
+| Kalshi hourly FX vs live FX | NEAR | In the last 60 min before a KXEURUSDH / KXUSDJPYH fixing, buy the side whose ask is 3c+ (after fee) under a lognormal fair value from live FX and 60-min vol | `kalshi_fx_catchup.py` (always on 08:00-17:00 ET weekdays; logs Yahoo FX lag) | +2.4c per contract | 3 months | this PR; note 6 |
 
 Notes from later batches:
 
@@ -51,6 +52,10 @@ Notes from later batches:
    the plain rule ~0 by event. Three seeds agree: top half +6.1 to +7.2c
    Aug-Oct (t 1.5-3.1), +8.7 to +9.4c holdout (t 2.7-3.1), bottom half ~0. Entering 12 h after
    listing instead of 6 h: top half +4.6c / +5.3c (t 0.5 / 2.0), bottom -2 / -3c.
+6. FX catch-up: +4.9c per contract 2022-24 (t 4.4) at real taker prints,
+   placebo with 30-min-old FX +0.8c; 2.5c with a 5-10 min FX lag, so the
+   logger's Yahoo lag matters. No clean holdout (the data mirror thins out
+   after mid-2024), which is why it is NEAR, not PASS.
 
 ## Not yet on paper
 

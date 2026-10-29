@@ -27,6 +27,7 @@ cp paper_loggers/keys.example.env paper_loggers/keys.env
 | `kalshi_near_misses.py` | Kalshi mentions No 20-80c, ATP favourites Yes 80-95c | always on (polls every 15 min) | 200 events at half the backtest edge |
 | `polymarket_iran_oil.py` | Polymarket Iran odds -> oil (MCL) | always on (polls every minute) | 15 signals at >= +0.33% |
 | `kalshi_sp_catchup.py` | Kalshi S&P hourly after a sharp 2-minute move | always on in market hours (polls every 20 s) | 3 months at half the backtest P&L rate |
+| `kalshi_fx_catchup.py` | Kalshi hourly EUR/USD and USD/JPY vs live FX | always on 08:00-17:00 ET weekdays (polls every 30 s) | 3 months at >= +2.4c per contract |
 
 `run_daily.py` runs the six daily loggers in one go (`--report` prints all
 their scorecards). Each logger also takes `--report`; the always-on ones take

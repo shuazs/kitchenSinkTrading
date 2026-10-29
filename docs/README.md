@@ -545,3 +545,12 @@ Kalshi stopped listing these markets in Feb 2024, so it is a NEAR with
 nothing to trade unless they come back. The same idea on Kalshi's weekly gas-price markets (an RBOB-futures nowcast
 of the retail price) gives only +1c on the 2023 holdout. Kalshi's daily 10-year yield markets would be easy to nowcast from note
 futures, but they barely trade in the last hours, so there is nothing to test.
+
+**Kalshi hourly FX (EUR/USD, USD/JPY) vs live FX.** Pricing each "above K"
+strike from the spot rate a minute earlier and its last hour of volatility
+beats Kalshi's last-hour prices: buying the cheap side at real taker prints
+made +4.9c a contract over 2022-24 (t 4.4, every year positive), while the
+same rule on 30-minute-old FX makes +0.8c. The pre-registered holdout (Oct
+2025 on) is unusable: the data mirror has almost no FX prints after mid-2024
+and most late ones are 50c prints on deep in-the-money strikes. NEAR: on the
+paper list with a live logger.
