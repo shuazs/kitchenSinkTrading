@@ -86,3 +86,4 @@ Blocked: treasurydirect.gov, fiscaldata.treasury.gov, BLS, OECD, dbnomics, Alpac
 and every sentiment survey source (aaii.com, NYU Baker-Wurgler, alternative.me, nasdaq data, Binance/Bybit/OKX APIs).
 No free delisted stock prices exist on Yahoo or HF (checked 2026-10-23), so single-stock event tests stay survivor-biased; bound them with `spinoffs.survivorship_bound`.
 Paper loggers (`paper_loggers/`) must run on Josh's machine; their keys go in `paper_loggers/keys.env` (template `keys.example.env`, gitignored).
+EDGAR `data.sec.gov/submissions/CIK##########.json` (+ the `files` pages) gives every filing's form, acceptance time and 8-K `items` codes. HF `APProjects/us-warn-act-layoffs-notices-daily` (61k WARN notices, `notice_date` state-reported, scrape-time `first_seen`). Indeed Hiring Lab daily postings by sector/country: raw.githubusercontent.com `hiring-lab/job_postings_tracker/master/US/job_postings_by_sector_US.csv` (2020+).
