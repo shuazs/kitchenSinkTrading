@@ -39,6 +39,7 @@ first call.
 | `cef.py` | `universe(candidates)`, `load_cef_market(tickers)`, `cef_market_from_frames` (NAV in `extra["nav"]`) | Yahoo, NAV tickers X<ticker>X (live funds only) |
 | `edgar_forms.py` | `form_index(forms, start_year, end_year)`, `filer_status(cik, since)`, `classify_filings` (acquired / bankrupt) | EDGAR full-index form.idx + submissions (caches whole ~50 MB files; `examples/run_alpha_batch5.py` `form_counts` streams them and caches per-filer counts in `edgar_forms/`) |
 | `fomc.py` | `meetings()`, `statement_dates()` | HF `ZipLime/fomc-events` |
+| `advertising.py` | `panel` (annual ad expense + revenue per filer, public 100 days after FYE), `signals` (ad growth, intensity, excess growth), `cik_tickers` | EDGAR XBRL frames `AdvertisingExpense` |
 | `tender_offers.py` | `parse_offer` (fixed/Dutch price, odd-lot priority, expiry), `final_price` (results amendment), `clean_text` | SC TO-I texts (callers fetch from EDGAR) |
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
