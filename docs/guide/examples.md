@@ -90,6 +90,7 @@ verdicts are in [strategies.md](strategies.md).
 
 ## Alpha hunt (batches 1-12)
 
+- `run_event_book.py`: stacks the calendar candidates (auction cycle, natgas storage day, pension month-end, VIX spike) on one shared capital pool vs separate 20% sleeves.
 - `run_auction_cycle.py`: Treasury auction cycle (candidate): per-cycle TLT/EDV windows, placebo, sleeves, 20% in the fund plan.
 - `run_kalshi_maker.py`: Replay passive Kalshi quotes on 131M prints (`--shards`, `--k`).
 - `run_cef_discount.py`: Closed-end fund discount z-score grid + walk-forward (needs `SEC_USER_AGENT`).

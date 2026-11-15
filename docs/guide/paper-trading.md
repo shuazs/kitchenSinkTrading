@@ -44,6 +44,12 @@ Notes from later batches:
    but t 1.5 (batch 11), so `--report` scores > 0.02 and the top decile
    separately; batch 12: 35 newer 2x names +0.55%/trade (t 1.5, 169 events).
 
+Event book (`run_event_book.py`): if the auction cycle, natgas storage day
+and VIX spike candidates graduate, run them with the pension signal on one
+shared pool instead of separate $250 sleeves; their existing loggers cover it,
+no extra logger. Execution cost decides it (+3 bp/side cuts ~7 pts/yr), so log
+real MOC fills.
+
 ## Not yet on paper
 
 - Kalshi S&P range vs VIX1D -> sell XSP 0DTE iron flies (`kalshi_vol.py`,
