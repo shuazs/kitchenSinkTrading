@@ -11,7 +11,7 @@ pytest -q                 # ~210 tests (more with ml extras), ~20 s, offline; CI
 - ML tests `pytest.importorskip` sklearn / lightgbm / torch / scipy.
 - One test file per area: `test_engine.py` (fills, costs, no look-ahead,
   sweep, walk_forward), `test_academic.py`, `test_alpha_hunt.py`,
-  `test_combo_search.py`, `test_congress.py`, `test_cot.py`, `test_crypto.py`,
+  `test_bootstrap.py`, `test_combo_search.py`, `test_congress.py`, `test_cot.py`, `test_crypto.py`,
   `test_crypto_pairs.py`, `test_event_markets.py`, `test_event_windows.py`,
   `test_fund_strategies.py`, `test_fundamental_allocator.py`,
   `test_insider.py`, `test_intraday_lab.py`, `test_kalshi_catchup.py`,
