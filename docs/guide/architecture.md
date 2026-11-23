@@ -39,6 +39,7 @@ Package `backtester/`; public API in `backtester/__init__.py`.
   train_years, test_years, metric)` (re-pick params per window, report only
   unseen windows), `event_study(data, events, horizons)`,
   `summarize_events()`.
+- `bootstrap.py`: `bootstrap_ci(returns, n_boot, block, level)` (stationary block-bootstrap bands on CAGR, vol, Sharpe, max DD), `bootstrap_compare(returns, benchmark)` (paired band and `p_better` on strategy minus benchmark). Sampling noise only; trial counts still need `deflated_sharpe`.
 - `portfolio.py`: `sleeve_returns({name: Result})`, `combine(returns, weights, rebalance, band, cost_bps, cash_rate, dd_brake)` -> `Result`: a fund holding several strategies as sub-accounts.
 - `strategies/indicators.py`: `rsi`, `month_ends`.
 

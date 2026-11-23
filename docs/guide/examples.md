@@ -7,6 +7,7 @@ verdicts are in [strategies.md](strategies.md).
 ## Engine demo
 
 - `synthetic_demo.py`: Runs every strategy on random-walk prices to show the workflow offline.
+- `run_bootstrap_ci.py`: Bootstrap confidence intervals on two strategies run on random walks (offline); shows how wide the bands on Sharpe and max DD are after 10 years.
 
 ## Core strategies
 
