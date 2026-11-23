@@ -9,6 +9,7 @@ dependencies = ["numpy", "pandas", "requests", "yfinance"]
 sentiment = ["transformers", "torch", "zstandard"]
 polymarket = ["pyarrow", "fsspec", "aiohttp"]
 ml = ["scikit-learn", "lightgbm", "torch", "scipy"]
+weather = ["eccodes", "pyarrow"]
 dev = ["pytest"]
 
 [build-system]

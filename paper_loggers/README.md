@@ -26,6 +26,7 @@ cp paper_loggers/keys.example.env paper_loggers/keys.env
 | `letf_reversal.py` | Single-stock LETF rebalancing reversal | daily after 4pm ET | 40 trades at >= +0.5% vs SPY |
 | `kalshi_near_misses.py` | Kalshi mentions No 20-80c, ATP favourites Yes 80-95c | always on (polls every 15 min) | 200 events at half the backtest edge |
 | `polymarket_iran_oil.py` | Polymarket Iran odds -> oil (MCL) | always on (polls every minute) | 15 signals at >= +0.33% |
+| `kalshi_weather_lock.py` | Kalshi daily high already decided by METARs | always on (polls every 60 s) | 30 city-days at >= +2.3c/contract |
 | `kalshi_sp_catchup.py` | Kalshi S&P hourly after a sharp 2-minute move | always on in market hours (polls every 20 s) | 3 months at half the backtest P&L rate |
 
 `run_daily.py` runs the six daily loggers in one go (`--report` prints all

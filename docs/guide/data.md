@@ -43,6 +43,7 @@ first call.
 | `treasury_auctions.py` | `load_auctions()`, `long_bond_auction_dates()` (10y/30y incl. reopenings, 2008+) | HF `Farmaanaa/us_treasury_auctions` |
 | `cot.py` | `load_pit`, `weekly_panel` (dated by publication, `known`), `positioning_signals`, `to_trading_days`, `ETF_MAP` (20 COT markets -> ETFs) | HF `ZipLime/commitments-of-traders` (2010+, real release times incl. shutdowns) |
 | `congress.py` | `load_trades` (PTR stock trades, `filing_date` = public day), `buy_events` (per ticker/day: `n_members`, `amount_low`, `members_60d`, `leader`), `LEADERS` | HF `ZipLime/congress-trading` (House 2014+, Senate thin before 2023) |
+| `weather.py` | `ghcn(station)` (TMAX/TMIN/PRCP/SNOW, by_station + current by_year files), `actuals`, `normals`, `anomaly`, `demand_index` (pop-weighted HDD/CDD, 30 metros), `gefs_run`/`gefs_panel` (needs `.[weather]` for eccodes; GEFS ensemble-mean 2 m temp, 0.5 deg, 2020-10+, US `CITIES` or `WORLD_POINTS`), `gefs_daily`, `isd_hourly` (METAR temps, S3 copy ends ~Aug 2025), `KALSHI_STATIONS`, `PRECIP_STATIONS`, `us_landfalls` (IBTrACS via HF `glavvrach79/hurricanes`, to Oct 2025) | AWS S3 `noaa-ghcn-pds`, `noaa-gefs-pds`, `noaa-isd-pds` (reachable; NOAA/NCEI websites, open-meteo, meteostat are blocked); GEFS ~45 min per run hour |
 | `synthetic.py` | `synthetic_market(symbols, seed, **kw)` | random walk, for tests |
 | `live_books.py` | `kalshi_games`, `kalshi_book`, `poly_us_markets`, `poly_us_book`, `pair_games`, `gap_followthrough` (replay, after the 5%·p(1-p) US fee), `kalshi_series_markets`, `market_top`, `NEAR_MISS_RULES`/`paper_entry`/`paper_pnl` (Kalshi forward-test rules) | live Kalshi + Polymarket US (gateway.polymarket.us) books, keyless; blocked from cloud |
 
@@ -62,6 +63,7 @@ first call.
 | `signal-combos/` | `run_signal_combos.py` output: top-2,000 boards, walk-forward picks and summaries per search, sleeve equity curves |
 | `intraday-lab/`, `ml-research/` | result tables for those studies |
 | `alpha-hunt/` | alpha hunt outputs: `kalshi_maker_output.txt`/`kalshi_maker_agg.parquet`, `treasury_auctions.parquet`, `sue.parquet` (SUE from SEC Financial Statement Data Sets 2009-2026), `pead_events.parquet`, `gov_award_events.parquet` (HF ZipLime/us-government-contracts), spin-off tables, `scripts/` |
+| `weather/` | Weather study: `HYPOTHESES.md` (pre-registration + verdicts), `kalshi_high_*` / `kalshi_low_*` / `kalshi_monthly_precip_*` markets and prints, `kalshi_high_trades_obs2.parquet` (prints joined to max-so-far METAR), `gefs/` (GEFS 12z/00z/world caches), `results/`, `scripts/` |
 | `sentiment-research/results/` | mood index and sentiment overlay result CSVs from `run_sentiment_overlays.py` |
 
 Kalshi history mirror: HF `TrevorJS/kalshi-trades` (Jun 2021 - Jan 2026).

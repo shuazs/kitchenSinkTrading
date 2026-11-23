@@ -81,3 +81,17 @@ def test_parse_fixed_odd_lot_offer():
          "the offer will expire at 12:00 midnight, new york city time, on december 4, 2026.")
     d = parse_offer(t)
     assert d["fixed"] == 12.5 and d["odd"] and not d["dutch"] and d["exp"] == "december 4 2026"
+
+
+def test_weather_lock_uses_second_highest_report_since_local_midnight():
+    import kalshi_weather_lock as kw
+    from datetime import datetime, timezone
+
+    now = datetime(2025, 1, 10, 20, 0, tzinfo=timezone.utc)  # 15:00 EST
+    obs = pd.DataFrame({
+        "station": ["KNYC"] * 4,
+        "time": pd.to_datetime(["2025-01-10 04:00", "2025-01-10 06:00", "2025-01-10 07:00", "2025-01-10 19:00"], utc=True),
+        "temp_f": [70.0, 50.0, 49.0, 48.0],  # 04:00 UTC is still the previous local-standard day
+    })
+    m2, last = kw.second_max_today(obs, "KNYC", -5, now)
+    assert m2 == 49.0 and last.startswith("2025-01-10T19:00")
