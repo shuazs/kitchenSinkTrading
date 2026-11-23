@@ -75,6 +75,30 @@ def test_kalshi_best_quote():
     assert k.best_quote(ms, 6740, 0.0006, 20, False)["side"] == "no"
 
 
+def test_kalshi_fx_best_quote():
+    import kalshi_fx_catchup as k
+
+    now = pd.Timestamp("2026-01-05 14:30", tz="UTC")
+    close = now + pd.Timedelta(minutes=30)
+    ms = [{"ticker": f"KXEURUSDH-X-T{K}", "K": K, "close": close, "yes_bid": b, "yes_ask": a}
+          for K, b, a in [(1.1700, 40, 45), (1.1750, 10, 12)]]
+    q = k.best_quote(ms, 1.1720, 0.0001, now)  # 1.1700 is ~3.6 sd in the money
+    assert q["ticker"].endswith("T1.17") and q["side"] == "yes" and q["edge"] > 0.4
+    assert k.best_quote(ms, 1.1650, 0.0001, now)["side"] == "no"
+
+
+def test_short_interest_form(monkeypatch):
+    import short_interest_surge as k
+
+    monkeypatch.setattr(k, "today", lambda: pd.Timestamp("2026-10-30"))
+    si = pd.DataFrame({"settlement": pd.Timestamp("2026-09-30"), "symbol": [f"S{i}" for i in range(50)],
+                       "change_pct": range(50), "days_to_cover": 1.0})
+    b = k.form(si, pd.DataFrame(columns=k.B_FIELDS))
+    top = b[b.role == "top"]
+    assert len(top) == 5 and set(top.symbol) == {f"S{i}" for i in range(45, 50)} and (b.role == "sample").sum() == 45
+    assert k.form(si, b).equals(b)  # already formed
+
+
 def test_parse_fixed_odd_lot_offer():
     t = ("the company is offering to purchase up to 1,000,000 shares at a purchase price of $12.50 per share. "
          "shares tendered by any odd lot holder will not be subject to proration. "
